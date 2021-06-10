@@ -1,6 +1,10 @@
-// Update with your config settings.
+import { Knex } from "knex";
 
-const config = {
+interface IKnexConfig {
+  [key: string]: Knex.Config;
+}
+
+const config: IKnexConfig = {
   development: {
     client: "pg",
     connection: "postgresql://postgres:postgres@localhost:7777/recetas",
