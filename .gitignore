@@ -2,3 +2,4 @@ node_modules
 pgdata
 dist
 src/client/node_modules
+.env
