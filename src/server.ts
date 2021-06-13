@@ -18,6 +18,7 @@ async function startServer() {
 
   const schema = await buildSchema({
     resolvers: [UserResolver],
+    dateScalarMode: "timestamp",
   });
 
   const server = new ApolloServer({

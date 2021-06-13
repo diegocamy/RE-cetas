@@ -4,6 +4,8 @@ import {
   PrimaryGeneratedColumn,
   OneToMany,
   BaseEntity,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from "typeorm";
 import { Field, ID, ObjectType } from "type-graphql";
 
@@ -20,7 +22,6 @@ export class User extends BaseEntity {
   @Column()
   email!: string;
 
-  @Field()
   @Column()
   password!: string;
 
@@ -31,6 +32,14 @@ export class User extends BaseEntity {
   @Field({ nullable: true })
   @Column({ nullable: true })
   bio!: string;
+
+  @Field((type) => Date)
+  @CreateDateColumn()
+  created!: Date;
+
+  @Field((type) => Date)
+  @UpdateDateColumn()
+  updated!: Date;
 
   @Field((type) => Post)
   @OneToMany((type) => Post, (post) => post.author)

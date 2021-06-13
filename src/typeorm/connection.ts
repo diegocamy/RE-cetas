@@ -15,6 +15,11 @@ const options: ConnectionOptions = {
   entities: [path.join(__dirname + "./../entities/*{.ts,.js}")],
   migrations: [path.join(__dirname + "./../migrations/*{.ts,.js}")],
   subscribers: [path.join(__dirname + "./../subscribers/*{.ts,.js}")],
+  cli: {
+    entitiesDir: path.join(__dirname + "./../entities/*{.ts,.js}"),
+    migrationsDir: path.join(__dirname + "./../migrations/*{.ts,.js}"),
+    subscribersDir: path.join(__dirname + "./../subscribers/*{.ts,.js}"),
+  },
 };
 
 export default () => createConnection(options);
