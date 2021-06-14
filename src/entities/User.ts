@@ -8,7 +8,6 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 import { Field, ID, ObjectType } from "type-graphql";
-
 import { Post } from "./Post";
 
 @ObjectType()
