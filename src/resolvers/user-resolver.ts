@@ -1,25 +1,30 @@
 import {
   Arg,
   Ctx,
-  Field,
   Mutation,
-  ObjectType,
   Query,
   Resolver,
+  UseMiddleware,
 } from "type-graphql";
 import { User } from "../entities/User";
 import bcrypt from "bcrypt";
 import { RegisterUserInput } from "../input-types/RegisterUserInput";
 import { MyContext } from "../interfaces";
-import jwt from "jsonwebtoken";
 import { generateCookie } from "../utils/cookie";
 import { generateAccessToken, generateRefreshToken } from "../utils/jwt";
+import { isAuth } from "../middleware/isAuth";
 
 @Resolver()
 export class UserResolver {
   @Query(() => [User])
   async users(): Promise<User[]> {
     return User.find();
+  }
+
+  @Query(() => String)
+  @UseMiddleware(isAuth)
+  protected(@Ctx() { payload }: MyContext) {
+    return `Your user id is...${payload?.userId}`;
   }
 
   @Query(() => User, { nullable: true })

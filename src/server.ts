@@ -4,6 +4,7 @@ import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
 import connection from "./typeorm/connection";
 import { UserResolver } from "./resolvers/user-resolver";
+import cookieParser from "cookie-parser";
 
 const PORT = 4000;
 
@@ -20,6 +21,8 @@ async function startServer() {
     resolvers: [UserResolver],
     dateScalarMode: "timestamp",
   });
+
+  app.use(cookieParser());
 
   const server = new ApolloServer({
     schema,
