@@ -12,12 +12,8 @@ import bcrypt from "bcrypt";
 import { RegisterUserInput } from "../input-types/RegisterUserInput";
 import { MyContext } from "../interfaces";
 import jwt from "jsonwebtoken";
-
-@ObjectType()
-class UserLoginType {
-  @Field()
-  accessToken!: string;
-}
+import { generateCookie } from "../utils/cookie";
+import { generateAccessToken, generateRefreshToken } from "../utils/jwt";
 
 @Resolver()
 export class UserResolver {
@@ -35,7 +31,8 @@ export class UserResolver {
 
   @Mutation(() => Boolean)
   async register(
-    @Arg("data") { email, password, username }: RegisterUserInput
+    @Arg("data") { email, password, username }: RegisterUserInput,
+    @Ctx() { res }: MyContext
   ): Promise<boolean> {
     //check if username is already in use
     let foundUser = await User.findOne({ where: { username } });
@@ -49,8 +46,9 @@ export class UserResolver {
     const hashedPassword = await bcrypt.hash(password, 12);
 
     //create user
+    let user;
     try {
-      await User.create({
+      user = await User.create({
         username,
         email,
         password: hashedPassword,
@@ -60,15 +58,21 @@ export class UserResolver {
       return false;
     }
 
+    //set refresh token
+    generateCookie("rtk", res, generateRefreshToken(user));
+
+    //set access token
+    generateCookie("atk", res, generateAccessToken(user));
+
     return true;
   }
 
-  @Mutation(() => UserLoginType)
+  @Mutation(() => Boolean)
   async login(
     @Arg("email") email: string,
     @Arg("password") password: string,
     @Ctx() { res }: MyContext
-  ): Promise<UserLoginType> {
+  ): Promise<boolean> {
     //check for user with given email
     const foundUser = await User.findOne({ where: { email } });
 
@@ -80,24 +84,11 @@ export class UserResolver {
     if (!passwordsMatch) throw new Error("Correo o contraseña inválidos");
 
     //set refresh token
-    res.cookie(
-      "cid",
-      jwt.sign({ userId: foundUser.id }, process.env.REFRESH_TOKEN_SECRET!, {
-        expiresIn: "7d",
-      }),
-      {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-      }
-    );
+    generateCookie("rtk", res, generateRefreshToken(foundUser));
 
-    //return access token
-    return {
-      accessToken: jwt.sign(
-        { userId: foundUser.id },
-        process.env.ACCESS_TOKEN_SECRET!,
-        { expiresIn: "15m" }
-      ),
-    };
+    //set access token
+    generateCookie("atk", res, generateAccessToken(foundUser));
+
+    return true;
   }
 }
