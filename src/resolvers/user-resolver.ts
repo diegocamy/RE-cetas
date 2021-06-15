@@ -1,7 +1,10 @@
 import {
   Arg,
   Ctx,
+  Field,
+  Int,
   Mutation,
+  ObjectType,
   Query,
   Resolver,
   UseMiddleware,
@@ -9,10 +12,20 @@ import {
 import { User } from "../entities/User";
 import bcrypt from "bcrypt";
 import { RegisterUserInput } from "../input-types/RegisterUserInput";
-import { MyContext } from "../interfaces";
+import { MyContext, TokenPayload } from "../interfaces";
 import { generateCookie } from "../utils/cookie";
 import { generateAccessToken, generateRefreshToken } from "../utils/jwt";
 import { isAuth } from "../middleware/isAuth";
+import jwt from "jsonwebtoken";
+import { RefreshToken } from "../entities/RefreshToken";
+
+@ObjectType()
+class JWTPayload {
+  @Field()
+  jwt!: string;
+  @Field(() => Int)
+  exp!: number;
+}
 
 @Resolver()
 export class UserResolver {
@@ -34,11 +47,11 @@ export class UserResolver {
     return User.findOne({ where: { username } });
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => JWTPayload)
   async register(
     @Arg("data") { email, password, username }: RegisterUserInput,
     @Ctx() { res }: MyContext
-  ): Promise<boolean> {
+  ): Promise<JWTPayload> {
     //check if username is already in use
     let foundUser = await User.findOne({ where: { username } });
     if (foundUser) throw new Error("El nombre de usuario ya está en uso");
@@ -60,24 +73,43 @@ export class UserResolver {
       }).save();
     } catch (error) {
       console.log(error);
-      return false;
+      throw new Error(error.message);
     }
 
     //set refresh token
-    generateCookie("rtk", res, generateRefreshToken(user));
+    const refreshToken = generateRefreshToken(user);
 
-    //set access token
-    generateCookie("atk", res, generateAccessToken(user));
+    //save refresh token in database
+    try {
+      await RefreshToken.create({
+        refresh_token: refreshToken,
+        user: user,
+      }).save();
+    } catch (error) {
+      console.log(error);
+      throw new Error(error.message);
+    }
 
-    return true;
+    generateCookie("rtk", res, refreshToken);
+
+    const token = generateAccessToken(user);
+    const { exp } = jwt.verify(
+      token,
+      process.env.ACCESS_TOKEN_SECRET!
+    ) as TokenPayload;
+
+    return {
+      jwt: token,
+      exp,
+    };
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => JWTPayload)
   async login(
     @Arg("email") email: string,
     @Arg("password") password: string,
     @Ctx() { res }: MyContext
-  ): Promise<boolean> {
+  ): Promise<JWTPayload> {
     //check for user with given email
     const foundUser = await User.findOne({ where: { email } });
 
@@ -89,11 +121,30 @@ export class UserResolver {
     if (!passwordsMatch) throw new Error("Correo o contraseña inválidos");
 
     //set refresh token
-    generateCookie("rtk", res, generateRefreshToken(foundUser));
+    const refreshToken = generateRefreshToken(foundUser);
 
-    //set access token
-    generateCookie("atk", res, generateAccessToken(foundUser));
+    //save refresh token in database
+    try {
+      await RefreshToken.create({
+        refresh_token: refreshToken,
+        user: foundUser,
+      }).save();
+    } catch (error) {
+      console.log(error);
+      throw new Error(error.message);
+    }
 
-    return true;
+    generateCookie("rtk", res, refreshToken);
+
+    const token = generateAccessToken(foundUser);
+    const { exp } = jwt.verify(
+      token,
+      process.env.ACCESS_TOKEN_SECRET!
+    ) as TokenPayload;
+
+    return {
+      jwt: token,
+      exp,
+    };
   }
 }

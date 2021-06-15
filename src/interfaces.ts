@@ -11,3 +11,8 @@ export interface TokenPayload {
   iat: number;
   exp: number;
 }
+
+export interface IRefreshToken {
+  id: number;
+  refresh_token: string;
+}
