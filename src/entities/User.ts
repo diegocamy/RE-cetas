@@ -9,6 +9,7 @@ import {
 } from "typeorm";
 import { Field, ID, ObjectType } from "type-graphql";
 import { Post } from "./Post";
+import { v4 } from "uuid";
 
 @ObjectType()
 @Entity()
@@ -39,6 +40,9 @@ export class User extends BaseEntity {
   @Field((type) => Date)
   @UpdateDateColumn()
   updated!: Date;
+
+  @Column({ default: v4() })
+  token_version!: string;
 
   @Field((type) => Post)
   @OneToMany((type) => Post, (post) => post.author)

@@ -17,7 +17,7 @@ import { generateCookie } from "../utils/cookie";
 import { generateAccessToken, generateRefreshToken } from "../utils/jwt";
 import { isAuth } from "../middleware/isAuth";
 import jwt from "jsonwebtoken";
-import { RefreshToken } from "../entities/RefreshToken";
+import { expireRedisAsync, setRedisAsync } from "../server";
 
 @ObjectType()
 class JWTPayload {
@@ -76,30 +76,27 @@ export class UserResolver {
       throw new Error(error.message);
     }
 
-    //set refresh token
+    //create refresh token
     const refreshToken = generateRefreshToken(user);
 
-    //save refresh token in database
-    try {
-      await RefreshToken.create({
-        refresh_token: refreshToken,
-        user: user,
-      }).save();
-    } catch (error) {
-      console.log(error);
-      throw new Error(error.message);
-    }
+    //save refresh token in redis
+    await setRedisAsync(refreshToken, refreshToken);
+    await expireRedisAsync(refreshToken, 60 * 60 * 24 * 7);
 
+    //generate cookie with refresh token
     generateCookie("rtk", res, refreshToken);
 
-    const token = generateAccessToken(user);
+    //generate access token
+    const accessToken = generateAccessToken(user);
+
+    //extract expire property from access token
     const { exp } = jwt.verify(
-      token,
+      accessToken,
       process.env.ACCESS_TOKEN_SECRET!
     ) as TokenPayload;
 
     return {
-      jwt: token,
+      jwt: accessToken,
       exp,
     };
   }
@@ -120,30 +117,27 @@ export class UserResolver {
 
     if (!passwordsMatch) throw new Error("Correo o contraseña inválidos");
 
-    //set refresh token
+    //generate refresh token
     const refreshToken = generateRefreshToken(foundUser);
 
-    //save refresh token in database
-    try {
-      await RefreshToken.create({
-        refresh_token: refreshToken,
-        user: foundUser,
-      }).save();
-    } catch (error) {
-      console.log(error);
-      throw new Error(error.message);
-    }
+    //save refresh token in redis
+    await setRedisAsync(refreshToken, refreshToken);
+    await expireRedisAsync(refreshToken, 60 * 60 * 24 * 7);
 
+    //generate cookie with refresh token
     generateCookie("rtk", res, refreshToken);
 
-    const token = generateAccessToken(foundUser);
+    //generate access token
+    const accessToken = generateAccessToken(foundUser);
+
+    //extract exp property from access token
     const { exp } = jwt.verify(
-      token,
+      accessToken,
       process.env.ACCESS_TOKEN_SECRET!
     ) as TokenPayload;
 
     return {
-      jwt: token,
+      jwt: accessToken,
       exp,
     };
   }

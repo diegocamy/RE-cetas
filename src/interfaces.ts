@@ -8,11 +8,7 @@ export interface MyContext {
 
 export interface TokenPayload {
   userId: number;
+  token_version: string;
   iat: number;
   exp: number;
-}
-
-export interface IRefreshToken {
-  id: number;
-  refresh_token: string;
 }

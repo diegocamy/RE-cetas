@@ -3,19 +3,32 @@ import express from "express";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
 import connection from "./typeorm/connection";
-import { UserResolver } from "./resolvers/user-resolver";
 import cookieParser from "cookie-parser";
 import jwt from "jsonwebtoken";
-import { IRefreshToken, TokenPayload } from "./interfaces";
+import { TokenPayload } from "./interfaces";
 import { User } from "./entities/User";
 import { generateCookie } from "./utils/cookie";
 import { generateAccessToken, generateRefreshToken } from "./utils/jwt";
-import { RefreshToken } from "./entities/RefreshToken";
-import { getConnection } from "typeorm";
+import redis from "redis";
+import { promisify } from "util";
 
 const PORT = 4000;
 
 const app = express();
+
+const redisClient = redis.createClient({
+  host: process.env.REDIS_HOSTNAME,
+  port: Number.parseInt(process.env.REDIS_PORT!),
+  password: process.env.REDIS_PASSWORD,
+});
+
+redisClient.on("connect", () => {
+  console.log("Connected to redis");
+  redisClient.flushdb();
+});
+
+export const setRedisAsync = promisify(redisClient.set).bind(redisClient);
+export const expireRedisAsync = promisify(redisClient.expire).bind(redisClient);
 
 async function startServer() {
   try {
@@ -25,17 +38,22 @@ async function startServer() {
   }
 
   const schema = await buildSchema({
-    resolvers: [UserResolver],
+    resolvers: [
+      __dirname + "/modules/**/*.resolver.{ts,js}",
+      __dirname + "/resolvers/**/*.{ts,js}",
+    ],
     dateScalarMode: "timestamp",
   });
 
   app.post("/refresh_token", cookieParser(), async (req, res) => {
-    const refreshToken = req.cookies.rtk;
+    //extract refresh token from cookie
+    const refreshToken = req.cookies.rtk as string;
+
     if (!refreshToken) {
       return res.json({ ok: false, jwt: "" });
     }
 
-    //verify refresh token
+    //verify if refresh token is valid
     let payload;
     try {
       payload = jwt.verify(
@@ -50,43 +68,37 @@ async function startServer() {
     let user: User | undefined;
     try {
       user = await User.findOne({ where: { id: payload.userId } });
-    } catch (error) {
-      return res.json({ ok: false, jwt: "" });
-    }
 
-    //retrieve saved refresh token for current user from db
-    try {
-      const savedRefreshToken = (await RefreshToken.findOne({
-        where: { user: user },
-      })) as IRefreshToken;
-      const { refresh_token } = savedRefreshToken;
-
-      //check if provided refresh token matches the one stored in db
-      const match = refresh_token.localeCompare(refreshToken);
-
-      //if match is 0 means they are the same
-      if (match !== 0) {
+      if (!user) {
         return res.json({ ok: false, jwt: "" });
       }
     } catch (error) {
       return res.json({ ok: false, jwt: "" });
     }
 
+    //compare token_version from user and token
+    const compare = payload.token_version.localeCompare(user.token_version);
+
+    //if compare is different from 0, token_versions are not the same
+    if (compare !== 0) {
+      return res.json({ ok: false, jwt: "" });
+    }
+
+    //IF EVERYTHING IS OK THEN...
+
+    //delete old cookie from redis
+    redisClient.del(refreshToken, (err, res) => {
+      if (res === 1) {
+        console.log("deleted");
+      }
+    });
+
     //create new refresh token
     const newRefreshToken = generateRefreshToken(user!);
 
-    //save new refresh token in db
-    try {
-      await getConnection()
-        .createQueryBuilder()
-        .update(RefreshToken)
-        .set({ refresh_token: newRefreshToken })
-        .where(`user_id = ${user!.id}`)
-        .execute();
-    } catch (error) {
-      console.log(error);
-      return res.json({ ok: false, jwt: "" });
-    }
+    //save new refresh token in redis
+    await setRedisAsync(newRefreshToken, newRefreshToken);
+    await expireRedisAsync(newRefreshToken, 60 * 60 * 24 * 7);
 
     //set refresh token
     generateCookie("rtk", res, newRefreshToken);
