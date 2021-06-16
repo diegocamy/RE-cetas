@@ -81,6 +81,12 @@ async function startServer() {
 
     //if compare is different from 0, token_versions are not the same
     if (compare !== 0) {
+      //delete refresh token from redis
+      redisClient.del(refreshToken, (err, res) => {
+        if (res === 1) {
+          console.log("deleted");
+        }
+      });
       return res.json({ ok: false, jwt: "" });
     }
 

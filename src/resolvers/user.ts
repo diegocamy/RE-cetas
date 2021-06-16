@@ -18,6 +18,7 @@ import { generateAccessToken, generateRefreshToken } from "../utils/jwt";
 import { isAuth } from "../middleware/isAuth";
 import jwt from "jsonwebtoken";
 import { expireRedisAsync, setRedisAsync } from "../server";
+import { v4 } from "uuid";
 
 @ObjectType()
 class JWTPayload {
@@ -140,5 +141,19 @@ export class UserResolver {
       jwt: accessToken,
       exp,
     };
+  }
+
+  @Mutation(() => Boolean)
+  @UseMiddleware(isAuth)
+  async invalidateRefreshTokens(@Ctx() { payload }: MyContext) {
+    const { userId } = payload as TokenPayload;
+    const user = await User.findOne({ where: { id: userId } });
+
+    if (!user) return false;
+
+    user.token_version = v4();
+    await user.save();
+
+    return true;
   }
 }
