@@ -1,20 +1,17 @@
-import { Arg, Ctx, Mutation } from "type-graphql";
+import { Arg, Mutation, Resolver } from "type-graphql";
 import { User } from "../../entities/User";
-import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { RegisterUserInput } from "../../input-types/RegisterUserInput";
-import { MyContext, TokenPayload } from "../../interfaces";
 import { expireRedisAsync, setRedisAsync } from "../../server";
-import { generateAccessToken, generateRefreshToken } from "../../utils/jwt";
-import { JWTPayload } from "../../object-types/JWTPayload";
-import { generateCookie } from "../../utils/cookie";
+import { sendEmail } from "../../utils/sendEmail";
+import { v4 } from "uuid";
 
+@Resolver()
 export class RegisterResolver {
-  @Mutation(() => JWTPayload)
+  @Mutation(() => Boolean)
   async register(
-    @Arg("data") { email, password, username }: RegisterUserInput,
-    @Ctx() { res }: MyContext
-  ): Promise<JWTPayload> {
+    @Arg("data") { email, password, username }: RegisterUserInput
+  ): Promise<boolean> {
     //check if username is already in use
     let foundUser = await User.findOne({ where: { username } });
     if (foundUser) throw new Error("El nombre de usuario ya está en uso");
@@ -39,28 +36,40 @@ export class RegisterResolver {
       throw new Error(error.message);
     }
 
-    //create refresh token
-    const refreshToken = generateRefreshToken(user);
+    //generate token for account activation
+    const token = v4();
 
-    //save refresh token in redis
-    await setRedisAsync(refreshToken, refreshToken);
-    await expireRedisAsync(refreshToken, 60 * 60 * 24 * 7);
+    //save token in redis
+    await setRedisAsync("confirmation" + token, user.id.toString());
+    await expireRedisAsync(user.id.toString(), 60 * 60 * 24);
 
-    //generate cookie with refresh token
-    generateCookie("rtk", res, refreshToken);
+    //sendEmail
+    await sendEmail(email, token);
 
-    //generate access token
-    const accessToken = generateAccessToken(user);
+    return true;
 
-    //extract expire property from access token
-    const { exp } = jwt.verify(
-      accessToken,
-      process.env.ACCESS_TOKEN_SECRET!
-    ) as TokenPayload;
+    // //create refresh token
+    // const refreshToken = generateRefreshToken(user);
 
-    return {
-      jwt: accessToken,
-      exp,
-    };
+    // //save refresh token in redis
+    // await setRedisAsync(refreshToken, refreshToken);
+    // await expireRedisAsync(refreshToken, 60 * 60 * 24 * 7);
+
+    // //generate cookie with refresh token
+    // generateCookie("rtk", res, refreshToken);
+
+    // //generate access token
+    // const accessToken = generateAccessToken(user);
+
+    // //extract expire property from access token
+    // const { exp } = jwt.verify(
+    //   accessToken,
+    //   process.env.ACCESS_TOKEN_SECRET!
+    // ) as TokenPayload;
+
+    // return {
+    //   jwt: accessToken,
+    //   exp,
+    // };
   }
 }

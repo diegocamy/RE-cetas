@@ -7,6 +7,8 @@ import { generateAccessToken, generateRefreshToken } from "../../utils/jwt";
 import jwt from "jsonwebtoken";
 import { expireRedisAsync, setRedisAsync } from "../../server";
 import { JWTPayload } from "../../object-types/JWTPayload";
+import { v4 } from "uuid";
+import { sendEmail } from "../../utils/sendEmail";
 
 @Resolver()
 export class LoginResolver {
@@ -25,6 +27,23 @@ export class LoginResolver {
     const passwordsMatch = await bcrypt.compare(password, foundUser.password);
 
     if (!passwordsMatch) throw new Error("Correo o contraseña inválidos");
+
+    if (!foundUser.confirmed) {
+      //send an email to confirm the account
+      //generate token for account activation
+      const token = v4();
+
+      //save token in redis
+      await setRedisAsync("confirmation" + token, foundUser.id.toString());
+      await expireRedisAsync(foundUser.id.toString(), 60 * 60 * 24);
+
+      //sendEmail
+      await sendEmail(email, token);
+
+      throw new Error(
+        "Debes confirmar tu cuenta para iniciar sesión. Te hemos enviado un correo para que puedas hacerlo!"
+      );
+    }
 
     //generate refresh token
     const refreshToken = generateRefreshToken(foundUser);

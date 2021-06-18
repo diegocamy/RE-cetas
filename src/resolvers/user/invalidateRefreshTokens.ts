@@ -1,9 +1,10 @@
-import { Ctx, Mutation, UseMiddleware } from "type-graphql";
+import { Ctx, Mutation, UseMiddleware, Resolver } from "type-graphql";
 import { v4 } from "uuid";
 import { User } from "../../entities/User";
 import { MyContext, TokenPayload } from "../../interfaces";
 import { isAuth } from "../../middleware/isAuth";
 
+@Resolver()
 export class InvalidateRefreshTokensResolver {
   @Mutation(() => Boolean)
   @UseMiddleware(isAuth)

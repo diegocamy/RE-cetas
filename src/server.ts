@@ -16,7 +16,7 @@ const PORT = 4000;
 
 const app = express();
 
-const redisClient = redis.createClient({
+export const redisClient = redis.createClient({
   host: process.env.REDIS_HOSTNAME,
   port: Number.parseInt(process.env.REDIS_PORT!),
   password: process.env.REDIS_PASSWORD,
@@ -24,11 +24,11 @@ const redisClient = redis.createClient({
 
 redisClient.on("connect", () => {
   console.log("Connected to redis");
-  redisClient.flushdb();
 });
 
 export const setRedisAsync = promisify(redisClient.set).bind(redisClient);
 export const expireRedisAsync = promisify(redisClient.expire).bind(redisClient);
+export const getRedisAsync = promisify(redisClient.get).bind(redisClient);
 
 async function startServer() {
   try {

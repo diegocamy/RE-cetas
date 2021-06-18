@@ -1,6 +1,7 @@
-import { Arg, Query } from "type-graphql";
+import { Arg, Query, Resolver } from "type-graphql";
 import { User } from "../../entities/User";
 
+@Resolver()
 export class FindUserByUsernameResolver {
   @Query(() => User, { nullable: true })
   async userByUsername(

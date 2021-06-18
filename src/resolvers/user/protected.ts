@@ -1,7 +1,8 @@
-import { Query, UseMiddleware, Ctx } from "type-graphql";
+import { Query, UseMiddleware, Ctx, Resolver } from "type-graphql";
 import { MyContext } from "../../interfaces";
 import { isAuth } from "../../middleware/isAuth";
 
+@Resolver()
 export class ProtectedResolver {
   @Query(() => String)
   @UseMiddleware(isAuth)

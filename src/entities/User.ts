@@ -44,6 +44,9 @@ export class User extends BaseEntity {
   @Column({ default: v4() })
   token_version!: string;
 
+  @Column({ default: false })
+  confirmed!: boolean;
+
   @Field((type) => Post)
   @OneToMany((type) => Post, (post) => post.author)
   posts!: Post[];
