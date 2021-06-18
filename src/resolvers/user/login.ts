@@ -10,6 +10,7 @@ import { JWTPayload } from "../../object-types/JWTPayload";
 import { v4 } from "uuid";
 import { sendEmail } from "../../utils/sendEmail";
 import { confirmAccount } from "../../utils/constants";
+import { userSignIn } from "../../utils/userSignIn";
 
 @Resolver()
 export class LoginResolver {
@@ -46,28 +47,17 @@ export class LoginResolver {
       );
     }
 
-    //generate refresh token
-    const refreshToken = generateRefreshToken(foundUser);
+    let accessToken: JWTPayload;
 
-    //save refresh token in redis
-    await setRedisAsync(refreshToken, refreshToken);
-    await expireRedisAsync(refreshToken, 60 * 60 * 24 * 7);
-
-    //generate cookie with refresh token
-    generateCookie("rtk", res, refreshToken);
-
-    //generate access token
-    const accessToken = generateAccessToken(foundUser);
-
-    //extract exp property from access token
-    const { exp } = jwt.verify(
-      accessToken,
-      process.env.ACCESS_TOKEN_SECRET!
-    ) as TokenPayload;
+    try {
+      accessToken = await userSignIn(foundUser, res);
+    } catch (error) {
+      throw new Error(error.message);
+    }
 
     return {
-      jwt: accessToken,
-      exp,
+      jwt: accessToken.jwt,
+      exp: accessToken.exp,
     };
   }
 }
