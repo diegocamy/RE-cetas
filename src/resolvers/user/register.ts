@@ -5,6 +5,7 @@ import { RegisterUserInput } from "../../input-types/RegisterUserInput";
 import { expireRedisAsync, setRedisAsync } from "../../server";
 import { sendEmail } from "../../utils/sendEmail";
 import { v4 } from "uuid";
+import { confirmAccount } from "../../utils/constants";
 
 @Resolver()
 export class RegisterResolver {
@@ -40,11 +41,11 @@ export class RegisterResolver {
     const token = v4();
 
     //save token in redis
-    await setRedisAsync("confirmation" + token, user.id.toString());
+    await setRedisAsync(confirmAccount + token, user.id.toString());
     await expireRedisAsync(user.id.toString(), 60 * 60 * 24);
 
     //sendEmail
-    await sendEmail(email, token);
+    await sendEmail(email, token, "confirm");
 
     return true;
 

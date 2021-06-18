@@ -1,7 +1,11 @@
 import nodemailer from "nodemailer";
 
 // async..await is not allowed in global scope, must use a wrapper
-export async function sendEmail(email: string, token: string) {
+export async function sendEmail(
+  email: string,
+  token: string,
+  type: "confirm" | "forgot-password"
+) {
   // Generate test SMTP service account from ethereal.email
   // Only needed if you don't have a real mail account for testing
   let testAccount = await nodemailer.createTestAccount();
@@ -18,13 +22,25 @@ export async function sendEmail(email: string, token: string) {
   });
 
   // send mail with defined transport object
-  let info = await transporter.sendMail({
-    from: '"Fred Foo 👻" <foo@example.com>', // sender address
-    to: email, // list of receivers
-    subject: "Hello ✔", // Subject line
-    text: "Hello world?", // plain text body
-    html: `<a href="http://localhost:3000/user/confirm-account/${token}">http://localhost:3000/user/confirm-account/${token}</a>`, // html body
-  });
+  let info;
+
+  if (type === "confirm") {
+    info = await transporter.sendMail({
+      from: '"Fred Foo 👻" <foo@example.com>', // sender address
+      to: email, // list of receivers
+      subject: "Hello ✔", // Subject line
+      text: "Hello world?", // plain text body
+      html: `<a href="http://localhost:3000/user/confirm-account/${token}">http://localhost:3000/user/confirm-account/${token}</a>`, // html body
+    });
+  } else {
+    info = await transporter.sendMail({
+      from: '"Fred Foo 👻" <foo@example.com>', // sender address
+      to: email, // list of receivers
+      subject: "Hello ✔", // Subject line
+      text: "Hello world?", // plain text body
+      html: `<a href="http://localhost:3000/user/reset-password/${token}">http://localhost:3000/user/reset-password/${token}</a>`, // html body
+    });
+  }
 
   console.log("Message sent: %s", info.messageId);
   // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>

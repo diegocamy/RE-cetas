@@ -9,6 +9,7 @@ import { expireRedisAsync, setRedisAsync } from "../../server";
 import { JWTPayload } from "../../object-types/JWTPayload";
 import { v4 } from "uuid";
 import { sendEmail } from "../../utils/sendEmail";
+import { confirmAccount } from "../../utils/constants";
 
 @Resolver()
 export class LoginResolver {
@@ -34,11 +35,11 @@ export class LoginResolver {
       const token = v4();
 
       //save token in redis
-      await setRedisAsync("confirmation" + token, foundUser.id.toString());
+      await setRedisAsync(confirmAccount + token, foundUser.id.toString());
       await expireRedisAsync(foundUser.id.toString(), 60 * 60 * 24);
 
       //sendEmail
-      await sendEmail(email, token);
+      await sendEmail(email, token, "confirm");
 
       throw new Error(
         "Debes confirmar tu cuenta para iniciar sesión. Te hemos enviado un correo para que puedas hacerlo!"
