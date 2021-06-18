@@ -1,16 +1,13 @@
 import { Arg, Ctx, Mutation, Resolver } from "type-graphql";
 import { User } from "../../entities/User";
 import bcrypt from "bcrypt";
-import { MyContext, TokenPayload } from "../../interfaces";
-import { generateCookie } from "../../utils/cookie";
-import { generateAccessToken, generateRefreshToken } from "../../utils/jwt";
-import jwt from "jsonwebtoken";
-import { expireRedisAsync, setRedisAsync } from "../../server";
+import { MyContext } from "../../interfaces";
 import { JWTPayload } from "../../object-types/JWTPayload";
 import { v4 } from "uuid";
 import { sendEmail } from "../../utils/sendEmail";
 import { confirmAccount } from "../../utils/constants";
 import { userSignIn } from "../../utils/userSignIn";
+import { expire, set } from "../../redis/redis";
 
 @Resolver()
 export class LoginResolver {
@@ -36,8 +33,8 @@ export class LoginResolver {
       const token = v4();
 
       //save token in redis
-      await setRedisAsync(confirmAccount + token, foundUser.id.toString());
-      await expireRedisAsync(foundUser.id.toString(), 60 * 60 * 24);
+      await set(confirmAccount + token, foundUser.id.toString());
+      await expire(foundUser.id.toString(), 60 * 60 * 24);
 
       //sendEmail
       await sendEmail(email, token, "confirm");

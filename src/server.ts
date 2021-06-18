@@ -7,28 +7,12 @@ import cookieParser from "cookie-parser";
 import jwt from "jsonwebtoken";
 import { TokenPayload } from "./interfaces";
 import { User } from "./entities/User";
-import { generateCookie } from "./utils/cookie";
-import { generateAccessToken, generateRefreshToken } from "./utils/jwt";
-import redis from "redis";
-import { promisify } from "util";
+import { redisClient } from "./redis/redis";
+import { userSignIn } from "./utils/userSignIn";
 
 const PORT = 4000;
 
 const app = express();
-
-export const redisClient = redis.createClient({
-  host: process.env.REDIS_HOSTNAME,
-  port: Number.parseInt(process.env.REDIS_PORT!),
-  password: process.env.REDIS_PASSWORD,
-});
-
-redisClient.on("connect", () => {
-  console.log("Connected to redis");
-});
-
-export const setRedisAsync = promisify(redisClient.set).bind(redisClient);
-export const expireRedisAsync = promisify(redisClient.expire).bind(redisClient);
-export const getRedisAsync = promisify(redisClient.get).bind(redisClient);
 
 async function startServer() {
   try {
@@ -99,22 +83,8 @@ async function startServer() {
       }
     });
 
-    //create new refresh token
-    const newRefreshToken = generateRefreshToken(user!);
-
-    //save new refresh token in redis
-    await setRedisAsync(newRefreshToken, newRefreshToken);
-    await expireRedisAsync(newRefreshToken, 60 * 60 * 24 * 7);
-
-    //set refresh token
-    generateCookie("rtk", res, newRefreshToken);
-
-    //generate access token
-    const token = generateAccessToken(user!);
-    const { exp } = jwt.verify(
-      token,
-      process.env.ACCESS_TOKEN_SECRET!
-    ) as TokenPayload;
+    //log user in
+    const { exp, jwt: token } = await userSignIn(user, res);
 
     return res.json({ ok: true, jwt: token, exp });
   });

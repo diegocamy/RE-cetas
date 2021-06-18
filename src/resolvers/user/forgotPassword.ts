@@ -1,7 +1,7 @@
 import { Resolver, Mutation, Arg } from "type-graphql";
 import { v4 } from "uuid";
 import { User } from "../../entities/User";
-import { expireRedisAsync, setRedisAsync } from "../../server";
+import { expire, set } from "../../redis/redis";
 import { forgotPassword } from "../../utils/constants";
 import { sendEmail } from "../../utils/sendEmail";
 
@@ -19,8 +19,8 @@ export class ForgotPasswordMutation {
     const token = v4();
 
     //save token in redis
-    await setRedisAsync(forgotPassword + token, user.id.toString());
-    await expireRedisAsync(forgotPassword + token, 60 * 60); //1hour
+    await set(forgotPassword + token, user.id.toString());
+    await expire(forgotPassword + token, 60 * 60); //1hour
 
     //send email
     sendEmail(user.email, token, "forgot-password");

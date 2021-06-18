@@ -2,10 +2,10 @@ import { Arg, Mutation, Resolver } from "type-graphql";
 import { User } from "../../entities/User";
 import bcrypt from "bcrypt";
 import { RegisterUserInput } from "../../input-types/RegisterUserInput";
-import { expireRedisAsync, setRedisAsync } from "../../server";
 import { sendEmail } from "../../utils/sendEmail";
 import { v4 } from "uuid";
 import { confirmAccount } from "../../utils/constants";
+import { expire, set } from "../../redis/redis";
 
 @Resolver()
 export class RegisterResolver {
@@ -41,8 +41,8 @@ export class RegisterResolver {
     const token = v4();
 
     //save token in redis
-    await setRedisAsync(confirmAccount + token, user.id.toString());
-    await expireRedisAsync(user.id.toString(), 60 * 60 * 24);
+    await set(confirmAccount + token, user.id.toString());
+    await expire(user.id.toString(), 60 * 60 * 24);
 
     //sendEmail
     await sendEmail(email, token, "confirm");

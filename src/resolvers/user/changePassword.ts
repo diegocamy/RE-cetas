@@ -2,11 +2,11 @@ import { Resolver, Mutation, Arg, Ctx } from "type-graphql";
 import { User } from "../../entities/User";
 import { ChangePasswordInput } from "../../input-types/ChangePasswordInput";
 import { JWTPayload } from "../../object-types/JWTPayload";
-import { getRedisAsync } from "../../server";
 import { forgotPassword } from "../../utils/constants";
 import bcrypt from "bcrypt";
 import { userSignIn } from "../../utils/userSignIn";
 import { MyContext } from "../../interfaces";
+import { get } from "../../redis/redis";
 
 @Resolver()
 export class ChangePassword {
@@ -16,7 +16,7 @@ export class ChangePassword {
     @Ctx() { res }: MyContext
   ): Promise<JWTPayload | null> {
     //check if token exists
-    const userId = await getRedisAsync(forgotPassword + token);
+    const userId = await get(forgotPassword + token);
 
     if (!userId) {
       return null;

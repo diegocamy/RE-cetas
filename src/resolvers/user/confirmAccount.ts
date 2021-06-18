@@ -2,15 +2,11 @@ import { Arg, Ctx, Mutation } from "type-graphql";
 import { User } from "../../entities/User";
 import { MyContext, TokenPayload } from "../../interfaces";
 import { JWTPayload } from "../../object-types/JWTPayload";
-import {
-  expireRedisAsync,
-  getRedisAsync,
-  redisClient,
-  setRedisAsync,
-} from "../../server";
 import { generateCookie } from "../../utils/cookie";
 import { generateAccessToken, generateRefreshToken } from "../../utils/jwt";
 import jwt from "jsonwebtoken";
+import { expire, get, redisClient, set } from "../../redis/redis";
+import { confirmAccount } from "../../utils/constants";
 
 export class ConfirmAccountResolver {
   @Mutation(() => JWTPayload, { nullable: true })
@@ -19,7 +15,7 @@ export class ConfirmAccountResolver {
     @Ctx() { res }: MyContext
   ): Promise<null | JWTPayload> {
     //check if token is in redis
-    const userId = await getRedisAsync("confirmation" + token);
+    const userId = await get(confirmAccount + token);
 
     if (!userId) {
       return null;
@@ -36,7 +32,7 @@ export class ConfirmAccountResolver {
     await user.save();
 
     //delete token from redis
-    redisClient.del("confirmation" + token);
+    redisClient.del(confirmAccount + token);
 
     //Log the user
 
@@ -44,8 +40,8 @@ export class ConfirmAccountResolver {
     const refreshToken = generateRefreshToken(user);
 
     //save refresh token in redis
-    await setRedisAsync(refreshToken, refreshToken);
-    await expireRedisAsync(refreshToken, 60 * 60 * 24 * 7);
+    await set(refreshToken, refreshToken);
+    await expire(refreshToken, 60 * 60 * 24 * 7);
 
     //generate cookie with refresh token
     generateCookie("rtk", res, refreshToken);
