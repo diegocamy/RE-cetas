@@ -1,51 +1,74 @@
 import nodemailer from "nodemailer";
+import SMTPConnection from "nodemailer/lib/smtp-connection";
+import SMTPTransport from "nodemailer/lib/smtp-transport";
 
-// async..await is not allowed in global scope, must use a wrapper
+const sendConfirmationEmail = (
+  transporter: nodemailer.Transporter<SMTPTransport.SentMessageInfo>,
+  email: string,
+  token: string
+): Promise<SMTPTransport.SentMessageInfo> => {
+  return transporter.sendMail({
+    from: '"RE-cetas" <recetas@zohomail.com>',
+    to: email,
+    subject: "Activa tu cuenta!",
+    text: "Activa tu cuenta para empezar",
+    html: `<a href="http://localhost:3000/user/confirm-account/${token}">Activa tu cuenta para empezar</a>`,
+  });
+};
+
+const sendForgotPasswordEmail = (
+  transporter: nodemailer.Transporter<SMTPTransport.SentMessageInfo>,
+  email: string,
+  token: string
+): Promise<SMTPTransport.SentMessageInfo> => {
+  return transporter.sendMail({
+    from: '"RE-cetas" <recetas@zohomail.com>',
+    to: email,
+    subject: "Reestablecer contraseña",
+    text: "Haz clic en el este enlace para reestablecer tu contraseña",
+    html: `<a href="http://localhost:3000/user/reset-password/${token}">Haz clic en el este enlace para reestablecer tu contraseña</a>`,
+  });
+};
+
 export async function sendEmail(
   email: string,
   token: string,
   type: "confirm" | "forgot-password"
 ) {
-  // Generate test SMTP service account from ethereal.email
-  // Only needed if you don't have a real mail account for testing
-  let testAccount = await nodemailer.createTestAccount();
+  const testAccount = await nodemailer.createTestAccount();
 
-  // create reusable transporter object using the default SMTP transport
-  let transporter = nodemailer.createTransport({
-    host: "smtp.ethereal.email",
-    port: 587,
-    secure: false, // true for 465, false for other ports
-    auth: {
-      user: testAccount.user, // generated ethereal user
-      pass: testAccount.pass, // generated ethereal password
+  const config: { [key: string]: SMTPConnection.Options } = {
+    development: {
+      host: "smtp.ethereal.email",
+      port: 587,
+      secure: false,
+      auth: {
+        user: testAccount.user,
+        pass: testAccount.pass,
+      },
     },
-  });
+    production: {
+      host: "smtp.zoho.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: "recetas@zohomail.com",
+        pass: process.env.ZOHO_PASSWORD,
+      },
+    },
+  };
 
-  // send mail with defined transport object
-  let info;
+  let transporter = nodemailer.createTransport(config[process.env.NODE_ENV!]);
+
+  let info: SMTPTransport.SentMessageInfo;
 
   if (type === "confirm") {
-    info = await transporter.sendMail({
-      from: '"Fred Foo 👻" <foo@example.com>', // sender address
-      to: email, // list of receivers
-      subject: "Hello ✔", // Subject line
-      text: "Hello world?", // plain text body
-      html: `<a href="http://localhost:3000/user/confirm-account/${token}">http://localhost:3000/user/confirm-account/${token}</a>`, // html body
-    });
+    info = await sendConfirmationEmail(transporter, email, token);
   } else {
-    info = await transporter.sendMail({
-      from: '"Fred Foo 👻" <foo@example.com>', // sender address
-      to: email, // list of receivers
-      subject: "Hello ✔", // Subject line
-      text: "Hello world?", // plain text body
-      html: `<a href="http://localhost:3000/user/reset-password/${token}">http://localhost:3000/user/reset-password/${token}</a>`, // html body
-    });
+    info = await sendForgotPasswordEmail(transporter, email, token);
   }
 
   console.log("Message sent: %s", info.messageId);
-  // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
 
-  // Preview only available when sending through an Ethereal account
   console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
-  // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
 }

@@ -5,7 +5,7 @@ import { RegisterUserInput } from "../../input-types/RegisterUserInput";
 import { sendEmail } from "../../utils/sendEmail";
 import { v4 } from "uuid";
 import { confirmAccount } from "../../utils/constants";
-import { expire, set } from "../../redis/redis";
+import { expire, redisClient, set } from "../../redis/redis";
 
 @Resolver()
 export class RegisterResolver {
@@ -45,32 +45,19 @@ export class RegisterResolver {
     await expire(user.id.toString(), 60 * 60 * 24);
 
     //sendEmail
-    await sendEmail(email, token, "confirm");
+    try {
+      await sendEmail(email, token, "confirm");
+    } catch (error) {
+      //delete user and confirmation token
+      await User.delete({ id: user.id });
+      redisClient.del(confirmAccount + token);
+
+      console.log(error);
+      throw new Error(
+        "Ha ocurrido un error al registrar tu cuenta, por favor, intentalo de nuevo mas tarde"
+      );
+    }
 
     return true;
-
-    // //create refresh token
-    // const refreshToken = generateRefreshToken(user);
-
-    // //save refresh token in redis
-    // await setRedisAsync(refreshToken, refreshToken);
-    // await expireRedisAsync(refreshToken, 60 * 60 * 24 * 7);
-
-    // //generate cookie with refresh token
-    // generateCookie("rtk", res, refreshToken);
-
-    // //generate access token
-    // const accessToken = generateAccessToken(user);
-
-    // //extract expire property from access token
-    // const { exp } = jwt.verify(
-    //   accessToken,
-    //   process.env.ACCESS_TOKEN_SECRET!
-    // ) as TokenPayload;
-
-    // return {
-    //   jwt: accessToken,
-    //   exp,
-    // };
   }
 }
