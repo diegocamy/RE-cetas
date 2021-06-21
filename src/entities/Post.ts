@@ -1,16 +1,22 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  BaseEntity,
+} from "typeorm";
 import { Field, ID, Int, ObjectType } from "type-graphql";
 import { User } from "./User";
 
 @ObjectType()
 @Entity()
-export class Post {
+export class Post extends BaseEntity {
   @Field((type) => ID)
   @PrimaryGeneratedColumn()
   id!: number;
 
   @Field()
-  @Column()
+  @Column({})
   title!: string;
 
   @Field()
@@ -18,7 +24,7 @@ export class Post {
   content!: string;
 
   @Field()
-  @Column()
+  @Column({ unique: true })
   slug!: string;
 
   @Field()

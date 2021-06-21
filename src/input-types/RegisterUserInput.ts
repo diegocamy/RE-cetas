@@ -10,7 +10,7 @@ export class RegisterUserInput extends PasswordType implements Partial<User> {
     message: "El nombre de usuario debe contener al menos 4 caracteres",
   })
   @MaxLength(15, {
-    message: "El nombre de usuario debe contener a menos 15 caracteres",
+    message: "El nombre de usuario debe contener como maximo 15 caracteres",
   })
   username!: string;
 
