@@ -5,6 +5,7 @@ import { User } from "../../entities/User";
 import { CreatePostInput } from "../../input-types/CreatePostInput";
 import { MyContext } from "../../interfaces";
 import { isAuth } from "../../middleware/isAuth";
+import { createSlug } from "../../utils/createSlug";
 
 @Resolver()
 export class CreatePostResolver {
@@ -18,7 +19,7 @@ export class CreatePostResolver {
 
     const loggedUser = await User.findOne({ where: { id: userId } });
 
-    const slug = title + "-" + v4().split("-")[0];
+    const slug = createSlug(title);
 
     const post = await Post.create({
       author: loggedUser,
