@@ -9,6 +9,8 @@ import { TokenPayload } from "./interfaces";
 import { User } from "./entities/User";
 import { redisClient } from "./redis/redis";
 import { userSignIn } from "./utils/userSignIn";
+import { ApolloServerLoaderPlugin } from "type-graphql-dataloader";
+import { getConnection } from "typeorm";
 
 const PORT = 4000;
 
@@ -104,6 +106,11 @@ async function startServer() {
 
       return err;
     },
+    plugins: [
+      ApolloServerLoaderPlugin({
+        typeormGetConnection: getConnection,
+      }),
+    ],
     context: ({ req, res }) => ({ req, res }),
   });
 

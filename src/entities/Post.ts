@@ -4,9 +4,13 @@ import {
   Column,
   ManyToOne,
   BaseEntity,
+  JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from "typeorm";
 import { Field, ID, Int, ObjectType } from "type-graphql";
 import { User } from "./User";
+import { TypeormLoader } from "type-graphql-dataloader";
 
 @ObjectType()
 @Entity()
@@ -35,7 +39,20 @@ export class Post extends BaseEntity {
   @Column({ default: 0, nullable: true })
   likes!: number;
 
+  @Field((type) => Date)
+  @CreateDateColumn()
+  created!: Date;
+
+  @Field((type) => Date)
+  @UpdateDateColumn()
+  updated!: Date;
+
+  @Column()
+  authorId!: number;
+
   @Field((type) => User)
   @ManyToOne((type) => User, (user) => user.posts, { cascade: true })
+  @TypeormLoader()
+  @JoinColumn({ name: "authorId" })
   author!: User;
 }

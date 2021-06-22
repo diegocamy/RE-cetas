@@ -10,6 +10,7 @@ import {
 import { Field, ID, ObjectType } from "type-graphql";
 import { Post } from "./Post";
 import { v4 } from "uuid";
+import { TypeormLoader } from "type-graphql-dataloader";
 
 @ObjectType()
 @Entity()
@@ -47,7 +48,8 @@ export class User extends BaseEntity {
   @Column({ default: false })
   confirmed!: boolean;
 
-  @Field((type) => Post)
+  @Field((type) => [Post])
   @OneToMany((type) => Post, (post) => post.author)
+  @TypeormLoader()
   posts!: Post[];
 }

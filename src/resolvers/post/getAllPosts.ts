@@ -2,9 +2,9 @@ import { Query, Resolver } from "type-graphql";
 import { Post } from "../../entities/Post";
 
 @Resolver(() => Post)
-export class GetAllPostsResolver {
+export class PostsResolver {
   @Query(() => [Post])
-  async getAllPosts(): Promise<Post[]> {
+  async posts(): Promise<Post[]> {
     return await Post.find();
   }
 }
