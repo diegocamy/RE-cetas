@@ -36,6 +36,6 @@ export class Post extends BaseEntity {
   likes!: number;
 
   @Field((type) => User)
-  @ManyToOne((type) => User, (user) => user.posts, { onDelete: "CASCADE" })
+  @ManyToOne((type) => User, (user) => user.posts, { cascade: true })
   author!: User;
 }
