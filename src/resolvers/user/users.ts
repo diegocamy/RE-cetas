@@ -3,6 +3,7 @@ import { groupBy } from "lodash";
 import { FieldResolver, Query, Resolver, Root } from "type-graphql";
 import { Loader } from "type-graphql-dataloader";
 import { getRepository, In } from "typeorm";
+import { Like } from "../../entities/Like";
 import { Post } from "../../entities/Post";
 import { User } from "../../entities/User";
 
@@ -24,20 +25,17 @@ export class UsersResolver {
   posts(@Root() root: User) {
     return (dataloader: DataLoader<number, Post[]>) => dataloader.load(root.id);
   }
-}
 
-/**
- *   @FieldResolver()
-  @Loader<number, Photo[]>(async (ids, { context }) => {  // batchLoadFn
-    const photos = await getRepository(Photo).find({
-      where: { user: { id: In([...ids]) } },
+  @FieldResolver()
+  @Loader<number, Like[]>(async (ids, { context }) => {
+    const likes = await getRepository(Like).find({
+      where: { userId: In([...ids]) },
+      relations: ["post"],
     });
-    const photosById = groupBy(photos, "userId");
-    return ids.map((id) => photosById[id] ?? []);
+    const likesByUserId = groupBy(likes, "userId");
+    return ids.map((id) => likesByUserId[id] ?? []);
   })
-  photos(@Root() root: User) {
-    return (dataloader: DataLoader<number, Photo[]>) =>
-      dataloader.load(root.id);
+  likedPosts(@Root() root: User) {
+    return (dataloader: DataLoader<number, Like[]>) => dataloader.load(root.id);
   }
 }
- */

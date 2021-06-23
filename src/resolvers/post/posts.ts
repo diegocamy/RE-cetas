@@ -1,7 +1,11 @@
-import { Arg, Query, Resolver } from "type-graphql";
-import { Like } from "typeorm";
+import DataLoader from "dataloader";
+import { Arg, FieldResolver, Query, Resolver, Root } from "type-graphql";
+import { Loader } from "type-graphql-dataloader";
+import { getRepository, In, Like } from "typeorm";
 import { Post } from "../../entities/Post";
 import { PostSearchInputType } from "../../input-types/PostSearchInput";
+import { Like as PostLike } from "../../entities/Like";
+import { groupBy } from "lodash";
 
 @Resolver(() => Post)
 export class PostsResolver {
@@ -31,5 +35,32 @@ export class PostsResolver {
     }
 
     return await Post.find({ order: { created: "DESC" } });
+  }
+
+  @FieldResolver()
+  @Loader<number, PostLike[]>(async (ids, { context }) => {
+    const likes = await getRepository(PostLike).find({
+      where: { postId: In([...ids]) },
+      relations: ["user"],
+    });
+    const likesByPostId = groupBy(likes, "postId");
+    return ids.map((id) => likesByPostId[id] ?? []);
+  })
+  likes(@Root() root: Post) {
+    return (dataloader: DataLoader<number, PostLike[]>) =>
+      dataloader.load(root.id);
+  }
+
+  @FieldResolver()
+  @Loader<number, number>(async (ids, { context }) => {
+    const likes = await getRepository(PostLike).find({
+      where: { postId: In([...ids]) },
+      relations: ["user"],
+    });
+    const likesByPostId = groupBy(likes, "postId");
+    return ids.map((id) => likesByPostId[id] ?? []).map((e) => e.length);
+  })
+  likeCount(@Root() root: Post) {
+    return (dataloader: DataLoader<number, number>) => dataloader.load(root.id);
   }
 }

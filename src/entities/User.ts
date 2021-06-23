@@ -11,6 +11,7 @@ import { Field, ID, ObjectType } from "type-graphql";
 import { Post } from "./Post";
 import { v4 } from "uuid";
 import { TypeormLoader } from "type-graphql-dataloader";
+import { Like } from "./Like";
 
 @ObjectType()
 @Entity()
@@ -52,4 +53,9 @@ export class User extends BaseEntity {
   @OneToMany((type) => Post, (post) => post.author)
   @TypeormLoader()
   posts!: Post[];
+
+  @Field((type) => [Like])
+  @OneToMany((type) => Like, (like) => like.userId)
+  @TypeormLoader()
+  likedPosts!: Like[];
 }
