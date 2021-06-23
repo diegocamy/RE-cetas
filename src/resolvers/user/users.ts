@@ -38,4 +38,16 @@ export class UsersResolver {
   likedPosts(@Root() root: User) {
     return (dataloader: DataLoader<number, Like[]>) => dataloader.load(root.id);
   }
+
+  @FieldResolver()
+  @Loader<number, number>(async (ids, { context }) => {
+    const posts = await getRepository(Post).find({
+      where: { author: { id: In([...ids]) } },
+    });
+    const postsByUserId = groupBy(posts, "authorId");
+    return ids.map((id) => postsByUserId[id] ?? []).map((e) => e.length);
+  })
+  postCount(@Root() root: User) {
+    return (dataloader: DataLoader<number, number>) => dataloader.load(root.id);
+  }
 }

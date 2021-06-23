@@ -7,7 +7,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { Field, ID, ObjectType } from "type-graphql";
+import { Field, ID, Int, ObjectType } from "type-graphql";
 import { Post } from "./Post";
 import { v4 } from "uuid";
 import { TypeormLoader } from "type-graphql-dataloader";
@@ -58,4 +58,7 @@ export class User extends BaseEntity {
   @OneToMany((type) => Like, (like) => like.userId)
   @TypeormLoader()
   likedPosts!: Like[];
+
+  @Field((type) => Int)
+  postCount!: number;
 }
