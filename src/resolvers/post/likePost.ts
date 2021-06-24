@@ -6,7 +6,7 @@ import { isAuth } from "../../middleware/isAuth";
 
 @Resolver((of) => Post)
 export class LikePostResolver {
-  @Mutation()
+  @Mutation(()=>Boolean)
   @UseMiddleware(isAuth)
   async likepost(
     @Ctx() { payload }: MyContext,

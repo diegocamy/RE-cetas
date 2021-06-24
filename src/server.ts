@@ -11,10 +11,16 @@ import { redisClient } from "./redis/redis";
 import { userSignIn } from "./utils/userSignIn";
 import { ApolloServerLoaderPlugin } from "type-graphql-dataloader";
 import { getConnection } from "typeorm";
+import cors,{CorsOptions} from 'cors'
 
 const PORT = 4000;
 
 const app = express();
+
+const corsOptions: CorsOptions  = {
+  origin:'http://localhost:3000',
+  credentials: true
+}
 
 async function startServer() {
   try {
@@ -30,6 +36,8 @@ async function startServer() {
     ],
     dateScalarMode: "timestamp",
   });
+
+  app.use(cors(corsOptions))
 
   app.post("/refresh_token", cookieParser(), async (req, res) => {
     //extract refresh token from cookie

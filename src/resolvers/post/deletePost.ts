@@ -5,7 +5,7 @@ import { isAuth } from "../../middleware/isAuth";
 
 @Resolver(of => Post)
 export class DeletePost{
-  @Mutation()
+  @Mutation(()=>Boolean)
   @UseMiddleware(isAuth)
   async DeletePost(@Arg("slug") slug:string,@Ctx() {payload}:MyContext): Promise<boolean>{
     if(!payload) throw new Error('Unauthorized')
