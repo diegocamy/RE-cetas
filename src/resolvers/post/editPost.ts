@@ -22,7 +22,7 @@ export class EditPostResolver {
 
     if (!post) throw new Error("La publicación no existe");
 
-    const authorId = post.author as unknown as number;
+    const authorId = post.authorId;
 
     //check if user is post author
     if (payload.userId != authorId) throw new Error("Unauthorized");
