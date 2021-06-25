@@ -1,0 +1,32 @@
+query GetUsers {
+  users {
+    username
+    id
+    email
+    bio
+    created
+    updated
+    posts {
+      id
+      title
+      content
+      slug
+      picture
+      created
+      updated
+      likeCount
+    }
+    likedPosts {
+      post {
+        id
+        title
+        content
+        slug
+        picture
+        created
+        updated
+      }
+    }
+    postCount
+  }
+}
