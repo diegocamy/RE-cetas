@@ -5,6 +5,7 @@ import {
   NavLink,
 } from "react-router-dom";
 import Home from "./Home";
+import Register from "./pages/Register";
 
 function Routes() {
   return (
@@ -30,7 +31,7 @@ function Routes() {
       <Switch>
         <Route path="/" exact component={Home} />
         <Route path="/login" render={() => <h1>Login</h1>} />
-        <Route path="/register" render={() => <h1>Register</h1>} />
+        <Route path="/register" component={Register} />
       </Switch>
     </Router>
   );

@@ -35,10 +35,6 @@ async function startServer() {
       __dirname + "/resolvers/**/*.{ts,js}",
     ],
     dateScalarMode: "timestamp",
-    emitSchemaFile: {
-      path: "./src/schema/schema.gql",
-      commentDescriptions: true,
-    },
   });
 
   app.use(cors(corsOptions));

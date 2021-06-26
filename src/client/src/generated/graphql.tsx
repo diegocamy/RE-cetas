@@ -163,86 +163,49 @@ export type User = {
   postCount: Scalars['Int'];
 };
 
-export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
+export type RegisterMutationVariables = Exact<{
+  email: Scalars['String'];
+  password: Scalars['String'];
+  username: Scalars['String'];
+}>;
 
 
-export type GetUsersQuery = (
-  { __typename?: 'Query' }
-  & { users: Array<(
-    { __typename?: 'User' }
-    & Pick<User, 'username' | 'id' | 'email' | 'bio' | 'created' | 'updated' | 'postCount'>
-    & { posts: Array<(
-      { __typename?: 'Post' }
-      & Pick<Post, 'id' | 'title' | 'content' | 'slug' | 'picture' | 'created' | 'updated' | 'likeCount'>
-    )>, likedPosts: Array<(
-      { __typename?: 'Like' }
-      & { post: (
-        { __typename?: 'Post' }
-        & Pick<Post, 'id' | 'title' | 'content' | 'slug' | 'picture' | 'created' | 'updated'>
-      ) }
-    )> }
-  )> }
+export type RegisterMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'register'>
 );
 
 
-export const GetUsersDocument = gql`
-    query GetUsers {
-  users {
-    username
-    id
-    email
-    bio
-    created
-    updated
-    posts {
-      id
-      title
-      content
-      slug
-      picture
-      created
-      updated
-      likeCount
-    }
-    likedPosts {
-      post {
-        id
-        title
-        content
-        slug
-        picture
-        created
-        updated
-      }
-    }
-    postCount
-  }
+export const RegisterDocument = gql`
+    mutation Register($email: String!, $password: String!, $username: String!) {
+  register(data: {email: $email, password: $password, username: $username})
 }
     `;
+export type RegisterMutationFn = Apollo.MutationFunction<RegisterMutation, RegisterMutationVariables>;
 
 /**
- * __useGetUsersQuery__
+ * __useRegisterMutation__
  *
- * To run a query within a React component, call `useGetUsersQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
+ * To run a mutation, you first call `useRegisterMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRegisterMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
  *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const { data, loading, error } = useGetUsersQuery({
+ * const [registerMutation, { data, loading, error }] = useRegisterMutation({
  *   variables: {
+ *      email: // value for 'email'
+ *      password: // value for 'password'
+ *      username: // value for 'username'
  *   },
  * });
  */
-export function useGetUsersQuery(baseOptions?: Apollo.QueryHookOptions<GetUsersQuery, GetUsersQueryVariables>) {
+export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<RegisterMutation, RegisterMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetUsersQuery, GetUsersQueryVariables>(GetUsersDocument, options);
+        return Apollo.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument, options);
       }
-export function useGetUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUsersQuery, GetUsersQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetUsersQuery, GetUsersQueryVariables>(GetUsersDocument, options);
-        }
-export type GetUsersQueryHookResult = ReturnType<typeof useGetUsersQuery>;
-export type GetUsersLazyQueryHookResult = ReturnType<typeof useGetUsersLazyQuery>;
-export type GetUsersQueryResult = Apollo.QueryResult<GetUsersQuery, GetUsersQueryVariables>;
+export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
+export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
+export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;

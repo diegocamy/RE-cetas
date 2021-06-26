@@ -6,6 +6,7 @@
   "scripts": {
     "build": "tsc",
     "dev": "nodemon",
+    "dev:client": "cd ./src/client && npm run start",
     "typeorm": "ts-node ./node_modules/typeorm/cli.js",
     "gen": "graphql-codegen --config codegen.yml"
   },
