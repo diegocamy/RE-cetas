@@ -163,6 +163,19 @@ export type User = {
   postCount: Scalars['Int'];
 };
 
+export type ConfirmAccountMutationVariables = Exact<{
+  token: Scalars['String'];
+}>;
+
+
+export type ConfirmAccountMutation = (
+  { __typename?: 'Mutation' }
+  & { confirmAccount?: Maybe<(
+    { __typename?: 'JWTPayload' }
+    & Pick<JwtPayload, 'jwt'>
+  )> }
+);
+
 export type RegisterMutationVariables = Exact<{
   email: Scalars['String'];
   password: Scalars['String'];
@@ -176,6 +189,39 @@ export type RegisterMutation = (
 );
 
 
+export const ConfirmAccountDocument = gql`
+    mutation ConfirmAccount($token: String!) {
+  confirmAccount(token: $token) {
+    jwt
+  }
+}
+    `;
+export type ConfirmAccountMutationFn = Apollo.MutationFunction<ConfirmAccountMutation, ConfirmAccountMutationVariables>;
+
+/**
+ * __useConfirmAccountMutation__
+ *
+ * To run a mutation, you first call `useConfirmAccountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useConfirmAccountMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [confirmAccountMutation, { data, loading, error }] = useConfirmAccountMutation({
+ *   variables: {
+ *      token: // value for 'token'
+ *   },
+ * });
+ */
+export function useConfirmAccountMutation(baseOptions?: Apollo.MutationHookOptions<ConfirmAccountMutation, ConfirmAccountMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ConfirmAccountMutation, ConfirmAccountMutationVariables>(ConfirmAccountDocument, options);
+      }
+export type ConfirmAccountMutationHookResult = ReturnType<typeof useConfirmAccountMutation>;
+export type ConfirmAccountMutationResult = Apollo.MutationResult<ConfirmAccountMutation>;
+export type ConfirmAccountMutationOptions = Apollo.BaseMutationOptions<ConfirmAccountMutation, ConfirmAccountMutationVariables>;
 export const RegisterDocument = gql`
     mutation Register($email: String!, $password: String!, $username: String!) {
   register(data: {email: $email, password: $password, username: $username})

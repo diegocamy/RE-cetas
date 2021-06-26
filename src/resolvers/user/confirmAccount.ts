@@ -17,15 +17,11 @@ export class ConfirmAccountResolver {
     //check if token is in redis
     const userId = await get(confirmAccount + token);
 
-    if (!userId) {
-      return null;
-    }
+    if (!userId) throw new Error("Error al confirmar la cuenta");
 
     const user = await User.findOne({ where: { id: Number.parseInt(userId) } });
 
-    if (!user) {
-      return null;
-    }
+    if (!user) throw new Error("Error al confirmar la cuenta");
 
     user.confirmed = true;
 
