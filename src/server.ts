@@ -19,6 +19,7 @@ const app = express();
 
 const corsOptions: CorsOptions = {
   origin: "http://localhost:3000",
+  methods: ["POST"],
   credentials: true,
 };
 
@@ -122,7 +123,7 @@ async function startServer() {
     context: ({ req, res }) => ({ req, res }),
   });
 
-  server.applyMiddleware({ app });
+  server.applyMiddleware({ app, cors: false });
 
   app.get("/", (req, res) => {
     res.json({

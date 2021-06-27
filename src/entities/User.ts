@@ -43,7 +43,7 @@ export class User extends BaseEntity {
   @UpdateDateColumn()
   updated!: Date;
 
-  @Column({ default: v4() })
+  @Column()
   token_version!: string;
 
   @Column({ default: false })

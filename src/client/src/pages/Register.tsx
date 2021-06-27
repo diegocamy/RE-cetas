@@ -3,7 +3,7 @@ import { useRegisterMutation } from "../generated/graphql";
 
 function Register() {
   const [success, setSuccess] = useState("");
-  const [register, { error }] = useRegisterMutation();
+  const [register, { error, loading }] = useRegisterMutation();
   const usernameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
@@ -63,7 +63,9 @@ function Register() {
           ref={passwordRef}
         />
         <br />
-        <button type="submit">Registrarse</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Registrando..." : "Registrarse"}
+        </button>
       </form>
       {error && <p>{error.message}</p>}
       {success && <p>{success}</p>}

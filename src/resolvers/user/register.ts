@@ -31,6 +31,7 @@ export class RegisterResolver {
         username,
         email,
         password: hashedPassword,
+        token_version: v4(),
       }).save();
     } catch (error) {
       console.log(error);

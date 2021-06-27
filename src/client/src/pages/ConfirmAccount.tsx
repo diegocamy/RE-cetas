@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useConfirmAccountMutation } from "../generated/graphql";
 import { useParams, useHistory } from "react-router";
+import { setAccessToken } from "../auth/jwt";
 
 interface Params {
   token: string;
@@ -20,7 +21,8 @@ function ConfirmAccount() {
 
         if (!resp) return;
 
-        console.log(resp.jwt);
+        //set access token
+        setAccessToken(resp.jwt);
 
         history.replace("/");
       } catch (error) {
