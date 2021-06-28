@@ -33,5 +33,6 @@ export const userSignIn = async (
   return {
     jwt: accessToken,
     exp,
+    user,
   };
 };

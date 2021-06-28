@@ -1,4 +1,4 @@
-import React, { createContext } from "react";
+import React from "react";
 import ReactDOM from "react-dom";
 import {
   ApolloClient,
@@ -8,7 +8,6 @@ import {
   ApolloLink,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
-import { onError } from "@apollo/client/link/error";
 import "./index.css";
 import App from "./App";
 import { getAccessToken, setAccessToken } from "./auth/jwt";

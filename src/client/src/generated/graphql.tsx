@@ -31,6 +31,7 @@ export type JwtPayload = {
   __typename?: 'JWTPayload';
   jwt: Scalars['String'];
   exp: Scalars['Int'];
+  user: User;
 };
 
 export type Like = {
@@ -188,6 +189,10 @@ export type LoginMutation = (
   & { login: (
     { __typename?: 'JWTPayload' }
     & Pick<JwtPayload, 'jwt'>
+    & { user: (
+      { __typename?: 'User' }
+      & Pick<User, 'username' | 'email'>
+    ) }
   ) }
 );
 
@@ -252,6 +257,10 @@ export const LoginDocument = gql`
     mutation Login($email: String!, $password: String!) {
   login(email: $email, password: $password) {
     jwt
+    user {
+      username
+      email
+    }
   }
 }
     `;

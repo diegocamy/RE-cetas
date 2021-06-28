@@ -54,6 +54,7 @@ export class ConfirmAccountResolver {
     return {
       jwt: accessToken,
       exp,
+      user,
     };
   }
 }

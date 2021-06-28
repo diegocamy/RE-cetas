@@ -55,6 +55,7 @@ export class LoginResolver {
     return {
       jwt: accessToken.jwt,
       exp: accessToken.exp,
+      user: foundUser,
     };
   }
 }

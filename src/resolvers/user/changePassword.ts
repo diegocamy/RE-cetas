@@ -47,6 +47,7 @@ export class ChangePassword {
     return {
       jwt: accessToken.jwt,
       exp: accessToken.exp,
+      user,
     };
   }
 }
