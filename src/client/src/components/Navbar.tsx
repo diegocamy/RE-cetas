@@ -1,11 +1,34 @@
-import { NavLink } from "react-router-dom";
-import { useMeQuery } from "../generated/graphql";
+import { NavLink, useHistory } from "react-router-dom";
+import { setAccessToken } from "../auth/jwt";
+import { useMeQuery, useLogoutMutation } from "../generated/graphql";
 
 function Navbar() {
+  const history = useHistory();
   const { data, loading } = useMeQuery();
+  const [logout, { client }] = useLogoutMutation();
   let body: JSX.Element | null;
 
-  const handleClick = () => {};
+  const handleClick = async () => {
+    try {
+      const { data } = await logout();
+      if (!data) {
+        return null;
+      }
+      setAccessToken(data.logout.jwt);
+      if (!client) {
+        return null;
+      }
+
+      //TODO: CLEAR CACHE
+
+      // client.clearStore().then(() => {
+      //   client.resetStore();
+      //   history.push("/login");
+      // });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   if (loading) {
     body = null;

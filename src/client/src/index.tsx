@@ -22,8 +22,8 @@ const authLink = setContext(async (_, { headers }) => {
   // get the authentication token from local storage if it exists
   let token = getAccessToken();
 
-  if (token) {
-    try {
+  try {
+    if (token) {
       //check if token is expiring in the next minute
       const { exp }: { iat: number; exp: number; userId: number } =
         decode(token);
@@ -44,9 +44,10 @@ const authLink = setContext(async (_, { headers }) => {
         //set current token
         token = getAccessToken();
       }
-    } catch (error) {
-      console.log(error);
     }
+  } catch (error) {
+    console.log(error);
+    return;
   }
 
   // return the headers to the context so httpLink can read them
