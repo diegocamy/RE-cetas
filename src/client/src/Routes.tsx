@@ -4,7 +4,7 @@ import {
   Switch,
   NavLink,
 } from "react-router-dom";
-import Home from "./Home";
+import Home from "./pages/Home";
 import ConfirmAccount from "./pages/ConfirmAccount";
 import Login from "./pages/Login";
 import Me from "./pages/Me";

@@ -23,14 +23,14 @@ function Register() {
       setSuccess(
         "Usuario registrado con exito, por favor, verifique su correo electrónico."
       );
+
+      usernameRef.current!.value = "";
+      emailRef.current!.value = "";
+      passwordRef.current!.value = "";
     } catch (error) {
       setSuccess("");
       return;
     }
-
-    usernameRef.current!.value = "";
-    emailRef.current!.value = "";
-    passwordRef.current!.value = "";
   }
 
   return (
