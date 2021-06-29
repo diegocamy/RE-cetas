@@ -1,5 +1,9 @@
 import { useEffect } from "react";
-import { useConfirmAccountMutation } from "../generated/graphql";
+import {
+  MeDocument,
+  MeQuery,
+  useConfirmAccountMutation,
+} from "../generated/graphql";
 import { useParams, useHistory } from "react-router";
 import { setAccessToken } from "../auth/jwt";
 
@@ -8,7 +12,7 @@ interface Params {
 }
 
 function ConfirmAccount() {
-  const [confirm, { loading, error }] = useConfirmAccountMutation();
+  const [confirm] = useConfirmAccountMutation();
   const params: Params = useParams();
   const history = useHistory();
 
@@ -16,7 +20,22 @@ function ConfirmAccount() {
     const confirmAccount = async () => {
       const { token } = params;
       try {
-        const { data } = await confirm({ variables: { token } });
+        //confirm account
+        const { data } = await confirm({
+          variables: { token },
+
+          //log user in
+          update: (cache, { data }) => {
+            if (!data) {
+              return null;
+            }
+
+            cache.writeQuery<MeQuery>({
+              query: MeDocument,
+              data: { me: data.confirmAccount!.user },
+            });
+          },
+        });
         const resp = data?.confirmAccount;
 
         if (!resp) return;
@@ -24,20 +43,17 @@ function ConfirmAccount() {
         //set access token
         setAccessToken(resp.jwt);
 
-        history.replace("/");
+        //redirect to profile page
+        history.replace("/me");
       } catch (error) {
-        setTimeout(() => {
-          history.push("/");
-        }, 3000);
+        history.push("/");
+
         return;
       }
     };
 
     confirmAccount();
   }, [confirm, params, history]);
-
-  if (loading) return <h1>loading...</h1>;
-  if (error) return <h1>{error.message}</h1>;
 
   return null;
 }

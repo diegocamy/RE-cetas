@@ -1,13 +1,17 @@
 import { useMeQuery } from "../generated/graphql";
 import { useHistory } from "react-router-dom";
+import { useEffect } from "react";
 
 function Me() {
   const history = useHistory();
   const { data, loading, error } = useMeQuery({ fetchPolicy: "network-only" });
 
-  if (error && error.message === "Unauthorized") {
-    history.push("/login");
-  }
+  useEffect(() => {
+    if (error && error.message === "Unauthorized") {
+      history.push("/login");
+    }
+  }, [error, history]);
+
   if (error) {
     return <h1>error</h1>;
   }

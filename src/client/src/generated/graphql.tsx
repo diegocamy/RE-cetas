@@ -31,7 +31,7 @@ export type JwtPayload = {
   __typename?: 'JWTPayload';
   jwt: Scalars['String'];
   exp: Scalars['Int'];
-  user?: Maybe<User>;
+  user: User;
 };
 
 export type Like = {
@@ -51,7 +51,7 @@ export type Mutation = {
   forgotPassword: Scalars['Boolean'];
   invalidateRefreshTokens: Scalars['Boolean'];
   login: JwtPayload;
-  logout: JwtPayload;
+  logout: Scalars['Boolean'];
   register: Scalars['Boolean'];
 };
 
@@ -176,6 +176,10 @@ export type ConfirmAccountMutation = (
   & { confirmAccount?: Maybe<(
     { __typename?: 'JWTPayload' }
     & Pick<JwtPayload, 'jwt'>
+    & { user: (
+      { __typename?: 'User' }
+      & Pick<User, 'email' | 'username'>
+    ) }
   )> }
 );
 
@@ -190,10 +194,10 @@ export type LoginMutation = (
   & { login: (
     { __typename?: 'JWTPayload' }
     & Pick<JwtPayload, 'jwt'>
-    & { user?: Maybe<(
+    & { user: (
       { __typename?: 'User' }
       & Pick<User, 'username' | 'email'>
-    )> }
+    ) }
   ) }
 );
 
@@ -202,10 +206,7 @@ export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 export type LogoutMutation = (
   { __typename?: 'Mutation' }
-  & { logout: (
-    { __typename?: 'JWTPayload' }
-    & Pick<JwtPayload, 'jwt'>
-  ) }
+  & Pick<Mutation, 'logout'>
 );
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
@@ -236,6 +237,10 @@ export const ConfirmAccountDocument = gql`
     mutation ConfirmAccount($token: String!) {
   confirmAccount(token: $token) {
     jwt
+    user {
+      email
+      username
+    }
   }
 }
     `;
@@ -305,9 +310,7 @@ export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
 export const LogoutDocument = gql`
     mutation Logout {
-  logout {
-    jwt
-  }
+  logout
 }
     `;
 export type LogoutMutationFn = Apollo.MutationFunction<LogoutMutation, LogoutMutationVariables>;

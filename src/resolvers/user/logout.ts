@@ -1,17 +1,14 @@
 import { Ctx, Mutation, Resolver } from "type-graphql";
 import { User } from "../../entities/User";
 import { MyContext } from "../../interfaces";
-import { JWTPayload } from "../../object-types/JWTPayload";
+import { generateCookie } from "../../utils/cookie";
 
 @Resolver((of) => User)
 export class LogoutResolver {
-  @Mutation(() => JWTPayload)
+  @Mutation(() => Boolean)
   async logout(@Ctx() { res }: MyContext) {
-    res.clearCookie("rtk");
+    generateCookie("rtk", res, "");
 
-    return {
-      exp: 0,
-      jwt: "",
-    };
+    return true;
   }
 }

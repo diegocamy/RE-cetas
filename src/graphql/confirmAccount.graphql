@@ -1,5 +1,9 @@
 mutation ConfirmAccount($token: String!) {
   confirmAccount(token: $token) {
     jwt
+    user {
+      email
+      username
+    }
   }
 }

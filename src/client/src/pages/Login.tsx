@@ -34,7 +34,7 @@ function Login() {
 
       setAccessToken(data?.login.jwt!);
 
-      return history.replace("/");
+      return history.replace("/me");
     } catch (error) {
       console.log(error);
       return;
