@@ -12,7 +12,9 @@ function Navbar() {
       await logout();
       setAccessToken("");
       await client.resetStore();
-    } catch (error) {}
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   if (loading) {
@@ -52,6 +54,9 @@ function Navbar() {
         </li>
         <li>
           <NavLink to="/me">Me</NavLink>
+        </li>
+        <li>
+          <NavLink to="/protected">Protected</NavLink>
         </li>
         {body}
       </ul>
