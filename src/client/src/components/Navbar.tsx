@@ -1,68 +1,72 @@
 import { useContext } from "react";
+import { Flex, Heading, Link, Spacer, Stack, Text } from "@chakra-ui/react";
 import { NavLink } from "react-router-dom";
 import { AuthContext } from "../App";
-import { setAccessToken } from "../auth/jwt";
-import { useLogoutMutation } from "../generated/graphql";
+import Logout from "./Logout";
 
 function Navbar() {
-  const { user, setUser } = useContext(AuthContext);
-  const [logout, { client }] = useLogoutMutation();
-  let body: JSX.Element | null;
-
-  const handleClick = async () => {
-    try {
-      await logout({
-        update: async (cache, { data }) => {
-          setAccessToken("");
-          setUser("");
-        },
-      });
-      await client.resetStore();
-    } catch (error) {}
-  };
-
-  if (user) {
-    body = (
-      <>
-        <li>Welcome, {user}</li>
-        <li>
-          <button onClick={handleClick}>Log Out</button>
-        </li>
-      </>
-    );
-  } else {
-    body = (
-      <>
-        <li>
-          <NavLink to="/login">Login</NavLink>
-        </li>
-        <li>
-          <NavLink to="/register">Register</NavLink>
-        </li>
-      </>
-    );
-  }
+  const { user } = useContext(AuthContext);
 
   return (
-    <header>
-      <ul
-        style={{
-          display: "flex",
-          listStyle: "none",
-        }}
+    <Flex bgColor="white" shadow="sm" align="center">
+      <Link
+        to={user ? "/me" : "/"}
+        _hover={{ textDecoration: "none" }}
+        as={NavLink}
+        ml="8"
+        my="3"
+        fontWeight="semibold"
       >
-        <li>
-          <NavLink to="/">Home</NavLink>
-        </li>
-        <li>
-          <NavLink to="/me">Me</NavLink>
-        </li>
-        <li>
-          <NavLink to="/protected">Protected</NavLink>
-        </li>
-        {body}
-      </ul>
-    </header>
+        <Heading
+          display="inline"
+          bg="orange.500"
+          color="white"
+          borderRadius="md"
+          px="2"
+          py="1"
+          size="md"
+        >
+          RE
+        </Heading>
+        <Heading display="inline" color="orange.500" size="md">
+          cetas
+        </Heading>
+      </Link>
+      <Spacer />
+      {user ? (
+        <Stack direction="row" align="center" mr="8">
+          <Text>Hola, {user}</Text>
+          <Logout />
+        </Stack>
+      ) : (
+        <>
+          <Link
+            to="/login"
+            bg="gray.100"
+            color="black"
+            borderRadius="sm"
+            mr="2"
+            p="2"
+            _hover={{ textDecoration: "none", backgroundColor: "gray.200" }}
+            as={NavLink}
+          >
+            Ingresar
+          </Link>
+          <Link
+            to="/register"
+            bg="orange.500"
+            color="white"
+            borderRadius="sm"
+            mr="8"
+            p="2"
+            _hover={{ textDecoration: "none", backgroundColor: "orange.400" }}
+            as={NavLink}
+          >
+            Registrarse
+          </Link>
+        </>
+      )}
+    </Flex>
   );
 }
 

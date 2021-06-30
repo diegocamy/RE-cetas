@@ -13,6 +13,7 @@ import App from "./App";
 import { getAccessToken, setAccessToken } from "./auth/jwt";
 import decode from "jwt-decode";
 import { onError } from "@apollo/client/link/error";
+import { ChakraProvider } from "@chakra-ui/react";
 
 const httpLink = createHttpLink({
   uri: "http://localhost:4000/graphql",
@@ -73,7 +74,9 @@ const client = new ApolloClient({
 ReactDOM.render(
   <React.StrictMode>
     <ApolloProvider client={client}>
-      <App />
+      <ChakraProvider>
+        <App />
+      </ChakraProvider>
     </ApolloProvider>
   </React.StrictMode>,
   document.getElementById("root")
