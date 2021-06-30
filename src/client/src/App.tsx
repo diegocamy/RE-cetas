@@ -1,9 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, createContext } from "react";
 import { setAccessToken } from "./auth/jwt";
 import Routes from "./Routes";
 
+interface IContext {
+  user: string;
+  setUser: (value: React.SetStateAction<string>) => void;
+}
+
+export const AuthContext = createContext<IContext>({ user: "", setUser() {} });
+
 function App() {
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState("");
 
   useEffect(() => {
     fetch("http://localhost:4000/refresh_token", {
@@ -13,6 +21,7 @@ function App() {
       .then((res) => res.json())
       .then((token) => {
         setAccessToken(token.jwt);
+        setUser(token.user);
         setLoading(false);
       })
       .catch((e) => console.log(e));
@@ -20,7 +29,11 @@ function App() {
 
   if (loading) return null;
 
-  return <Routes />;
+  return (
+    <AuthContext.Provider value={{ user, setUser }}>
+      <Routes />
+    </AuthContext.Provider>
+  );
 }
 
 export default App;

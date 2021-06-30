@@ -97,7 +97,7 @@ async function startServer() {
     //log user in
     const { exp, jwt: token } = await userSignIn(user, res);
 
-    return res.json({ ok: true, jwt: token, exp });
+    return res.json({ ok: true, jwt: token, exp, user: user.username });
   });
 
   const server = new ApolloServer({

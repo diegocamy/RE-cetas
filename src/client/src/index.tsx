@@ -12,6 +12,7 @@ import "./index.css";
 import App from "./App";
 import { getAccessToken, setAccessToken } from "./auth/jwt";
 import decode from "jwt-decode";
+import { onError } from "@apollo/client/link/error";
 
 const httpLink = createHttpLink({
   uri: "http://localhost:4000/graphql",
@@ -22,32 +23,26 @@ const authLink = setContext(async (_, { headers }) => {
   // get the authentication token from local storage if it exists
   let token = getAccessToken();
 
-  try {
-    if (token) {
-      //check if token is expiring in the next minute
-      const { exp }: { iat: number; exp: number; userId: number } =
-        decode(token);
+  if (token) {
+    //check if token is expiring in the next minute
+    const { exp }: { iat: number; exp: number; userId: number } = decode(token);
 
-      const currentTime = new Date().getTime() / 1000;
+    const currentTime = new Date().getTime() / 1000;
 
-      if (exp - currentTime < 60) {
-        //get new access token
-        const data = await fetch("http://localhost:4000/refresh_token", {
-          method: "POST",
-          credentials: "include",
-        });
-        const accessToken = await data.json();
+    if (exp - currentTime < 60) {
+      //get new access token
+      const data = await fetch("http://localhost:4000/refresh_token", {
+        method: "POST",
+        credentials: "include",
+      });
+      const accessToken = await data.json();
 
-        //set new token
-        setAccessToken(accessToken.jwt);
+      //set new token
+      setAccessToken(accessToken.jwt);
 
-        //set current token
-        token = getAccessToken();
-      }
+      //set current token
+      token = getAccessToken();
     }
-  } catch (error) {
-    console.log(error);
-    return;
   }
 
   // return the headers to the context so httpLink can read them
@@ -59,9 +54,20 @@ const authLink = setContext(async (_, { headers }) => {
   };
 });
 
+// Log any GraphQL errors or network error that occurred
+const errorLink = onError(({ graphQLErrors, networkError }) => {
+  if (graphQLErrors)
+    graphQLErrors.map(({ message, locations, path }) =>
+      console.log(
+        `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
+      )
+    );
+  if (networkError) console.log(`[Network error]: ${networkError}`);
+});
+
 const client = new ApolloClient({
   cache: new InMemoryCache(),
-  link: ApolloLink.from([authLink, httpLink]),
+  link: ApolloLink.from([errorLink, authLink, httpLink]),
 });
 
 ReactDOM.render(

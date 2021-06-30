@@ -1,59 +1,39 @@
-import { useEffect } from "react";
-import {
-  MeDocument,
-  MeQuery,
-  useConfirmAccountMutation,
-} from "../generated/graphql";
+import { useEffect, useContext } from "react";
+import { useConfirmAccountMutation } from "../generated/graphql";
 import { useParams, useHistory } from "react-router";
 import { setAccessToken } from "../auth/jwt";
+import { AuthContext } from "../App";
 
 interface Params {
   token: string;
 }
 
 function ConfirmAccount() {
-  const [confirm] = useConfirmAccountMutation();
-  const params: Params = useParams();
+  const { setUser } = useContext(AuthContext);
+  const [confirm, { error }] = useConfirmAccountMutation();
+  const params = useParams<Params>();
   const history = useHistory();
 
   useEffect(() => {
-    const confirmAccount = async () => {
-      const { token } = params;
-      try {
-        //confirm account
-        const { data } = await confirm({
-          variables: { token },
+    confirm({ variables: { token: params.token } })
+      .then((data) => {
+        const jwt = data.data!.confirmAccount!.jwt;
+        const username = data.data!.confirmAccount!.user.username;
 
-          //log user in
-          update: (cache, { data }) => {
-            if (!data) {
-              return null;
-            }
+        setAccessToken(jwt);
+        setUser(username);
 
-            cache.writeQuery<MeQuery>({
-              query: MeDocument,
-              data: { me: data.confirmAccount!.user },
-            });
-          },
-        });
-        const resp = data?.confirmAccount;
-
-        if (!resp) return;
-
-        //set access token
-        setAccessToken(resp.jwt);
-
-        //redirect to profile page
         history.replace("/me");
-      } catch (error) {
-        history.push("/");
+      })
+      .catch((e) => {});
+  }, [confirm, history, params.token, setUser]);
 
-        return;
-      }
-    };
-
-    confirmAccount();
-  }, [confirm, params, history]);
+  if (error) {
+    setTimeout(() => {
+      history.replace("/");
+    }, 2000);
+    return <p>{error && error.message}, volviendo a la página principal...</p>;
+  }
 
   return null;
 }

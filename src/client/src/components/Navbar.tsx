@@ -1,28 +1,30 @@
+import { useContext } from "react";
 import { NavLink } from "react-router-dom";
+import { AuthContext } from "../App";
 import { setAccessToken } from "../auth/jwt";
-import { useMeQuery, useLogoutMutation } from "../generated/graphql";
+import { useLogoutMutation } from "../generated/graphql";
 
 function Navbar() {
-  const { data, loading } = useMeQuery({ notifyOnNetworkStatusChange: true });
+  const { user, setUser } = useContext(AuthContext);
   const [logout, { client }] = useLogoutMutation();
   let body: JSX.Element | null;
 
   const handleClick = async () => {
     try {
-      await logout();
-      setAccessToken("");
+      await logout({
+        update: async (cache, { data }) => {
+          setAccessToken("");
+          setUser("");
+        },
+      });
       await client.resetStore();
-    } catch (error) {
-      console.log(error.message);
-    }
+    } catch (error) {}
   };
 
-  if (loading) {
-    body = null;
-  } else if (data && data.me) {
+  if (user) {
     body = (
       <>
-        <li>Welcome, {data.me.username}</li>
+        <li>Welcome, {user}</li>
         <li>
           <button onClick={handleClick}>Log Out</button>
         </li>

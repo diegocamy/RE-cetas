@@ -1,16 +1,20 @@
-import { useMeQuery } from "../generated/graphql";
-import { useHistory } from "react-router-dom";
 import { useEffect } from "react";
+import { useMeLazyQuery } from "../generated/graphql";
 
 function Me() {
-  const history = useHistory();
-  const { data, loading, error } = useMeQuery({ fetchPolicy: "network-only" });
+  const [executeQuery, { loading, error, data }] = useMeLazyQuery();
 
   useEffect(() => {
-    if (error && error.message === "Unauthorized") {
-      history.push("/login");
+    let _isMounted = true;
+
+    if (_isMounted) {
+      executeQuery();
     }
-  }, [error, history]);
+
+    return () => {
+      _isMounted = false;
+    };
+  }, [executeQuery]);
 
   if (error) {
     return <h1>error</h1>;
@@ -26,6 +30,7 @@ function Me() {
 
   return (
     <div>
+      <h1>WELCOME TO YOUR PROFILE PAGE</h1>
       <p>{data.me.email}</p>
       <p>{data.me.username}</p>
     </div>

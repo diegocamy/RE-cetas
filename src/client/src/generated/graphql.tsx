@@ -178,7 +178,7 @@ export type ConfirmAccountMutation = (
     & Pick<JwtPayload, 'jwt'>
     & { user: (
       { __typename?: 'User' }
-      & Pick<User, 'email' | 'username'>
+      & Pick<User, 'username'>
     ) }
   )> }
 );
@@ -196,7 +196,7 @@ export type LoginMutation = (
     & Pick<JwtPayload, 'jwt'>
     & { user: (
       { __typename?: 'User' }
-      & Pick<User, 'username' | 'email'>
+      & Pick<User, 'username'>
     ) }
   ) }
 );
@@ -238,7 +238,6 @@ export const ConfirmAccountDocument = gql`
   confirmAccount(token: $token) {
     jwt
     user {
-      email
       username
     }
   }
@@ -276,7 +275,6 @@ export const LoginDocument = gql`
     jwt
     user {
       username
-      email
     }
   }
 }

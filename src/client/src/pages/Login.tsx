@@ -1,9 +1,11 @@
-import { useRef, FormEvent } from "react";
+import { useRef, FormEvent, useContext } from "react";
 import { useHistory } from "react-router-dom";
+import { AuthContext } from "../App";
 import { setAccessToken } from "../auth/jwt";
-import { MeDocument, MeQuery, useLoginMutation } from "../generated/graphql";
+import { useLoginMutation } from "../generated/graphql";
 
 function Login() {
+  const { setUser } = useContext(AuthContext);
   const [login, { error, loading }] = useLoginMutation();
   const history = useHistory();
   const emailRef = useRef<HTMLInputElement>(null);
@@ -16,27 +18,18 @@ function Login() {
     const password = passwordRef.current!.value;
 
     try {
-      const { data } = await login({
+      await login({
         variables: { email, password },
         update: (cache, { data }) => {
-          if (!data) {
-            return null;
-          }
+          if (!data) return null;
 
-          cache.writeQuery<MeQuery>({
-            query: MeDocument,
-            data: {
-              me: data.login.user!,
-            },
-          });
+          const username = data.login.user.username;
+          setAccessToken(data.login.jwt!);
+          setUser(username);
+          history.replace("/me");
         },
       });
-
-      setAccessToken(data?.login.jwt!);
-
-      return history.replace("/me");
     } catch (error) {
-      console.log(error);
       return;
     }
   }
