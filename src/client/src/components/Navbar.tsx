@@ -26,7 +26,7 @@ function Navbar() {
   const [isSmallerThan450] = useMediaQuery("(max-width: 450px)");
 
   return (
-    <Flex bgColor="white" shadow="sm" align="center">
+    <Flex bgColor="transparent" align="center">
       <Link
         to={user ? "/me" : "/"}
         _hover={{ textDecoration: "none" }}
@@ -37,7 +37,7 @@ function Navbar() {
       >
         <Heading
           display="inline"
-          bg="orange.500"
+          bg="black"
           color="white"
           borderRadius="md"
           px="2"
@@ -46,7 +46,7 @@ function Navbar() {
         >
           RE
         </Heading>
-        <Heading display="inline" color="orange.500" size="md">
+        <Heading display="inline" color="black" size="md">
           cetas
         </Heading>
       </Link>
@@ -95,26 +95,32 @@ function Navbar() {
             <>
               <Link
                 to="/login"
-                bg="gray.100"
+                bg="transparent"
                 color="black"
-                borderRadius="sm"
+                borderRadius="3xl"
                 mr="2"
-                p="2"
-                _hover={{ textDecoration: "none", backgroundColor: "gray.200" }}
+                px="4"
+                py="2"
+                _hover={{
+                  textDecoration: "none",
+                  backgroundColor: "rgba(255,255,255,0.3)",
+                }}
                 as={NavLink}
               >
                 Ingresar
               </Link>
               <Link
                 to="/register"
-                bg="orange.500"
-                color="white"
-                borderRadius="sm"
+                bg="white"
+                color="black"
+                borderRadius="3xl"
                 mr="8"
-                p="2"
+                px="4"
+                py="2"
                 _hover={{
                   textDecoration: "none",
-                  backgroundColor: "orange.400",
+                  backgroundColor: "black",
+                  color: "white",
                 }}
                 as={NavLink}
               >

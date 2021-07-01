@@ -13,7 +13,9 @@ import App from "./App";
 import { getAccessToken, setAccessToken } from "./auth/jwt";
 import decode from "jwt-decode";
 import { onError } from "@apollo/client/link/error";
-import { ChakraProvider } from "@chakra-ui/react";
+import { ChakraProvider, extendTheme } from "@chakra-ui/react";
+import "@fontsource/open-sans";
+import "@fontsource/raleway";
 
 const httpLink = createHttpLink({
   uri: "http://localhost:4000/graphql",
@@ -71,10 +73,17 @@ const client = new ApolloClient({
   link: ApolloLink.from([errorLink, authLink, httpLink]),
 });
 
+const theme = extendTheme({
+  fonts: {
+    heading: "Open Sans",
+    body: "Raleway",
+  },
+});
+
 ReactDOM.render(
   <React.StrictMode>
     <ApolloProvider client={client}>
-      <ChakraProvider>
+      <ChakraProvider theme={theme}>
         <App />
       </ChakraProvider>
     </ApolloProvider>
