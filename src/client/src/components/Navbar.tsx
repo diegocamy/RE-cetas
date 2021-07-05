@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useRef } from "react";
 import {
   Flex,
   Heading,
@@ -7,26 +7,30 @@ import {
   Stack,
   Text,
   useMediaQuery,
-  Menu,
-  Icon,
-  MenuItem,
-  MenuList,
   Button,
-  MenuButton,
-  Tooltip,
+  useDisclosure,
+  Drawer,
+  DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
+  DrawerHeader,
+  DrawerOverlay,
+  Icon,
+  Box,
 } from "@chakra-ui/react";
-import { FiLogIn } from "react-icons/fi";
-import { MdClose } from "react-icons/md";
 import { NavLink } from "react-router-dom";
 import { AuthContext } from "../App";
+import { GiHamburgerMenu } from "react-icons/gi";
 import Logout from "./Logout";
 
 function Navbar() {
   const { user } = useContext(AuthContext);
   const [isSmallerThan450] = useMediaQuery("(max-width: 450px)");
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const btnRef = useRef(null);
 
   return (
-    <Stack>
+    <Stack bgColor="#f7cf1c">
       <Flex
         bgColor="transparent"
         align="center"
@@ -66,38 +70,62 @@ function Navbar() {
         ) : (
           <>
             {isSmallerThan450 ? (
-              <Menu closeOnBlur>
-                {({ isOpen }) => (
-                  <>
-                    <Tooltip
-                      label="Ingresar o Registrarse"
-                      hasArrow
-                      openDelay={300}
-                    >
-                      <MenuButton
-                        as={Button}
-                        mr="8"
-                        background="white"
-                        isActive={isOpen}
+              <>
+                <Button
+                  ref={btnRef}
+                  onClick={onOpen}
+                  mr={8}
+                  bgColor="black"
+                  color="white"
+                  border="1px solid black"
+                  p="0"
+                >
+                  <Icon as={GiHamburgerMenu} />
+                </Button>
+                <Drawer
+                  isOpen={isOpen}
+                  placement="right"
+                  onClose={onClose}
+                  finalFocusRef={btnRef}
+                >
+                  <DrawerOverlay />
+                  <DrawerContent bgColor="#f7cf1c" color="black">
+                    <DrawerCloseButton />
+                    <DrawerHeader>RE cetas</DrawerHeader>
+
+                    <DrawerBody>
+                      <Box
+                        display="flex"
+                        justifyContent="center"
+                        alignItems="center"
+                        border="1px solid black"
+                        p="3"
+                        m="1"
+                        _active={{ bgColor: "black", color: "white" }}
+                        as={NavLink}
+                        to="/login"
+                        onClick={onClose}
                       >
-                        {isOpen ? (
-                          <Icon as={MdClose} w={7} h={7} />
-                        ) : (
-                          <Icon as={FiLogIn} w={7} h={7} />
-                        )}
-                      </MenuButton>
-                    </Tooltip>
-                    <MenuList>
-                      <MenuItem as={NavLink} to="/login">
                         Ingresar
-                      </MenuItem>
-                      <MenuItem as={NavLink} to="/register">
+                      </Box>
+                      <Box
+                        display="flex"
+                        justifyContent="center"
+                        alignItems="center"
+                        border="1px solid black"
+                        p="3"
+                        _active={{ bgColor: "black", color: "white" }}
+                        m="1"
+                        as={NavLink}
+                        to="/register"
+                        onClick={onClose}
+                      >
                         Registrarse
-                      </MenuItem>
-                    </MenuList>
-                  </>
-                )}
-              </Menu>
+                      </Box>
+                    </DrawerBody>
+                  </DrawerContent>
+                </Drawer>
+              </>
             ) : (
               <>
                 <Link
