@@ -6,8 +6,11 @@ import {
   Flex,
   useMediaQuery,
   Grid,
+  Button,
 } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
 import dish from "../assets/dish.png";
+import background from "../assets/background.jpg";
 import RecipeCard from "../components/RecipeCard";
 import data from "../data/cardsData";
 
@@ -45,8 +48,8 @@ function Home() {
           </Box>
           <Image src={dish} w="280px" m="auto" />
         </Flex>
-        {/* RECIPE CARDS */}
       </Box>
+      {/* RECIPE CARDS */}
       <Flex direction="column" align="center" py="12" bgColor="gray.100">
         <Grid
           templateColumns={
@@ -68,6 +71,49 @@ function Home() {
           ))}
         </Grid>
       </Flex>
+      <Box
+        background="black"
+        color="white"
+        py="20"
+        position="relative"
+        zIndex="0"
+      >
+        <Box
+          bgImage={background}
+          bgSize="cover"
+          bgPosition="center"
+          bgRepeat="no-repeat"
+          filter="brightness(0.3)"
+          position="absolute"
+          top="0"
+          left="0"
+          width="100%"
+          height="100%"
+          zIndex="-1"
+        />
+        <Flex
+          direction="column"
+          align="center"
+          m="auto"
+          zIndex="1"
+          textAlign="center"
+        >
+          <Heading>Qué esperas para formar parte de nuestra comunidad?</Heading>
+          <Button
+            size="lg"
+            borderRadius="3xl"
+            px="10"
+            py="5"
+            bgColor="red.500"
+            _hover={{ bgColor: "red.800" }}
+            m="5"
+            as={Link}
+            to="/register"
+          >
+            Registrarse
+          </Button>
+        </Flex>
+      </Box>
     </>
   );
 }
