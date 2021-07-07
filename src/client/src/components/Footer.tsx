@@ -2,7 +2,6 @@ import { Box, Heading, Link, Text, Icon } from "@chakra-ui/react";
 import { useContext } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { AuthContext } from "../App";
-import { FcLike } from "react-icons/fc";
 
 function Footer() {
   const { user } = useContext(AuthContext);
@@ -30,9 +29,7 @@ function Footer() {
           cetas
         </Heading>
       </Link>
-      <Text my="2">
-        Made with <Icon as={FcLike} /> - All rights reserved (?)
-      </Text>
+      <Text my="2">Todos los derechos reservados (?)</Text>
     </Box>
   );
 }

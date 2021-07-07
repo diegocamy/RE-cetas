@@ -5,7 +5,6 @@ import {
   Link,
   Spacer,
   Stack,
-  Text,
   useMediaQuery,
   Button,
   useDisclosure,
@@ -19,9 +18,7 @@ import {
   Box,
   Menu,
   MenuButton,
-  MenuDivider,
   MenuGroup,
-  MenuItem,
   MenuList,
 } from "@chakra-ui/react";
 import { NavLink } from "react-router-dom";
@@ -87,10 +84,6 @@ function Navbar() {
             </MenuList>
           </Menu>
         ) : (
-          // <Stack direction="row" align="center" mr="8">
-          //   <Text>Hola, {user}</Text>
-          //   <Logout />
-          // </Stack>
           <>
             {isSmallerThan450 ? (
               <>
