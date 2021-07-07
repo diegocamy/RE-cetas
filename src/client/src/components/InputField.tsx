@@ -15,14 +15,13 @@ type InputFieldProps = InputHTMLAttributes<HTMLInputElement> & {
 function InputField({ label, size: _, ...props }: InputFieldProps) {
   const [field, { error }] = useField(props);
   return (
-    <FormControl isInvalid={!!error}>
+    <FormControl isInvalid={!!error} mb="2">
       <FormLabel htmlFor={field.name}>{label}</FormLabel>
       <Input
         {...field}
         {...props}
         id={field.name}
         placeholder={props.placeholder}
-        mb="2"
       />
       {error ? <FormErrorMessage>{error}</FormErrorMessage> : null}
     </FormControl>
