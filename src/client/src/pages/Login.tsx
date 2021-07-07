@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import {
   Box,
   Button,
@@ -104,6 +104,7 @@ function Login() {
                 type="password"
                 placeholder="Contraseña"
                 label="Contraseña"
+                showPasswordButton
               />
               <Flex justify="flex-end">
                 <Link textAlign="right" as={RouterLink} to="/register">

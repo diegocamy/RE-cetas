@@ -116,6 +116,7 @@ function Register() {
                 type="password"
                 placeholder="Contraseña"
                 label="Contraseña"
+                showPasswordButton
               />
               <Field type="checkbox" name="terms">
                 {({ field, form }: any) => (
