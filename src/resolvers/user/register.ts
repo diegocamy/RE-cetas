@@ -1,4 +1,4 @@
-import { Arg, Mutation, Resolver } from "type-graphql";
+import { Arg, ArgumentValidationError, Mutation, Resolver } from "type-graphql";
 import { User } from "../../entities/User";
 import bcrypt from "bcrypt";
 import { RegisterUserInput } from "../../input-types/RegisterUserInput";
@@ -6,6 +6,7 @@ import { sendEmail } from "../../utils/sendEmail";
 import { v4 } from "uuid";
 import { confirmAccount } from "../../utils/constants";
 import { expire, redisClient, set } from "../../redis/redis";
+import { ValidationError } from "apollo-server-express";
 
 @Resolver()
 export class RegisterResolver {
@@ -15,11 +16,23 @@ export class RegisterResolver {
   ): Promise<boolean> {
     //check if username is already in use
     let foundUser = await User.findOne({ where: { username } });
-    if (foundUser) throw new Error("El nombre de usuario ya está en uso");
+    if (foundUser)
+      throw new ArgumentValidationError([
+        {
+          property: "username",
+          constraints: { username: "El nombre de usuario ya está en uso" },
+        },
+      ]);
 
     //check if email is already in use
     foundUser = await User.findOne({ where: { email } });
-    if (foundUser) throw new Error("El correo electrónico ya está registrado");
+    if (foundUser)
+      throw new ArgumentValidationError([
+        {
+          property: "email",
+          constraints: { username: "El correo electrónico ya está registrado" },
+        },
+      ]);
 
     //hash password
     const hashedPassword = await bcrypt.hash(password, 12);

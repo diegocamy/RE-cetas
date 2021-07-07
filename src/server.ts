@@ -102,19 +102,19 @@ async function startServer() {
 
   const server = new ApolloServer({
     schema,
-    formatError: (err) => {
-      const errExtensions = err.extensions;
-      //Check error created by class-validator and if there is one,
-      //set it to be the GraphqlError message
-      if (errExtensions!.exception.validationErrors) {
-        const validationErrors = errExtensions!.exception.validationErrors;
-        const constraints = validationErrors[0].constraints;
-        const errMessage = Object.values(constraints)[0] as string;
-        err.message = errMessage;
-      }
+    // formatError: (err) => {
+    //   const errExtensions = err.extensions;
+    //   //Check error created by class-validator and if there is one,
+    //   //set it to be the GraphqlError message
+    //   if (errExtensions!.exception.validationErrors) {
+    //     const validationErrors = errExtensions!.exception.validationErrors;
+    //     const constraints = validationErrors[0].constraints;
+    //     const errMessage = Object.values(constraints)[0] as string;
+    //     err.message = errMessage;
+    //   }
 
-      return err;
-    },
+    //   return err;
+    // },
     plugins: [
       ApolloServerLoaderPlugin({
         typeormGetConnection: getConnection,
