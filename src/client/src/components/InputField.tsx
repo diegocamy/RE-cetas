@@ -46,7 +46,7 @@ function InputField({
               h="5"
               w="5"
               onClick={handleClick}
-              as={show ? HiEyeOff : HiEye}
+              as={show ? HiEye : HiEyeOff}
             />
           </InputRightElement>
         )}

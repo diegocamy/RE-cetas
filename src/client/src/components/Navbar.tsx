@@ -17,10 +17,17 @@ import {
   DrawerOverlay,
   Icon,
   Box,
+  Menu,
+  MenuButton,
+  MenuDivider,
+  MenuGroup,
+  MenuItem,
+  MenuList,
 } from "@chakra-ui/react";
 import { NavLink } from "react-router-dom";
 import { AuthContext } from "../App";
 import { GiHamburgerMenu } from "react-icons/gi";
+import { FaChevronDown } from "react-icons/fa";
 import Logout from "./Logout";
 
 function Navbar() {
@@ -63,11 +70,27 @@ function Navbar() {
         </Link>
         <Spacer />
         {user ? (
-          <Stack direction="row" align="center" mr="8">
-            <Text>Hola, {user}</Text>
-            <Logout />
-          </Stack>
+          <Menu>
+            <MenuButton
+              as={Button}
+              rightIcon={<FaChevronDown />}
+              background="transparent"
+              _hover={{ background: "transparent" }}
+              _active={{ background: "transparent" }}
+            >
+              Hola, {user}
+            </MenuButton>
+            <MenuList>
+              <MenuGroup title="Mi Cuenta">
+                <Logout />
+              </MenuGroup>
+            </MenuList>
+          </Menu>
         ) : (
+          // <Stack direction="row" align="center" mr="8">
+          //   <Text>Hola, {user}</Text>
+          //   <Logout />
+          // </Stack>
           <>
             {isSmallerThan450 ? (
               <>
