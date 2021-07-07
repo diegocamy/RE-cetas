@@ -1,4 +1,10 @@
-import { Arg, Ctx, Mutation, Resolver } from "type-graphql";
+import {
+  Arg,
+  ArgumentValidationError,
+  Ctx,
+  Mutation,
+  Resolver,
+} from "type-graphql";
 import { User } from "../../entities/User";
 import bcrypt from "bcrypt";
 import { MyContext } from "../../interfaces";
@@ -8,6 +14,7 @@ import { sendEmail } from "../../utils/sendEmail";
 import { confirmAccount } from "../../utils/constants";
 import { userSignIn } from "../../utils/userSignIn";
 import { expire, set } from "../../redis/redis";
+import { AuthenticationError } from "apollo-server-express";
 
 @Resolver()
 export class LoginResolver {
@@ -20,12 +27,36 @@ export class LoginResolver {
     //check for user with given email
     const foundUser = await User.findOne({ where: { email } });
 
-    if (!foundUser) throw new Error("Correo o contraseña inválidos");
+    if (!foundUser)
+      throw new ArgumentValidationError([
+        {
+          property: "email",
+          constraints: { email: "Correo electrónico o contraseña inválidos" },
+        },
+        {
+          property: "password",
+          constraints: {
+            password: "Correo electrónico o contraseña inválidos",
+          },
+        },
+      ]);
 
     //if there is an user with said email, compare the passwords
     const passwordsMatch = await bcrypt.compare(password, foundUser.password);
 
-    if (!passwordsMatch) throw new Error("Correo o contraseña inválidos");
+    if (!passwordsMatch)
+      throw new ArgumentValidationError([
+        {
+          property: "email",
+          constraints: { email: "Correo electrónico o contraseña inválidos" },
+        },
+        {
+          property: "password",
+          constraints: {
+            password: "Correo electrónico o contraseña inválidos",
+          },
+        },
+      ]);
 
     if (!foundUser.confirmed) {
       //send an email to confirm the account

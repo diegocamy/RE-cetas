@@ -15,7 +15,9 @@ import { Formik, Form, Field } from "formik";
 import InputField from "../components/InputField";
 import { useRegisterMutation } from "../generated/graphql";
 import * as Yup from "yup";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../App";
 
 interface ValidationError {
   children: any[];
@@ -41,8 +43,13 @@ const RegisterSchema = Yup.object().shape({
 });
 
 function Register() {
+  const { user } = useContext(AuthContext);
   const [isMobile] = useMediaQuery("(min-width: 786px)");
   const [register] = useRegisterMutation();
+
+  if (user) {
+    return <Redirect to="/home" />;
+  }
 
   return (
     <Flex justify="center" align="center" bgColor="gray.100" height="100%">
@@ -147,6 +154,7 @@ function Register() {
                   bgColor="black"
                   color="white"
                   _hover={{ color: "black", bgColor: "gray.400" }}
+                  disabled={isSubmitting}
                 >
                   Ingresar
                 </Button>

@@ -6,7 +6,6 @@ import { sendEmail } from "../../utils/sendEmail";
 import { v4 } from "uuid";
 import { confirmAccount } from "../../utils/constants";
 import { expire, redisClient, set } from "../../redis/redis";
-import { ValidationError } from "apollo-server-express";
 
 @Resolver()
 export class RegisterResolver {

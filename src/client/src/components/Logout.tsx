@@ -4,8 +4,10 @@ import { setAccessToken } from "../auth/jwt";
 import { useLogoutMutation } from "../generated/graphql";
 import { Tooltip, Icon, IconButton } from "@chakra-ui/react";
 import { FiLogOut } from "react-icons/fi";
+import { useHistory } from "react-router-dom";
 
 function Logout() {
+  const history = useHistory();
   const { setUser } = useContext(AuthContext);
   const [logout, { client }] = useLogoutMutation();
 
@@ -18,6 +20,7 @@ function Logout() {
         },
       });
       await client.resetStore();
+      history.push("/login");
     } catch (error) {}
   };
 

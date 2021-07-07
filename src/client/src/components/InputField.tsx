@@ -13,9 +13,9 @@ type InputFieldProps = InputHTMLAttributes<HTMLInputElement> & {
 };
 
 function InputField({ label, size: _, ...props }: InputFieldProps) {
-  const [field, { error }] = useField(props);
+  const [field, meta] = useField(props);
   return (
-    <FormControl isInvalid={!!error} mb="2">
+    <FormControl isInvalid={meta.error && meta.touched ? true : false} mb="2">
       <FormLabel htmlFor={field.name}>{label}</FormLabel>
       <Input
         {...field}
@@ -23,7 +23,7 @@ function InputField({ label, size: _, ...props }: InputFieldProps) {
         id={field.name}
         placeholder={props.placeholder}
       />
-      {error ? <FormErrorMessage>{error}</FormErrorMessage> : null}
+      {meta.error ? <FormErrorMessage>{meta.error}</FormErrorMessage> : null}
     </FormControl>
   );
 }
