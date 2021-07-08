@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Home from "./pages/Home";
 import ConfirmAccount from "./pages/ConfirmAccount";
 import Login from "./pages/Login";
-import Me from "./pages/Me";
+import Profile from "./pages/Profile";
 import Register from "./pages/Register";
 import Navbar from "./components/Navbar";
 import PrivateRoute from "./components/PrivateRoute";
@@ -19,7 +19,7 @@ function Routes() {
         <Route path="/" exact component={Home} />
         <Route path="/login" component={Login} />
         <Route path="/register" component={Register} />
-        <PrivateRoute path="/me" component={Me} />
+        <PrivateRoute path="/home" component={Profile} />
         <PrivateRoute path="/protected" component={Protected} />
         <Route path="/forgot-password" component={ForgotPassword} />
         <Route path="/user/confirm-account/:token" component={ConfirmAccount} />

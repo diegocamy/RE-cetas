@@ -78,6 +78,9 @@ const theme = extendTheme({
     heading: "Open Sans",
     body: "Raleway",
   },
+  colors: {
+    amarillo: "#f7cf1c",
+  },
 });
 
 ReactDOM.render(
