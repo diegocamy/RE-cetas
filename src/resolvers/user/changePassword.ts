@@ -7,6 +7,7 @@ import bcrypt from "bcrypt";
 import { userSignIn } from "../../utils/userSignIn";
 import { MyContext } from "../../interfaces";
 import { get } from "../../redis/redis";
+import { v4 } from "uuid";
 
 @Resolver()
 export class ChangePassword {
@@ -30,7 +31,11 @@ export class ChangePassword {
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
+    //change password
     user.password = hashedPassword;
+
+    //change user token_version
+    user.token_version = v4();
 
     await user.save();
 

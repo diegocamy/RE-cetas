@@ -9,6 +9,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import Protected from "./pages/Protected";
 import Footer from "./components/Footer";
 import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 function Routes() {
   return (
@@ -22,6 +23,7 @@ function Routes() {
         <PrivateRoute path="/protected" component={Protected} />
         <Route path="/forgot-password" component={ForgotPassword} />
         <Route path="/user/confirm-account/:token" component={ConfirmAccount} />
+        <Route path="/user/reset-password/:token" component={ResetPassword} />
       </Switch>
       <Footer />
     </Router>
