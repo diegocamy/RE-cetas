@@ -9,6 +9,7 @@ import {
   Text,
   Tooltip,
   useMediaQuery,
+  useToast,
 } from "@chakra-ui/react";
 import kitchen from "../assets/kitchen.png";
 import { Formik, Form, Field } from "formik";
@@ -18,6 +19,7 @@ import * as Yup from "yup";
 import { Link, Redirect } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../App";
+import { getFormValidationErrors } from "../utils/validationErrors";
 
 interface ValidationError {
   children: any[];
@@ -46,6 +48,7 @@ function Register() {
   const { user } = useContext(AuthContext);
   const [isMobile] = useMediaQuery("(min-width: 786px)");
   const [register] = useRegisterMutation();
+  const toast = useToast();
 
   if (user) {
     return <Redirect to="/home" />;
@@ -68,7 +71,6 @@ function Register() {
         display="flex"
         justifyContent="center"
         flexDir="column"
-        boxShadow="lg"
       >
         <Heading mx="auto" mb="10">
           Crea tu cuenta
@@ -86,15 +88,20 @@ function Register() {
                 variables: values,
               });
             } catch (err) {
-              const errors: { [key: string]: string } = {};
-              err?.graphQLErrors[0].extensions?.exception?.validationErrors.forEach(
-                (validationError: ValidationError) => {
-                  errors[validationError.property] = Object.values(
-                    validationError.constraints
-                  )[0];
-                }
-              );
-              setErrors(errors);
+              const validationErrors = getFormValidationErrors(err);
+
+              //check if validation errors object is not empty
+              if (Object.keys(validationErrors).length > 0) {
+                return setErrors(validationErrors);
+              }
+
+              return toast({
+                title: "Error",
+                description: err.message,
+                status: "error",
+                isClosable: true,
+                position: "top",
+              });
             }
           }}
           validationSchema={RegisterSchema}
@@ -175,7 +182,6 @@ function Register() {
         height="100%"
         borderTopRightRadius="xl"
         borderBottomRightRadius="xl"
-        boxShadow="xl"
         zIndex="0"
       />
     </Flex>

@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import {
   Box,
   Button,
@@ -6,6 +6,7 @@ import {
   Heading,
   useMediaQuery,
   Link,
+  useToast,
 } from "@chakra-ui/react";
 import kitchen from "../assets/kitchen.png";
 import { Formik, Form } from "formik";
@@ -15,14 +16,7 @@ import * as Yup from "yup";
 import { Link as RouterLink, Redirect } from "react-router-dom";
 import { setAccessToken } from "../auth/jwt";
 import { AuthContext } from "../App";
-
-interface ValidationError {
-  children: any[];
-  constraints: {
-    [key: string]: string;
-  };
-  property: string;
-}
+import { getFormValidationErrors } from "../utils/validationErrors";
 
 const RegisterSchema = Yup.object().shape({
   email: Yup.string()
@@ -32,6 +26,7 @@ const RegisterSchema = Yup.object().shape({
 });
 
 function Login() {
+  const toast = useToast();
   const { setUser, user } = useContext(AuthContext);
   const [isMobile] = useMediaQuery("(min-width: 786px)");
   const [login] = useLoginMutation();
@@ -57,7 +52,6 @@ function Login() {
         display="flex"
         justifyContent="center"
         flexDir="column"
-        boxShadow="lg"
       >
         <Heading mx="auto" mb="10">
           Iniciar Sesión
@@ -79,15 +73,20 @@ function Login() {
               //set user
               setUser(response.data?.login.user.username!);
             } catch (err) {
-              const errors: { [key: string]: string } = {};
-              err?.graphQLErrors[0].extensions?.exception?.validationErrors.forEach(
-                (validationError: ValidationError) => {
-                  errors[validationError.property] = Object.values(
-                    validationError.constraints
-                  )[0];
-                }
-              );
-              setErrors(errors);
+              const validationErrors = getFormValidationErrors(err);
+
+              //check if validation errors object is not empty
+              if (Object.keys(validationErrors).length > 0) {
+                return setErrors(validationErrors);
+              }
+
+              return toast({
+                title: "Error",
+                description: err.message,
+                status: "error",
+                isClosable: true,
+                position: "top",
+              });
             }
           }}
           validationSchema={RegisterSchema}
@@ -107,8 +106,13 @@ function Login() {
                 showPasswordButton
               />
               <Flex justify="flex-end">
-                <Link textAlign="right" as={RouterLink} to="/register">
-                  Aún no tenés una cuenta? Registrate
+                <Link
+                  textAlign="right"
+                  as={RouterLink}
+                  to="/forgot-password"
+                  fontWeight="bold"
+                >
+                  Olvidé mi contraseña
                 </Link>
               </Flex>
               <Flex align="center" justify="space-evenly" my="5">
@@ -120,6 +124,18 @@ function Login() {
                   bgColor="#f7cf1c"
                   color="black"
                   _hover={{ bgColor: "gray.400" }}
+                >
+                  Ingresar
+                </Button>
+                <Button
+                  disabled={isSubmitting}
+                  as={RouterLink}
+                  to="/register"
+                  borderRadius="3xl"
+                  px="10"
+                  bgColor="black"
+                  color="white"
+                  _hover={{ bgColor: "gray.400", color: "black" }}
                 >
                   Ingresar
                 </Button>
@@ -139,7 +155,6 @@ function Login() {
         height="100%"
         borderTopRightRadius="xl"
         borderBottomRightRadius="xl"
-        boxShadow="xl"
         zIndex="0"
       />
     </Flex>

@@ -1,4 +1,4 @@
-import { Box, Heading, Link, Text, Icon } from "@chakra-ui/react";
+import { Box, Heading, Link, Text } from "@chakra-ui/react";
 import { useContext } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { AuthContext } from "../App";
