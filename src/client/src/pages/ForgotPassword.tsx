@@ -1,39 +1,27 @@
-import { useContext } from "react";
 import {
   Box,
   Button,
   Flex,
   Heading,
   useMediaQuery,
-  Link,
   useToast,
 } from "@chakra-ui/react";
 import kitchen from "../assets/kitchen.png";
 import { Formik, Form } from "formik";
 import InputField from "../components/InputField";
-import { useLoginMutation } from "../generated/graphql";
 import * as Yup from "yup";
-import { Link as RouterLink, Redirect } from "react-router-dom";
-import { setAccessToken } from "../auth/jwt";
-import { AuthContext } from "../App";
-import { getFormValidationErrors } from "../utils/validationErrors";
+import { useForgotPasswordMutation } from "../generated/graphql";
 
 const RegisterSchema = Yup.object().shape({
   email: Yup.string()
     .email("Debe ingresar un correo electrónico válido")
     .required("Debe ingresar un correo electrónico"),
-  password: Yup.string().required("Debe ingresar una contraseña"),
 });
 
-function Login() {
+function ForgotPassword() {
+  const [forgotPassword] = useForgotPasswordMutation();
   const toast = useToast();
-  const { setUser, user } = useContext(AuthContext);
   const [isMobile] = useMediaQuery("(min-width: 786px)");
-  const [login] = useLoginMutation();
-
-  if (user) {
-    return <Redirect to="/home" />;
-  }
 
   return (
     <Flex justify="center" align="center" bgColor="gray.100" height="100%">
@@ -53,33 +41,37 @@ function Login() {
         justifyContent="center"
         flexDir="column"
       >
-        <Heading mx="auto" mb="10">
-          Iniciar Sesión
+        <Heading mx="auto" mb="10" fontSize={isMobile ? "3xl" : "2xl"}>
+          Reestablecer contraseña
         </Heading>
         <Formik
           initialValues={{
             email: "",
-            password: "",
           }}
           onSubmit={async (values, { setErrors }) => {
             try {
-              const response = await login({
-                variables: values,
-              });
+              const resp = await forgotPassword({ variables: values });
 
-              //set jwt
-              setAccessToken(response.data?.login.jwt!);
-
-              //set user
-              setUser(response.data?.login.user.username!);
-            } catch (err) {
-              const validationErrors = getFormValidationErrors(err);
-
-              //check if validation errors object is not empty
-              if (Object.keys(validationErrors).length > 0) {
-                return setErrors(validationErrors);
+              if (resp.data?.forgotPassword) {
+                return toast({
+                  title: "Éxito",
+                  description:
+                    "Enviaremos un correo electrónico para que puedas reestablecer la contraseña",
+                  status: "success",
+                  isClosable: true,
+                  position: "top",
+                });
               }
 
+              return toast({
+                title: "Error",
+                description:
+                  "No existe un usuario asociado al correo electrónico proporcionado",
+                status: "error",
+                isClosable: true,
+                position: "top",
+              });
+            } catch (err) {
               return toast({
                 title: "Error",
                 description: err.message,
@@ -98,23 +90,6 @@ function Login() {
                 placeholder="Correo electrónico"
                 label="Correo electrónico"
               />
-              <InputField
-                name="password"
-                type="password"
-                placeholder="Contraseña"
-                label="Contraseña"
-                showPasswordButton
-              />
-              <Flex justify="flex-end">
-                <Link
-                  textAlign="right"
-                  as={RouterLink}
-                  to="/forgot-password"
-                  fontWeight="bold"
-                >
-                  Olvidé mi contraseña
-                </Link>
-              </Flex>
               <Flex align="center" justify="space-evenly" my="5">
                 <Button
                   isLoading={isSubmitting}
@@ -125,19 +100,7 @@ function Login() {
                   color="black"
                   _hover={{ bgColor: "gray.400" }}
                 >
-                  Ingresar
-                </Button>
-                <Button
-                  disabled={isSubmitting}
-                  as={RouterLink}
-                  to="/register"
-                  borderRadius="3xl"
-                  px="10"
-                  bgColor="black"
-                  color="white"
-                  _hover={{ bgColor: "gray.400", color: "black" }}
-                >
-                  Ingresar
+                  Reestablecer Contraseña
                 </Button>
               </Flex>
             </Form>
@@ -161,4 +124,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default ForgotPassword;

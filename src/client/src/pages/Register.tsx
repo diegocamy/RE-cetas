@@ -21,14 +21,6 @@ import { useContext } from "react";
 import { AuthContext } from "../App";
 import { getFormValidationErrors } from "../utils/validationErrors";
 
-interface ValidationError {
-  children: any[];
-  constraints: {
-    [key: string]: string;
-  };
-  property: string;
-}
-
 const RegisterSchema = Yup.object().shape({
   username: Yup.string()
     .min(4, "El nombre de usuario debe tener al menos 4 caracteres")
