@@ -1,10 +1,9 @@
 import { Flex, Icon, Heading, Text } from "@chakra-ui/react";
-import { GiKnifeFork } from "react-icons/gi";
 import { IconType } from "react-icons/lib";
 
 interface Props {
   icon: IconType;
-  qty: string;
+  qty: number;
   name: string;
 }
 

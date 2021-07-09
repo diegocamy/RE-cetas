@@ -43,7 +43,7 @@ function Navbar() {
         maxWidth="1300px"
       >
         <Link
-          to={user ? "/me" : "/"}
+          to={user ? "/home" : "/"}
           _hover={{ textDecoration: "none" }}
           as={NavLink}
           ml="8"

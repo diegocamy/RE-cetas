@@ -1,11 +1,18 @@
-import { Button, Flex, Grid, Heading, Icon, Text } from "@chakra-ui/react";
+import { Button, Flex, Grid } from "@chakra-ui/react";
 import { AiFillHeart } from "react-icons/ai";
 import { GiKnifeFork } from "react-icons/gi";
 import { RiAddFill } from "react-icons/ri";
 import { FaUserFriends, FaUserPlus } from "react-icons/fa";
 import StatCard from "./StatCard";
 
-function StatsBox() {
+interface Props {
+  favourites: number;
+  recipes: number;
+  followers: number;
+  following: number;
+}
+
+function StatsBox({ favourites, followers, following, recipes }: Props) {
   return (
     <Flex
       borderRadius="xl"
@@ -29,10 +36,10 @@ function StatsBox() {
         Crear Receta
       </Button>
       <Grid templateColumns="repeat(2,1fr)" templateRows="repeat(2,1fr)">
-        <StatCard icon={GiKnifeFork} qty="10" name="Recetas" />
-        <StatCard icon={AiFillHeart} qty="4" name="Favoritas" />
-        <StatCard icon={FaUserFriends} qty="3" name="Seguidores" />
-        <StatCard icon={FaUserPlus} qty="13" name="Siguiendo" />
+        <StatCard icon={GiKnifeFork} qty={recipes} name="Recetas" />
+        <StatCard icon={AiFillHeart} qty={favourites} name="Favoritas" />
+        <StatCard icon={FaUserFriends} qty={followers} name="Seguidores" />
+        <StatCard icon={FaUserPlus} qty={following} name="Siguiendo" />
       </Grid>
     </Flex>
   );

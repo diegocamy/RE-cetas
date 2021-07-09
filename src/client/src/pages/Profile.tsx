@@ -6,7 +6,7 @@ import UserInfoCard from "../components/UserInfoCard";
 import { useMeLazyQuery } from "../generated/graphql";
 
 function Profile() {
-  const [executeQuery, { data }] = useMeLazyQuery();
+  const [executeQuery, { data, loading }] = useMeLazyQuery();
   const [isMobile] = useMediaQuery("(max-width: 1070px)");
 
   useEffect(() => {
@@ -21,16 +21,24 @@ function Profile() {
     };
   }, [executeQuery]);
 
+  if (loading) return <p>Loading</p>;
+
   return (
     <Box bgColor="gray.100">
       <Container>
         <Flex direction={isMobile ? "column" : "row"} mx="auto" py="2">
           <Box w={isMobile ? "100%" : "70%"}>
-            <UserInfoCard user={data?.me.username!} bio="asd" />
+            <UserInfoCard user={data?.me.username!} bio={data?.me.bio || ""} />
           </Box>
           <Box w={isMobile ? "100%" : "30%"} px="2">
-            <StatsBox />
+            <StatsBox
+              recipes={data?.me.posts.length || 0}
+              favourites={data?.me.likedPosts.length || 0}
+              followers={3}
+              following={13}
+            />
           </Box>
+          <Box></Box>
         </Flex>
       </Container>
     </Box>

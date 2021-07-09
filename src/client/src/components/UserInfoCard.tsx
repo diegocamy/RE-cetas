@@ -54,7 +54,7 @@ function UserInfoCard({ user, bio }: Props) {
             mx="auto"
             top="71"
             position="absolute"
-            zIndex="1"
+            zIndex="0"
             border="5px solid white"
           />
         ) : (

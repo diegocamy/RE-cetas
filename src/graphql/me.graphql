@@ -2,5 +2,17 @@ query Me {
   me {
     username
     email
+    bio
+    created
+    posts {
+      title
+      picture
+      slug
+    }
+    likedPosts {
+      post {
+        title
+      }
+    }
   }
 }

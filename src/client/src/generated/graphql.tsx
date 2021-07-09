@@ -244,7 +244,17 @@ export type MeQuery = (
   { __typename?: 'Query' }
   & { me: (
     { __typename?: 'User' }
-    & Pick<User, 'username' | 'email'>
+    & Pick<User, 'username' | 'email' | 'bio' | 'created'>
+    & { posts: Array<(
+      { __typename?: 'Post' }
+      & Pick<Post, 'title' | 'picture' | 'slug'>
+    )>, likedPosts: Array<(
+      { __typename?: 'Like' }
+      & { post: (
+        { __typename?: 'Post' }
+        & Pick<Post, 'title'>
+      ) }
+    )> }
   ) }
 );
 
@@ -437,6 +447,18 @@ export const MeDocument = gql`
   me {
     username
     email
+    bio
+    created
+    posts {
+      title
+      picture
+      slug
+    }
+    likedPosts {
+      post {
+        title
+      }
+    }
   }
 }
     `;
