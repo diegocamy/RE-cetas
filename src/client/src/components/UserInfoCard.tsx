@@ -3,10 +3,12 @@ import {
   Button,
   Flex,
   Heading,
+  Icon,
   Image,
   Text,
   useMediaQuery,
 } from "@chakra-ui/react";
+import { RiCake2Line } from "react-icons/ri";
 import { FiEdit } from "react-icons/fi";
 import bg from "../assets/background.jpg";
 
@@ -18,9 +20,14 @@ interface Props {
 function UserInfoCard({ user, bio }: Props) {
   const [isMobile] = useMediaQuery("(max-width: 786px)");
   return (
-    <Flex direction="column" height="350px" borderRadius="2xl">
+    <Flex
+      direction="column"
+      borderRadius="2xl"
+      w="100%"
+      p={isMobile ? "2" : "none"}
+    >
       <Box
-        height="50%"
+        height={isMobile ? "110px" : "150px"}
         width="100%"
         bgImage={bg}
         bgSize="cover"
@@ -30,7 +37,7 @@ function UserInfoCard({ user, bio }: Props) {
         borderTopRadius="inherit"
       />
       <Flex
-        height="50%"
+        height="fit-content"
         borderBottomRadius="inherit"
         bgColor="white"
         px={isMobile ? 2 : 5}
@@ -39,13 +46,13 @@ function UserInfoCard({ user, bio }: Props) {
         {isMobile ? (
           <Image
             src={bg}
-            width="150px"
-            height="150px"
+            width="100px"
+            height="100px"
             borderRadius="50%"
             left="0"
             right="0"
             mx="auto"
-            top="70"
+            top="71"
             position="absolute"
             zIndex="1"
             border="5px solid white"
@@ -61,7 +68,12 @@ function UserInfoCard({ user, bio }: Props) {
             border="5px solid white"
           />
         )}
-        <Flex p={isMobile ? 1 : 2} width="100%" direction="column">
+        <Flex
+          p={isMobile ? 1 : 2}
+          width="100%"
+          height="100%"
+          direction="column"
+        >
           <Flex
             alignItems="center"
             height="fit-content"
@@ -72,9 +84,13 @@ function UserInfoCard({ user, bio }: Props) {
               Editar Perfil
             </Button>
           </Flex>
-          <Text lineHeight="1" mt="4">
+          <Text lineHeight="1" mt="4" mb="4">
             {bio}
           </Text>
+          <Flex align="center" mb="0" mt="auto">
+            <Icon as={RiCake2Line} w={7} h={7} color="gray.600" mr="2" />
+            <Text>Se unió el 12-12-12</Text>
+          </Flex>
         </Flex>
       </Flex>
     </Flex>

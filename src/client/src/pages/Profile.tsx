@@ -23,16 +23,8 @@ function Profile() {
   return (
     <Box bgColor="gray.100">
       <Container>
-        <Flex direction={isMobile ? "column" : "row"}>
-          <Box width={isMobile ? "100%" : "70%"} p="2">
-            <UserInfoCard
-              user={data?.me.username!}
-              bio="Lorem ipsum dolor sit amet, lorem dorem soremLorem ipsum dolor sit amet, lorem dorem soremLorem ipsum dolor sit amet, lorem dorem soremLorem ipsum"
-            />
-          </Box>
-          <Box flexGrow={1} bgColor="blue">
-            a
-          </Box>
+        <Flex w={isMobile ? "100%" : "70%"} mx="auto" py="2">
+          <UserInfoCard user={data?.me.username!} bio="asd" />
         </Flex>
       </Container>
     </Box>
