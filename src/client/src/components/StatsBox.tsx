@@ -3,6 +3,7 @@ import { AiFillHeart } from "react-icons/ai";
 import { GiKnifeFork } from "react-icons/gi";
 import { RiAddFill } from "react-icons/ri";
 import { FaUserFriends, FaUserPlus } from "react-icons/fa";
+import StatCard from "./StatCard";
 
 function StatsBox() {
   return (
@@ -28,75 +29,10 @@ function StatsBox() {
         Crear Receta
       </Button>
       <Grid templateColumns="repeat(2,1fr)" templateRows="repeat(2,1fr)">
-        <Flex
-          bg="gray.100"
-          direction="column"
-          align="center"
-          justify="center"
-          textAlign="center"
-          borderRadius="xl"
-          color="white"
-          bgColor="black"
-          m="1"
-          p="5"
-        >
-          <Flex align="center" justify="space-evenly">
-            <Icon as={GiKnifeFork} boxSize="7" mr="2" />
-            <Heading>0</Heading>
-          </Flex>
-          <Text fontWeight="bold">Recetas</Text>
-        </Flex>
-        <Flex
-          bg="gray.100"
-          direction="column"
-          align="center"
-          justify="center"
-          textAlign="center"
-          borderRadius="xl"
-          color="white"
-          bgColor="black"
-          m="1"
-        >
-          <Flex align="center" justify="space-evenly">
-            <Icon as={AiFillHeart} boxSize="7" />
-            <Heading>0</Heading>
-          </Flex>
-          <Text fontWeight="bold">Favoritas</Text>
-        </Flex>
-        <Flex
-          bg="gray.100"
-          direction="column"
-          align="center"
-          justify="center"
-          textAlign="center"
-          borderRadius="xl"
-          color="white"
-          bgColor="black"
-          m="1"
-        >
-          <Flex align="center" justify="space-evenly">
-            <Icon as={FaUserFriends} boxSize="7" />
-            <Heading>0</Heading>
-          </Flex>
-          <Text fontWeight="bold">Seguidores</Text>
-        </Flex>
-        <Flex
-          bg="gray.100"
-          direction="column"
-          align="center"
-          justify="center"
-          textAlign="center"
-          borderRadius="xl"
-          color="white"
-          bgColor="black"
-          m="1"
-        >
-          <Flex align="center" justify="space-evenly">
-            <Icon as={FaUserPlus} boxSize="7" />
-            <Heading>0</Heading>
-          </Flex>
-          <Text fontWeight="bold">Suguiendo</Text>
-        </Flex>
+        <StatCard icon={GiKnifeFork} qty="10" name="Recetas" />
+        <StatCard icon={AiFillHeart} qty="4" name="Favoritas" />
+        <StatCard icon={FaUserFriends} qty="3" name="Seguidores" />
+        <StatCard icon={FaUserPlus} qty="13" name="Siguiendo" />
       </Grid>
     </Flex>
   );
