@@ -18,7 +18,7 @@ interface Props {
 }
 
 function UserInfoCard({ user, bio }: Props) {
-  const [isMobile] = useMediaQuery("(max-width: 786px)");
+  const [isMobile] = useMediaQuery("(max-width: 1070px)");
   return (
     <Flex
       direction="column"
@@ -37,7 +37,7 @@ function UserInfoCard({ user, bio }: Props) {
         borderTopRadius="inherit"
       />
       <Flex
-        height="fit-content"
+        height={isMobile ? "fit-content" : "150px"}
         borderBottomRadius="inherit"
         bgColor="white"
         px={isMobile ? 2 : 5}

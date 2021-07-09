@@ -1,12 +1,13 @@
 import { Box, Flex, useMediaQuery } from "@chakra-ui/react";
 import { useEffect } from "react";
 import Container from "../components/Container";
+import StatsBox from "../components/StatsBox";
 import UserInfoCard from "../components/UserInfoCard";
 import { useMeLazyQuery } from "../generated/graphql";
 
 function Profile() {
   const [executeQuery, { data }] = useMeLazyQuery();
-  const [isMobile] = useMediaQuery("(max-width: 786px)");
+  const [isMobile] = useMediaQuery("(max-width: 1070px)");
 
   useEffect(() => {
     let _isMounted = true;
@@ -23,8 +24,13 @@ function Profile() {
   return (
     <Box bgColor="gray.100">
       <Container>
-        <Flex w={isMobile ? "100%" : "70%"} mx="auto" py="2">
-          <UserInfoCard user={data?.me.username!} bio="asd" />
+        <Flex direction={isMobile ? "column" : "row"} mx="auto" py="2">
+          <Box w={isMobile ? "100%" : "70%"}>
+            <UserInfoCard user={data?.me.username!} bio="asd" />
+          </Box>
+          <Box w={isMobile ? "100%" : "30%"} px="2">
+            <StatsBox />
+          </Box>
         </Flex>
       </Container>
     </Box>
