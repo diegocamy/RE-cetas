@@ -32,7 +32,7 @@ export class User extends BaseEntity {
   username!: string;
 
   @Field({ nullable: true })
-  @Column({ nullable: true })
+  @Column({ nullable: true, length: 150 })
   bio!: string;
 
   @Field((type) => Date)

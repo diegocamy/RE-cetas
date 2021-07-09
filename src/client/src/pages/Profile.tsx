@@ -1,11 +1,12 @@
-import { Box, Button, Flex, Text } from "@chakra-ui/react";
+import { Box, Flex, useMediaQuery } from "@chakra-ui/react";
 import { useEffect } from "react";
-import { FaHeart } from "react-icons/fa";
-import { BiFoodMenu } from "react-icons/bi";
+import Container from "../components/Container";
+import UserInfoCard from "../components/UserInfoCard";
 import { useMeLazyQuery } from "../generated/graphql";
 
 function Profile() {
   const [executeQuery, { data }] = useMeLazyQuery();
+  const [isMobile] = useMediaQuery("(max-width: 786px)");
 
   useEffect(() => {
     let _isMounted = true;
@@ -20,41 +21,21 @@ function Profile() {
   }, [executeQuery]);
 
   return (
-    <Flex minHeight="100%">
-      <Box
-        bgColor="amarillo"
-        textAlign="left"
-        maxWidth="250px"
-        width="100%"
-        pl="5"
-      >
-        <Button
-          as={Text}
-          leftIcon={<BiFoodMenu />}
-          bg="transparent"
-          fontWeight="normal"
-          _hover={{ bgColor: "transparent", cursor: "pointer" }}
-          _active={{ bgColor: "transparent", fontWeight: "bold" }}
-          borderRadius="none"
-          my="1"
-        >
-          Mis recetas
-        </Button>
-        <Button
-          as={Text}
-          leftIcon={<FaHeart />}
-          bg="transparent"
-          fontWeight="normal"
-          _hover={{ bgColor: "transparent", cursor: "pointer" }}
-          _active={{ bgColor: "transparent", fontWeight: "bold" }}
-          borderRadius="none"
-          my="1"
-        >
-          Recetas favoritas
-        </Button>
-      </Box>
-      <Box></Box>
-    </Flex>
+    <Box bgColor="gray.100">
+      <Container>
+        <Flex direction={isMobile ? "column" : "row"}>
+          <Box width={isMobile ? "100%" : "70%"} p="2">
+            <UserInfoCard
+              user={data?.me.username!}
+              bio="Lorem ipsum dolor sit amet, lorem dorem soremLorem ipsum dolor sit amet, lorem dorem soremLorem ipsum dolor sit amet, lorem dorem soremLorem ipsum"
+            />
+          </Box>
+          <Box flexGrow={1} bgColor="blue">
+            a
+          </Box>
+        </Flex>
+      </Container>
+    </Box>
   );
 }
 
