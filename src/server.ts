@@ -11,6 +11,7 @@ import { redisClient } from "./redis/redis";
 import { userSignIn } from "./utils/userSignIn";
 import { ApolloServerLoaderPlugin } from "type-graphql-dataloader";
 import { getConnection } from "typeorm";
+import { graphqlUploadExpress } from "graphql-upload";
 import cors, { CorsOptions } from "cors";
 
 const PORT = 4000;
@@ -39,6 +40,7 @@ async function startServer() {
   });
 
   app.use(cors(corsOptions));
+  app.use(graphqlUploadExpress({ maxFiles: 1, maxFileSize: 10000000 }));
 
   app.post("/refresh_token", cookieParser(), async (req, res) => {
     //extract refresh token from cookie
@@ -101,20 +103,8 @@ async function startServer() {
   });
 
   const server = new ApolloServer({
+    uploads: false,
     schema,
-    // formatError: (err) => {
-    //   const errExtensions = err.extensions;
-    //   //Check error created by class-validator and if there is one,
-    //   //set it to be the GraphqlError message
-    //   if (errExtensions!.exception.validationErrors) {
-    //     const validationErrors = errExtensions!.exception.validationErrors;
-    //     const constraints = validationErrors[0].constraints;
-    //     const errMessage = Object.values(constraints)[0] as string;
-    //     err.message = errMessage;
-    //   }
-
-    //   return err;
-    // },
     plugins: [
       ApolloServerLoaderPlugin({
         typeormGetConnection: getConnection,
