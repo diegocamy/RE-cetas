@@ -3,6 +3,7 @@ import { groupBy } from "lodash";
 import { FieldResolver, Query, Resolver, Root } from "type-graphql";
 import { Loader } from "type-graphql-dataloader";
 import { getRepository, In } from "typeorm";
+import { Follow } from "../../entities/Follow";
 import { Like } from "../../entities/Like";
 import { Post } from "../../entities/Post";
 import { User } from "../../entities/User";
@@ -37,6 +38,60 @@ export class UsersResolver {
   })
   likedPosts(@Root() root: User) {
     return (dataloader: DataLoader<number, Like[]>) => dataloader.load(root.id);
+  }
+
+  @FieldResolver()
+  @Loader<number, Follow[]>(async (ids, { context }) => {
+    const followers = await getRepository(Follow).find({
+      where: { followingId: In([...ids]) },
+      relations: ["follower"],
+    });
+    const followersById = groupBy(followers, "followingId");
+    return ids.map((id) => followersById[id] ?? []);
+  })
+  followers(@Root() root: User) {
+    return (dataloader: DataLoader<number, Follow[]>) =>
+      dataloader.load(root.id);
+  }
+
+  @FieldResolver()
+  @Loader<number, Follow[]>(async (ids, { context }) => {
+    const followers = await getRepository(Follow).find({
+      where: { followerId: In([...ids]) },
+      relations: ["following"],
+    });
+    const followersById = groupBy(followers, "followerId");
+    return ids.map((id) => followersById[id] ?? []);
+  })
+  following(@Root() root: User) {
+    return (dataloader: DataLoader<number, Follow[]>) =>
+      dataloader.load(root.id);
+  }
+
+  @FieldResolver()
+  @Loader<number, number>(async (ids, { context }) => {
+    const followers = await getRepository(Follow).find({
+      where: { followingId: In([...ids]) },
+      relations: ["follower"],
+    });
+    const followersById = groupBy(followers, "followingId");
+    return ids.map((id) => followersById[id] ?? []).map((e) => e.length);
+  })
+  followersCount(@Root() root: User) {
+    return (dataloader: DataLoader<number, number>) => dataloader.load(root.id);
+  }
+
+  @FieldResolver()
+  @Loader<number, number>(async (ids, { context }) => {
+    const followers = await getRepository(Follow).find({
+      where: { followerId: In([...ids]) },
+      relations: ["following"],
+    });
+    const followersById = groupBy(followers, "followerId");
+    return ids.map((id) => followersById[id] ?? []).map((e) => e.length);
+  })
+  followingCount(@Root() root: User) {
+    return (dataloader: DataLoader<number, number>) => dataloader.load(root.id);
   }
 
   @FieldResolver()
