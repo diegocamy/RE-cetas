@@ -6,19 +6,23 @@ import {
   Icon,
   Image,
   Text,
+  useDisclosure,
   useMediaQuery,
 } from "@chakra-ui/react";
 import { RiCake2Line } from "react-icons/ri";
 import { FiEdit } from "react-icons/fi";
 import bg from "../assets/background.jpg";
+import EditProfileModal from "./EditProfileModal";
 
 interface Props {
   user: string;
   bio?: string;
+  avatar?: string;
 }
 
-function UserInfoCard({ user, bio }: Props) {
+function UserInfoCard({ user, bio, avatar }: Props) {
   const [isMobile] = useMediaQuery("(max-width: 1070px)");
+  const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <Flex
       direction="column"
@@ -45,7 +49,7 @@ function UserInfoCard({ user, bio }: Props) {
       >
         {isMobile ? (
           <Image
-            src={bg}
+            src={avatar || bg}
             width="100px"
             height="100px"
             borderRadius="50%"
@@ -59,7 +63,7 @@ function UserInfoCard({ user, bio }: Props) {
           />
         ) : (
           <Image
-            src={bg}
+            src={avatar || bg}
             width="150px"
             height="150px"
             borderRadius="50%"
@@ -80,9 +84,20 @@ function UserInfoCard({ user, bio }: Props) {
             justify="space-between"
           >
             <Heading size="lg">{user}</Heading>
-            <Button leftIcon={<FiEdit color="black" />} bg="amarillo" size="sm">
+            <Button
+              leftIcon={<FiEdit color="black" />}
+              bg="amarillo"
+              size="sm"
+              onClick={onOpen}
+            >
               Editar Perfil
             </Button>
+            <EditProfileModal
+              isOpen={isOpen}
+              onClose={onClose}
+              bio={bio || ""}
+              avatar={avatar || ""}
+            />
           </Flex>
           <Text lineHeight="1" mt="4" mb="4">
             {bio}

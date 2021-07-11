@@ -34,12 +34,12 @@ export class User extends BaseEntity {
   @Column({ length: 15, unique: true })
   username!: string;
 
-  @Field({ nullable: true })
-  @Column({ nullable: true, length: 150 })
+  @Field()
+  @Column({ length: 150, default: "" })
   bio!: string;
 
-  @Field({ nullable: true })
-  @Column({ nullable: true })
+  @Field()
+  @Column({ default: "" })
   avatar!: string;
 
   @Field((type) => Date)

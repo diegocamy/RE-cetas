@@ -4,7 +4,6 @@ import {
   ApolloClient,
   InMemoryCache,
   ApolloProvider,
-  createHttpLink,
   ApolloLink,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
@@ -16,8 +15,9 @@ import { onError } from "@apollo/client/link/error";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import "@fontsource/open-sans";
 import "@fontsource/raleway";
+import { createUploadLink } from "apollo-upload-client";
 
-const httpLink = createHttpLink({
+const link = createUploadLink({
   uri: "http://localhost:4000/graphql",
   credentials: "include",
 });
@@ -70,7 +70,7 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 
 const client = new ApolloClient({
   cache: new InMemoryCache(),
-  link: ApolloLink.from([errorLink, authLink, httpLink]),
+  link: ApolloLink.from([errorLink, authLink, link]),
 });
 
 const theme = extendTheme({

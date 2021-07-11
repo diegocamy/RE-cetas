@@ -28,7 +28,11 @@ function Profile() {
       <Container>
         <Flex direction={isMobile ? "column" : "row"} mx="auto" py="2">
           <Box w={isMobile ? "100%" : "70%"}>
-            <UserInfoCard user={data?.me.username!} bio={data?.me.bio || ""} />
+            <UserInfoCard
+              user={data?.me.username!}
+              bio={data?.me.bio || ""}
+              avatar={data?.me.avatar || ""}
+            />
           </Box>
           <Box w={isMobile ? "100%" : "30%"} px="2">
             <StatsBox

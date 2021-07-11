@@ -1,0 +1,6 @@
+mutation EditUserData($bio: String!, $avatar: String!) {
+  editUserBioAndAvatar(data: { bio: $bio, avatar: $avatar }) {
+    bio
+    avatar
+  }
+}

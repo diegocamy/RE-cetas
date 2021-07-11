@@ -8,7 +8,7 @@ import { isAuth } from "../../middleware/isAuth";
 
 @Resolver()
 export class EditUserBioAndAvatarResolver {
-  @Mutation(() => Boolean)
+  @Mutation(() => User)
   @UseMiddleware(isAuth)
   async editUserBioAndAvatar(
     @Ctx() { payload }: MyContext,
@@ -25,6 +25,6 @@ export class EditUserBioAndAvatarResolver {
 
     await user.save();
 
-    return true;
+    return user;
   }
 }

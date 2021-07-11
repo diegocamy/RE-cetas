@@ -14,6 +14,8 @@ export type Scalars = {
   Float: number;
   /** The javascript `Date` as integer. Type represents date and time as number of milliseconds from start of UNIX epoch. */
   Timestamp: any;
+  /** The `Upload` scalar type represents a file upload. */
+  Upload: any;
 };
 
 export type ChangePasswordInput = {
@@ -25,6 +27,17 @@ export type CreatePostInput = {
   title: Scalars['String'];
   content: Scalars['String'];
   picture: Scalars['String'];
+};
+
+export type EditUserBioAndAvatarInput = {
+  bio?: Maybe<Scalars['String']>;
+  avatar?: Maybe<Scalars['String']>;
+};
+
+export type Follow = {
+  __typename?: 'Follow';
+  follower: User;
+  following: User;
 };
 
 export type JwtPayload = {
@@ -48,7 +61,10 @@ export type Mutation = {
   likepost: Scalars['Boolean'];
   changePassword?: Maybe<JwtPayload>;
   confirmAccount?: Maybe<JwtPayload>;
+  editUserBioAndAvatar: User;
+  follow: Scalars['Boolean'];
   forgotPassword: Scalars['Boolean'];
+  imageUpload: Scalars['String'];
   invalidateRefreshTokens: Scalars['Boolean'];
   login: JwtPayload;
   logout: Scalars['Boolean'];
@@ -87,8 +103,23 @@ export type MutationConfirmAccountArgs = {
 };
 
 
+export type MutationEditUserBioAndAvatarArgs = {
+  data: EditUserBioAndAvatarInput;
+};
+
+
+export type MutationFollowArgs = {
+  username: Scalars['String'];
+};
+
+
 export type MutationForgotPasswordArgs = {
   email: Scalars['String'];
+};
+
+
+export type MutationImageUploadArgs = {
+  image: Scalars['Upload'];
 };
 
 
@@ -153,17 +184,23 @@ export type RegisterUserInput = {
 };
 
 
+
 export type User = {
   __typename?: 'User';
   id: Scalars['ID'];
   email: Scalars['String'];
   username: Scalars['String'];
-  bio?: Maybe<Scalars['String']>;
+  bio: Scalars['String'];
+  avatar: Scalars['String'];
   created: Scalars['Timestamp'];
   updated: Scalars['Timestamp'];
   posts: Array<Post>;
   likedPosts: Array<Like>;
   postCount: Scalars['Int'];
+  following: Array<Follow>;
+  followers: Array<Follow>;
+  followersCount: Scalars['Float'];
+  followingCount: Scalars['Float'];
 };
 
 export type ChangePasswordMutationVariables = Exact<{
@@ -199,6 +236,20 @@ export type ConfirmAccountMutation = (
       & Pick<User, 'username'>
     ) }
   )> }
+);
+
+export type EditUserDataMutationVariables = Exact<{
+  bio: Scalars['String'];
+  avatar: Scalars['String'];
+}>;
+
+
+export type EditUserDataMutation = (
+  { __typename?: 'Mutation' }
+  & { editUserBioAndAvatar: (
+    { __typename?: 'User' }
+    & Pick<User, 'bio' | 'avatar'>
+  ) }
 );
 
 export type ForgotPasswordMutationVariables = Exact<{
@@ -244,7 +295,7 @@ export type MeQuery = (
   { __typename?: 'Query' }
   & { me: (
     { __typename?: 'User' }
-    & Pick<User, 'username' | 'email' | 'bio' | 'created'>
+    & Pick<User, 'username' | 'email' | 'bio' | 'created' | 'avatar'>
     & { posts: Array<(
       { __typename?: 'Post' }
       & Pick<Post, 'title' | 'picture' | 'slug'>
@@ -268,6 +319,16 @@ export type RegisterMutationVariables = Exact<{
 export type RegisterMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'register'>
+);
+
+export type UploadImageMutationVariables = Exact<{
+  image: Scalars['Upload'];
+}>;
+
+
+export type UploadImageMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'imageUpload'>
 );
 
 
@@ -344,6 +405,41 @@ export function useConfirmAccountMutation(baseOptions?: Apollo.MutationHookOptio
 export type ConfirmAccountMutationHookResult = ReturnType<typeof useConfirmAccountMutation>;
 export type ConfirmAccountMutationResult = Apollo.MutationResult<ConfirmAccountMutation>;
 export type ConfirmAccountMutationOptions = Apollo.BaseMutationOptions<ConfirmAccountMutation, ConfirmAccountMutationVariables>;
+export const EditUserDataDocument = gql`
+    mutation EditUserData($bio: String!, $avatar: String!) {
+  editUserBioAndAvatar(data: {bio: $bio, avatar: $avatar}) {
+    bio
+    avatar
+  }
+}
+    `;
+export type EditUserDataMutationFn = Apollo.MutationFunction<EditUserDataMutation, EditUserDataMutationVariables>;
+
+/**
+ * __useEditUserDataMutation__
+ *
+ * To run a mutation, you first call `useEditUserDataMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEditUserDataMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [editUserDataMutation, { data, loading, error }] = useEditUserDataMutation({
+ *   variables: {
+ *      bio: // value for 'bio'
+ *      avatar: // value for 'avatar'
+ *   },
+ * });
+ */
+export function useEditUserDataMutation(baseOptions?: Apollo.MutationHookOptions<EditUserDataMutation, EditUserDataMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<EditUserDataMutation, EditUserDataMutationVariables>(EditUserDataDocument, options);
+      }
+export type EditUserDataMutationHookResult = ReturnType<typeof useEditUserDataMutation>;
+export type EditUserDataMutationResult = Apollo.MutationResult<EditUserDataMutation>;
+export type EditUserDataMutationOptions = Apollo.BaseMutationOptions<EditUserDataMutation, EditUserDataMutationVariables>;
 export const ForgotPasswordDocument = gql`
     mutation ForgotPassword($email: String!) {
   forgotPassword(email: $email)
@@ -449,6 +545,7 @@ export const MeDocument = gql`
     email
     bio
     created
+    avatar
     posts {
       title
       picture
@@ -522,3 +619,34 @@ export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<Reg
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export const UploadImageDocument = gql`
+    mutation UploadImage($image: Upload!) {
+  imageUpload(image: $image)
+}
+    `;
+export type UploadImageMutationFn = Apollo.MutationFunction<UploadImageMutation, UploadImageMutationVariables>;
+
+/**
+ * __useUploadImageMutation__
+ *
+ * To run a mutation, you first call `useUploadImageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUploadImageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [uploadImageMutation, { data, loading, error }] = useUploadImageMutation({
+ *   variables: {
+ *      image: // value for 'image'
+ *   },
+ * });
+ */
+export function useUploadImageMutation(baseOptions?: Apollo.MutationHookOptions<UploadImageMutation, UploadImageMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UploadImageMutation, UploadImageMutationVariables>(UploadImageDocument, options);
+      }
+export type UploadImageMutationHookResult = ReturnType<typeof useUploadImageMutation>;
+export type UploadImageMutationResult = Apollo.MutationResult<UploadImageMutation>;
+export type UploadImageMutationOptions = Apollo.BaseMutationOptions<UploadImageMutation, UploadImageMutationVariables>;

@@ -4,6 +4,7 @@ query Me {
     email
     bio
     created
+    avatar
     posts {
       title
       picture
