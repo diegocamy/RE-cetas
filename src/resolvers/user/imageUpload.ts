@@ -1,8 +1,9 @@
 import { FileUpload, GraphQLUpload } from "graphql-upload";
-import { Arg, Mutation, Resolver } from "type-graphql";
+import { Arg, Mutation, Resolver, UseMiddleware } from "type-graphql";
 import { UploadApiResponse, v2 as cloudinary } from "cloudinary";
 import { GraphQLError } from "graphql";
 import { ReadStream } from "fs";
+import { isAuth } from "../../middleware/isAuth";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -28,6 +29,7 @@ const uploadToCloudinary = (
 @Resolver()
 export class FileUploadResolver {
   @Mutation(() => String)
+  @UseMiddleware(isAuth)
   async imageUpload(
     @Arg("image", () => GraphQLUpload)
     { createReadStream }: FileUpload
