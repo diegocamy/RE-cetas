@@ -137,7 +137,7 @@ function Login() {
                   color="white"
                   _hover={{ bgColor: "gray.400", color: "black" }}
                 >
-                  Ingresar
+                  Registrarse
                 </Button>
               </Flex>
             </Form>

@@ -29,6 +29,7 @@ function UserInfoCard({ user, bio, avatar }: Props) {
       borderRadius="2xl"
       w="100%"
       p={isMobile ? "2" : "none"}
+      pl="2"
     >
       <Box
         height={isMobile ? "110px" : "150px"}

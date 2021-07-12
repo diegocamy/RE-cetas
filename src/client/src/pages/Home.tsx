@@ -8,18 +8,25 @@ import {
   Grid,
   Button,
 } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import dish from "../assets/dish.png";
 import background from "../assets/background.jpg";
 import RecipeCard from "../components/RecipeCard";
 import data from "../data/cardsData";
+import { useContext } from "react";
+import { AuthContext } from "../App";
 
 function Home() {
+  const { user } = useContext(AuthContext);
   const [isMobile] = useMediaQuery("(max-width:786px)");
   const [widerThan990px, widerThan630px] = useMediaQuery([
     "(min-width: 990px)",
     "(min-width: 650px)",
   ]);
+
+  if (user) {
+    return <Redirect to="/home" />;
+  }
 
   return (
     <>

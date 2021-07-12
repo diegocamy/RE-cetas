@@ -113,7 +113,10 @@ async function startServer() {
     context: ({ req, res }) => ({ req, res }),
   });
 
-  server.applyMiddleware({ app, cors: false });
+  server.applyMiddleware({
+    app,
+    cors: false,
+  });
 
   app.get("/", (req, res) => {
     res.json({

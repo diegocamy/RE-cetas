@@ -10,7 +10,6 @@ interface Props {
 function StatCard({ icon, qty, name }: Props) {
   return (
     <Flex
-      bg="gray.100"
       direction="column"
       align="center"
       justify="center"
@@ -18,6 +17,7 @@ function StatCard({ icon, qty, name }: Props) {
       borderRadius="xl"
       color="white"
       bgColor="black"
+      _hover={{ backgroundColor: "blue.500", cursor: "pointer" }}
       m="1"
       p="5"
     >

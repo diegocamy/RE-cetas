@@ -24,7 +24,10 @@ function App() {
         setUser(token.user);
         setLoading(false);
       })
-      .catch((e) => console.log(e));
+      .catch((e) => {
+        setLoading(false);
+        console.log(e);
+      });
   }, []);
 
   if (loading) return null;

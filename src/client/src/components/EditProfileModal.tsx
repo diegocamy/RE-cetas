@@ -236,7 +236,10 @@ function EditProfileModal({ isOpen, onClose, avatar, bio }: Props) {
                   bgColor="black"
                   color="white"
                   _hover={{ bgColor: "gray.400", color: "black" }}
-                  onClick={onClose}
+                  onClick={() => {
+                    setSelectedFile(undefined);
+                    onClose();
+                  }}
                 >
                   Cancelar
                 </Button>
