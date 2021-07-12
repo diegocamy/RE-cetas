@@ -68,12 +68,12 @@ function EditProfileModal({ isOpen, onClose, avatar, bio }: Props) {
 
     setSelectedFile(e.target.files[0]);
   };
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Editar perfil</ModalHeader>
-        <ModalCloseButton />
         <Formik
           initialValues={{
             bio: bio,
@@ -85,6 +85,17 @@ function EditProfileModal({ isOpen, onClose, avatar, bio }: Props) {
               let newAvatar = avatar;
 
               if (selectedFile) {
+                //check if image size is greater than 10mb
+                if (selectedFile.size > 10000000) {
+                  return toast({
+                    title: "Error al subir la imagen",
+                    description: "El archivo no puede pesar mas de 10Mb",
+                    status: "error",
+                    position: "top",
+                    isClosable: true,
+                  });
+                }
+
                 const response = await uploadImage({
                   variables: { image: selectedFile },
                 });
@@ -117,6 +128,14 @@ function EditProfileModal({ isOpen, onClose, avatar, bio }: Props) {
                 },
               });
 
+              toast({
+                title: "Perfil actualizado",
+                description: "Se ha actualizado tu perfil",
+                status: "success",
+                isClosable: true,
+                position: "top",
+              });
+
               onClose();
             } catch (err) {
               const validationErrors = getFormValidationErrors(err);
@@ -139,12 +158,15 @@ function EditProfileModal({ isOpen, onClose, avatar, bio }: Props) {
         >
           {({ isSubmitting }) => (
             <Form>
+              <ModalCloseButton disabled={isSubmitting} />
               <ModalBody pb={6}>
                 {preview && (
                   <Box textAlign="center">
                     <Text>Foto seleccionada</Text>
                     <Image
                       width="100px"
+                      height="100px"
+                      objectFit="cover"
                       borderRadius="50%"
                       src={preview}
                       m="auto"

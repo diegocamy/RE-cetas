@@ -16,8 +16,8 @@ import EditProfileModal from "./EditProfileModal";
 
 interface Props {
   user: string;
-  bio?: string;
-  avatar?: string;
+  bio: string;
+  avatar: string;
 }
 
 function UserInfoCard({ user, bio, avatar }: Props) {
@@ -95,8 +95,8 @@ function UserInfoCard({ user, bio, avatar }: Props) {
             <EditProfileModal
               isOpen={isOpen}
               onClose={onClose}
-              bio={bio || ""}
-              avatar={avatar || ""}
+              bio={bio}
+              avatar={avatar}
             />
           </Flex>
           <Text lineHeight="1" mt="4" mb="4">
