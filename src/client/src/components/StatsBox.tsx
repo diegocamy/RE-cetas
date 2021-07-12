@@ -4,6 +4,7 @@ import { GiKnifeFork } from "react-icons/gi";
 import { RiAddFill } from "react-icons/ri";
 import { FaUserFriends, FaUserPlus } from "react-icons/fa";
 import StatCard from "./StatCard";
+import { Link } from "react-router-dom";
 
 interface Props {
   favourites: number;
@@ -26,6 +27,8 @@ function StatsBox({ favourites, followers, following, recipes }: Props) {
     >
       <Button
         rightIcon={<RiAddFill />}
+        as={Link}
+        to="/new"
         bg="black"
         color="white"
         borderRadius="xl"

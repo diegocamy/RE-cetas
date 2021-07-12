@@ -10,6 +10,7 @@ import Protected from "./pages/Protected";
 import Footer from "./components/Footer";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import CreateRecipe from "./pages/CreateRecipe";
 
 function Routes() {
   return (
@@ -21,6 +22,7 @@ function Routes() {
         <Route path="/register" component={Register} />
         <PrivateRoute path="/home" component={Profile} />
         <PrivateRoute path="/protected" component={Protected} />
+        <PrivateRoute path="/new" component={CreateRecipe} />
         <Route path="/forgot-password" component={ForgotPassword} />
         <Route path="/user/confirm-account/:token" component={ConfirmAccount} />
         <Route path="/user/reset-password/:token" component={ResetPassword} />
