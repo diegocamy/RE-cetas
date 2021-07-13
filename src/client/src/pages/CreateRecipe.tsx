@@ -1,46 +1,13 @@
-import { Box, Button, Heading } from "@chakra-ui/react";
-import { Editor, EditorState, RichUtils } from "draft-js";
-import "draft-js/dist/Draft.css";
-import { useState } from "react";
+import { Box, Container, Heading } from "@chakra-ui/react";
+import TextEditor from "../components/TextEditor";
 
 function CreateRecipe() {
-  const [editorState, setEditorState] = useState(() =>
-    EditorState.createEmpty()
-  );
   return (
-    <Box>
-      <Heading textAlign="center">Crear Receta</Heading>
-      <Button
-        color="blue.500"
-        onClick={() => {
-          const nextState = RichUtils.toggleInlineStyle(editorState, "ITALIC");
-          setEditorState(nextState);
-        }}
-      >
-        Italic
-      </Button>
-      <Button
-        color="blue.500"
-        onClick={() => {
-          const nextState = RichUtils.toggleInlineStyle(
-            editorState,
-            "UNDERLINE"
-          );
-          setEditorState(nextState);
-        }}
-      >
-        Underline
-      </Button>
-      <Button
-        color="blue.500"
-        onClick={() => {
-          const nextState = RichUtils.toggleInlineStyle(editorState, "BOLD");
-          setEditorState(nextState);
-        }}
-      >
-        Bold
-      </Button>
-      <Editor editorState={editorState} onChange={setEditorState} />;
+    <Box bg="gray.100" py="2" height="100%">
+      <Container>
+        <Heading textAlign="center">Crears Receta</Heading>
+        <TextEditor />
+      </Container>
     </Box>
   );
 }
