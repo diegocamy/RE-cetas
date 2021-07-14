@@ -10,27 +10,42 @@ body,
   height: calc(100% - 78px);
 }
 
-div.t16lpgj {
+.tip {
+  background-color: rgb(182, 226, 255);
+  padding: 3rem 1rem;
+  border-radius: 1.5rem;
+  position: relative;
   margin-bottom: 1rem;
+}
+
+.tip::before {
+  content: "Consejo:";
   width: fit-content;
-  margin: auto;
+  position: absolute;
+  top: 10px;
+  left: 20px;
+  font-size: x-large;
+  font-weight: bold;
+  color: gray;
 }
 
-div.t16lpgj > div {
-  display: flex;
-  justify-content: center;
+.tip::after {
+  content: "";
+  width: 50px;
+  height: 50px;
+  background-image: url("./assets/bulb.svg");
+  filter: contrast(20%);
+  background-size: cover;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
 }
 
-div.t16lpgj > div > div > button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0;
-}
-div.t16lpgj > div > div > button > svg {
-  margin-bottom: 0;
+.subtitulo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
 }
 
-.superfancyblock {
-  background-color: lightpink;
+.lista {
 }

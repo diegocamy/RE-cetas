@@ -5,7 +5,7 @@ function CreateRecipe() {
   return (
     <Box bg="gray.100" py="2" height="100%">
       <Container>
-        <Heading textAlign="center">Crears Receta</Heading>
+        <Heading textAlign="center">Crear Receta</Heading>
         <TextEditor />
       </Container>
     </Box>

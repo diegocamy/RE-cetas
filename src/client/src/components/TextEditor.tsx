@@ -1,20 +1,31 @@
 import { Box, Flex } from "@chakra-ui/react";
-import { EditorState, convertToRaw, convertFromRaw } from "draft-js";
-import Editor from "@draft-js-plugins/editor";
-import createToolbarPlugin from "@draft-js-plugins/static-toolbar";
 import {
-  BoldButton,
-  CodeButton,
-  HeadlineOneButton,
-  OrderedListButton,
-  CodeBlockButton,
-} from "@draft-js-plugins/buttons";
+  EditorState,
+  convertToRaw,
+  convertFromRaw,
+  Editor,
+  ContentBlock,
+} from "draft-js";
 import { useRef, useState, useEffect } from "react";
 import "draft-js/dist/Draft.css";
-import "@draft-js-plugins/static-toolbar/lib/plugin.css";
+import TextEditorButtons from "./TextEditorButtons";
 
-const toolbarPlugin = createToolbarPlugin();
-const { Toolbar } = toolbarPlugin;
+const myBockStyleFn = (block: ContentBlock) => {
+  const type = block.getType();
+  switch (type) {
+    case "blockquote": {
+      return "tip";
+    }
+    case "header-three": {
+      return "subtitulo";
+    }
+    case "ordered-list-item": {
+      return "lista";
+    }
+    default:
+      return type;
+  }
+};
 
 function TextEditor() {
   const [editorState, setEditorState] = useState(() => {
@@ -41,10 +52,14 @@ function TextEditor() {
   }, [editorState]);
 
   return (
-    <Flex direction="column">
+    <Flex direction="column" maxH="450px">
+      <TextEditorButtons
+        editorState={editorState}
+        setEditorState={setEditorState}
+      />
       <Box
         w="100%"
-        height="70%"
+        overflowY="auto"
         bgColor="white"
         borderRadius="md"
         border="1px solid lightgray"
@@ -54,26 +69,12 @@ function TextEditor() {
           editorRef.current?.focus();
         }}
       >
-        <Toolbar>
-          {
-            // may be use React.Fragment instead of div to improve perfomance after React 16
-            (externalProps) => (
-              <div>
-                <BoldButton {...externalProps} />
-                <HeadlineOneButton {...externalProps} />
-                <CodeButton {...externalProps} />
-                <OrderedListButton {...externalProps} />
-                <CodeBlockButton {...externalProps} />
-              </div>
-            )
-          }
-        </Toolbar>
         <Editor
           editorState={editorState}
           onChange={setEditorState}
           placeholder="Tu receta..."
           ref={editorRef}
-          plugins={[toolbarPlugin]}
+          blockStyleFn={myBockStyleFn}
         />
       </Box>
     </Flex>
