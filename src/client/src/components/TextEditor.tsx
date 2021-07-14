@@ -1,16 +1,15 @@
 import { Box, Flex } from "@chakra-ui/react";
-import {
-  EditorState,
-  convertToRaw,
-  convertFromRaw,
-  Editor,
-  ContentBlock,
-} from "draft-js";
-import { useRef, useState, useEffect } from "react";
+import { EditorState, convertToRaw, Editor, ContentBlock } from "draft-js";
+import { useRef, useEffect } from "react";
 import "draft-js/dist/Draft.css";
 import TextEditorButtons from "./TextEditorButtons";
 
-const myBockStyleFn = (block: ContentBlock) => {
+interface Props {
+  editorState: EditorState;
+  setEditorState: React.Dispatch<React.SetStateAction<EditorState>>;
+}
+
+export const myBockStyleFn = (block: ContentBlock) => {
   const type = block.getType();
   switch (type) {
     case "blockquote": {
@@ -27,15 +26,7 @@ const myBockStyleFn = (block: ContentBlock) => {
   }
 };
 
-function TextEditor() {
-  const [editorState, setEditorState] = useState(() => {
-    const data = localStorage.getItem("receta");
-    if (!data) {
-      return EditorState.createEmpty();
-    }
-
-    return EditorState.createWithContent(convertFromRaw(JSON.parse(data))); //return editor content from the localstorage
-  });
+function TextEditor({ editorState, setEditorState }: Props) {
   const editorRef = useRef<Editor>(null);
 
   //save editor content to localstorage every two seconds if there is content
