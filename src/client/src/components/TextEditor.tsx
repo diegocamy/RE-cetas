@@ -33,9 +33,7 @@ function TextEditor({ editorState, setEditorState }: Props) {
   useEffect(() => {
     const timeout = setTimeout(() => {
       const state = convertToRaw(editorState.getCurrentContent());
-      if (state.blocks.length === 1 && !state.blocks[0].text) {
-        return console.log("Is empty");
-      }
+
       localStorage.setItem("receta", JSON.stringify(state));
     }, 2000);
 
