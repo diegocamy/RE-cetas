@@ -13,7 +13,6 @@ import {
   TabPanel,
   TabPanels,
   Tabs,
-  Heading,
 } from "@chakra-ui/react";
 import TextEditor from "../components/TextEditor";
 import { useState, useEffect } from "react";
@@ -26,23 +25,39 @@ function CreateRecipe() {
   const [title, setTitle] = useState("");
   const [selectedFile, setSelectedFile] = useState<File>();
   const [preview, setPreview] = useState<string | undefined>();
-  const [markup, setMarkup] = useState<string>(() => {
-    const data = localStorage.getItem("receta");
-    if (!data) {
-      return "";
+  const [markup, setMarkup] = useState<string>("");
+  const [editorState, setEditorState] = useState<EditorState>(
+    EditorState.createEmpty()
+  );
+
+  //load data from localstorage if there is any
+  useEffect(() => {
+    const storedData = localStorage.getItem("receta");
+    if (!storedData) {
+      setTitle("");
+      setEditorState(EditorState.createEmpty());
+      setMarkup("");
+      return;
     }
 
-    return JSON.parse(data);
-  });
-  const [editorState, setEditorState] = useState<EditorState>(() => {
-    const data = localStorage.getItem("receta");
-    if (!data) {
-      return EditorState.createEmpty();
-    }
+    const data: any = JSON.parse(storedData!);
 
-    return EditorState.createWithContent(convertFromRaw(JSON.parse(data))); //return editor content from the localstorage
-  });
+    setTitle(data.title);
+    setEditorState(EditorState.createWithContent(convertFromRaw(data.state)));
+  }, []);
 
+  //save post content to localstorage every two seconds if there is content
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      const state = convertToRaw(editorState.getCurrentContent());
+
+      localStorage.setItem("receta", JSON.stringify({ state, title }));
+    }, 2000);
+
+    return () => clearTimeout(timeout);
+  }, [editorState, title, selectedFile]);
+
+  //change image preview url
   useEffect(() => {
     if (!selectedFile) {
       setPreview("");
@@ -55,6 +70,7 @@ function CreateRecipe() {
     return () => URL.revokeObjectURL(objectUrl);
   }, [selectedFile]);
 
+  //create markup
   useEffect(() => {
     const rawState = convertToRaw(editorState.getCurrentContent());
     const markup = draftToHTML(rawState);

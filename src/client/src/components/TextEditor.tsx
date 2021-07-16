@@ -1,6 +1,6 @@
 import { Box, Flex } from "@chakra-ui/react";
-import { EditorState, convertToRaw, Editor, ContentBlock } from "draft-js";
-import { useRef, useEffect } from "react";
+import { EditorState, Editor, ContentBlock } from "draft-js";
+import { useRef } from "react";
 import "draft-js/dist/Draft.css";
 import TextEditorButtons from "./TextEditorButtons";
 
@@ -28,17 +28,6 @@ export const myBockStyleFn = (block: ContentBlock) => {
 
 function TextEditor({ editorState, setEditorState }: Props) {
   const editorRef = useRef<Editor>(null);
-
-  //save editor content to localstorage every two seconds if there is content
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      const state = convertToRaw(editorState.getCurrentContent());
-
-      localStorage.setItem("receta", JSON.stringify(state));
-    }, 2000);
-
-    return () => clearTimeout(timeout);
-  }, [editorState]);
 
   return (
     <Flex direction="column" maxH="450px">
