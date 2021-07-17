@@ -23,7 +23,7 @@ function ConfirmAccount() {
         setAccessToken(jwt);
         setUser(username);
 
-        history.replace("/me");
+        history.replace("/home");
       })
       .catch((e) => {});
   }, [confirm, history, params.token, setUser]);
