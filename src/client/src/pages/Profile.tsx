@@ -6,7 +6,9 @@ import UserInfoCard from "../components/UserInfoCard";
 import { useMeLazyQuery } from "../generated/graphql";
 
 function Profile() {
-  const [executeQuery, { data, loading }] = useMeLazyQuery();
+  const [executeQuery, { data, loading }] = useMeLazyQuery({
+    fetchPolicy: "network-only",
+  });
   const [isMobile] = useMediaQuery("(max-width: 1070px)");
 
   useEffect(() => {

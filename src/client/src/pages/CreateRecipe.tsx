@@ -13,6 +13,11 @@ import {
   TabPanel,
   TabPanels,
   Tabs,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
 } from "@chakra-ui/react";
 import TextEditor from "../components/TextEditor";
 import { useState, useEffect } from "react";
@@ -32,6 +37,7 @@ function CreateRecipe() {
   const [uploadImage] = useUploadImageMutation();
   const [createPost] = useCreatePostMutation();
   const [title, setTitle] = useState("");
+  const [time, setTime] = useState("0");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File>();
   const [preview, setPreview] = useState<string | undefined>();
@@ -47,12 +53,14 @@ function CreateRecipe() {
       setTitle("");
       setEditorState(EditorState.createEmpty());
       setMarkup("");
+      setTime("0");
       return;
     }
 
     const data: any = JSON.parse(storedData!);
 
     setTitle(data.title);
+    setTime(data.time);
     setEditorState(EditorState.createWithContent(convertFromRaw(data.state)));
   }, []);
 
@@ -61,11 +69,11 @@ function CreateRecipe() {
     const timeout = setTimeout(() => {
       const state = convertToRaw(editorState.getCurrentContent());
 
-      localStorage.setItem("receta", JSON.stringify({ state, title }));
+      localStorage.setItem("receta", JSON.stringify({ state, title, time }));
     }, 2000);
 
     return () => clearTimeout(timeout);
-  }, [editorState, title, selectedFile]);
+  }, [editorState, title, selectedFile, time]);
 
   //change image preview url
   useEffect(() => {
@@ -103,6 +111,7 @@ function CreateRecipe() {
       image: selectedFile,
       content: convertToRaw(editorState.getCurrentContent()),
       imageUrl: "",
+      time,
     };
 
     const isValid = validatePostContent(values, toast);
@@ -135,6 +144,7 @@ function CreateRecipe() {
           content: JSON.stringify(values.content),
           picture: values.imageUrl,
           title: values.title,
+          time: values.time,
         },
       });
       if (!data) return;
@@ -143,7 +153,7 @@ function CreateRecipe() {
       localStorage.removeItem("receta");
       setIsSubmitting(false);
 
-      history.push(`/${data.createPost.slug}`);
+      history.push(`/recipe/${data.createPost.slug}`);
     } catch (err) {
       return toast({
         position: "top",
@@ -184,6 +194,27 @@ function CreateRecipe() {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                   />
+                </InputGroup>
+                <InputGroup mb="2" display="flex" flexDirection="column">
+                  <FormLabel htmlFor="time">
+                    Tiempo de preparación (minutos)
+                  </FormLabel>
+                  <NumberInput
+                    step={5}
+                    defaultValue={0}
+                    min={0}
+                    max={360}
+                    id="time"
+                    name="time"
+                    value={time}
+                    onChange={(value) => setTime(value)}
+                  >
+                    <NumberInputField bg="white" />
+                    <NumberInputStepper>
+                      <NumberIncrementStepper />
+                      <NumberDecrementStepper />
+                    </NumberInputStepper>
+                  </NumberInput>
                 </InputGroup>
                 {preview && (
                   <Box textAlign="center">
@@ -234,6 +265,7 @@ function CreateRecipe() {
                 markup={markup}
                 title={title}
                 image={preview ? preview : ""}
+                time={time}
               />
             </TabPanel>
           </TabPanels>

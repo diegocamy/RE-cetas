@@ -1,0 +1,13 @@
+query GetPost($slug: String!) {
+  getPost(slug: $slug) {
+    title
+    picture
+    content
+    likeCount
+    created
+    author {
+      username
+      avatar
+    }
+  }
+}

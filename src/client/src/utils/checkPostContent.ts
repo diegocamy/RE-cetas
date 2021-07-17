@@ -2,6 +2,7 @@ import { RawDraftContentState } from "draft-js";
 
 interface PostContent {
   title: string;
+  time: string;
   image: File | undefined;
   content: RawDraftContentState;
   imageUrl?: string;
@@ -16,6 +17,17 @@ export const validatePostContent = (
       title: "Error",
       status: "error",
       description: "La receta debe tener un título",
+      isClosable: true,
+      position: "top",
+    });
+    return false;
+  }
+
+  if (!values.time || values.time === "0") {
+    toast({
+      title: "Error",
+      status: "error",
+      description: "Debe ingresar el tiempo de preparacion",
       isClosable: true,
       position: "top",
     });

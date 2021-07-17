@@ -1,5 +1,4 @@
 import { Resolver, Arg, Ctx, Mutation, UseMiddleware } from "type-graphql";
-import { v4 } from "uuid";
 import { Post } from "../../entities/Post";
 import { User } from "../../entities/User";
 import { CreatePostInput } from "../../input-types/CreatePostInput";
@@ -12,7 +11,7 @@ export class CreatePostResolver {
   @Mutation(() => Post)
   @UseMiddleware(isAuth)
   async createPost(
-    @Arg("data") { content, picture, title }: CreatePostInput,
+    @Arg("data") { content, picture, title, time }: CreatePostInput,
     @Ctx() { payload }: MyContext
   ) {
     const userId = payload?.userId;
@@ -23,6 +22,7 @@ export class CreatePostResolver {
 
     const post = await Post.create({
       author: loggedUser,
+      time,
       title,
       content,
       picture,

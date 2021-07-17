@@ -37,6 +37,10 @@ export class Post extends BaseEntity {
   @Column()
   picture!: string;
 
+  @Field()
+  @Column()
+  time!: string;
+
   @Field((type) => Date)
   @CreateDateColumn()
   created!: Date;

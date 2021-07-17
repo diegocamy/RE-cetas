@@ -1,5 +1,12 @@
-mutation CreatePost($title: String!, $content: String!, $picture: String!) {
-  createPost(data: { title: $title, content: $content, picture: $picture }) {
+mutation CreatePost(
+  $title: String!
+  $content: String!
+  $picture: String!
+  $time: String!
+) {
+  createPost(
+    data: { title: $title, content: $content, picture: $picture, time: $time }
+  ) {
     slug
   }
 }

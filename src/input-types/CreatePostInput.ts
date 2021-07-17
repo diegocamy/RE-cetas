@@ -24,4 +24,10 @@ export class CreatePostInput implements Partial<Post> {
     message: "Debe proporcionar una imagen para la publicación",
   })
   picture!: string;
+
+  @Field()
+  @IsNotEmpty({
+    message: "Debe proporcionar el tiempo estimado que lleva la preparacion",
+  })
+  time!: string;
 }
