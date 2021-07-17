@@ -19,10 +19,18 @@ import { useState, useEffect } from "react";
 import { convertFromRaw, convertToRaw, EditorState } from "draft-js";
 import draftToHTML from "draftjs-to-html";
 import PreviewPost from "../components/PreviewPost";
+import { validatePostContent } from "../utils/checkPostContent";
+import {
+  useCreatePostMutation,
+  useUploadImageMutation,
+} from "../generated/graphql";
 
 function CreateRecipe() {
   const toast = useToast();
+  const [uploadImage] = useUploadImageMutation();
+  const [createPost] = useCreatePostMutation();
   const [title, setTitle] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File>();
   const [preview, setPreview] = useState<string | undefined>();
   const [markup, setMarkup] = useState<string>("");
@@ -87,14 +95,58 @@ function CreateRecipe() {
     setSelectedFile(e.target.files[0]);
   };
 
-  const submitPost = () => {
+  const submitPost = async () => {
     const values = {
       title,
       image: selectedFile,
       content: convertToRaw(editorState.getCurrentContent()),
+      imageUrl: "",
     };
 
-    console.log(values);
+    const isValid = validatePostContent(values, toast);
+    if (!isValid) return;
+
+    setIsSubmitting(true);
+
+    //upload image to cloudinary
+    try {
+      const { data } = await uploadImage({
+        variables: { image: values.image },
+      });
+      if (!data) return;
+      //add the updated image url to the values object
+      values.imageUrl = data.imageUpload;
+    } catch (err) {
+      return toast({
+        position: "top",
+        title: "Error",
+        status: "error",
+        description: err.message,
+        isClosable: true,
+      });
+    }
+
+    //save the post in the database
+    try {
+      const { data } = await createPost({
+        variables: {
+          content: JSON.stringify(values.content),
+          picture: values.imageUrl,
+          title: values.title,
+        },
+      });
+      if (!data) return;
+      console.log(data.createPost.slug);
+      setIsSubmitting(false);
+    } catch (err) {
+      return toast({
+        position: "top",
+        title: "Error",
+        status: "error",
+        description: err.message,
+        isClosable: true,
+      });
+    }
   };
 
   return (
@@ -181,7 +233,14 @@ function CreateRecipe() {
           </TabPanels>
         </Tabs>
         <Flex justifyContent="flex-end" mt="2">
-          <Button color="white" bgColor="blue.500" onClick={submitPost}>
+          <Button
+            color="white"
+            bgColor="blue.500"
+            onClick={submitPost}
+            _hover={{ bgColor: "blue.700" }}
+            isLoading={isSubmitting}
+            disabled={isSubmitting}
+          >
             Publicar
           </Button>
         </Flex>
