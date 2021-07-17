@@ -79,6 +79,15 @@ function Register() {
               await register({
                 variables: values,
               });
+
+              toast({
+                title: "Exito",
+                description:
+                  "Se le enviará un correo electrónico para confirmar el registro",
+                position: "top",
+                status: "success",
+                isClosable: true,
+              });
             } catch (err) {
               const validationErrors = getFormValidationErrors(err);
 
