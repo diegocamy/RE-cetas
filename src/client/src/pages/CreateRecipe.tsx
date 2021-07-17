@@ -24,8 +24,10 @@ import {
   useCreatePostMutation,
   useUploadImageMutation,
 } from "../generated/graphql";
+import { useHistory } from "react-router-dom";
 
 function CreateRecipe() {
+  const history = useHistory();
   const toast = useToast();
   const [uploadImage] = useUploadImageMutation();
   const [createPost] = useCreatePostMutation();
@@ -136,8 +138,12 @@ function CreateRecipe() {
         },
       });
       if (!data) return;
-      console.log(data.createPost.slug);
+
+      //clear localstorage
+      localStorage.removeItem("receta");
       setIsSubmitting(false);
+
+      history.push(`/${data.createPost.slug}`);
     } catch (err) {
       return toast({
         position: "top",
