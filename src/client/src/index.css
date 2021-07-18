@@ -16,7 +16,7 @@ blockquote {
   padding: 3rem 1rem;
   border-radius: 1.5rem;
   position: relative;
-  margin-bottom: 1rem !important;
+  margin: 1rem 0 !important;
 }
 
 .tip::before,
@@ -25,8 +25,8 @@ blockquote::before {
   width: fit-content;
   position: absolute;
   top: 10px;
-  left: 20px;
-  font-size: x-large;
+  left: 10px;
+  font-size: larger;
   font-weight: bold;
   color: gray;
 }
@@ -34,8 +34,8 @@ blockquote::before {
 .tip::after,
 blockquote::after {
   content: "";
-  width: 50px;
-  height: 50px;
+  width: 30px;
+  height: 30px;
   background-image: url("./assets/bulb.svg");
   filter: contrast(20%);
   background-size: cover;
@@ -61,4 +61,12 @@ h3 {
   font-size: 1.5rem;
   font-weight: bold;
   margin-bottom: 1rem;
+}
+
+@media screen and (max-width: 600px) {
+  .tip,
+  blockquote {
+    padding: 2rem 1rem;
+    padding-top: 2.3rem;
+  }
 }

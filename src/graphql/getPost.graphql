@@ -5,6 +5,7 @@ query GetPost($slug: String!) {
     content
     likeCount
     created
+    time
     author {
       username
       avatar

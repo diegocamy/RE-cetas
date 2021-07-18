@@ -1,5 +1,9 @@
 import { useGetPostQuery } from "../generated/graphql";
 import { useParams } from "react-router-dom";
+import { Flex } from "@chakra-ui/react";
+import draftToHTML from "draftjs-to-html";
+import PreviewPost from "../components/PreviewPost";
+
 interface Params {
   slug: string;
 }
@@ -11,19 +15,23 @@ function Recipe() {
     variables: { slug },
   });
   if (loading) {
-    return <div>Loading</div>;
+    return null;
   }
 
-  if (!data) {
+  if (!data || !data.getPost) {
     return <div>Recipe not found</div>;
   }
 
   console.log(data);
   return (
-    <div>
-      {data.getPost?.title}
-      <img src={data.getPost?.picture} alt="receta" />
-    </div>
+    <Flex justify="center" bgColor="gray.100" py="8">
+      <PreviewPost
+        image={data.getPost.picture}
+        markup={draftToHTML(JSON.parse(data.getPost.content))}
+        title={data.getPost.title}
+        time={data.getPost.time}
+      />
+    </Flex>
   );
 }
 

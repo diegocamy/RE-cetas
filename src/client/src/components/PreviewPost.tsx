@@ -9,7 +9,7 @@ interface Props {
 
 function PreviewPost({ markup, image, title, time }: Props) {
   return (
-    <>
+    <Box>
       {image && (
         <Image
           width="100%"
@@ -24,7 +24,7 @@ function PreviewPost({ markup, image, title, time }: Props) {
         <Text mb="7">Tiempo de preparación: {time} min.</Text>
         <Box dangerouslySetInnerHTML={{ __html: markup }} className="post" />
       </Box>
-    </>
+    </Box>
   );
 }
 
