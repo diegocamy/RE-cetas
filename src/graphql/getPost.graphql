@@ -9,6 +9,11 @@ query GetPost($slug: String!) {
     author {
       username
       avatar
+      followers {
+        follower {
+          username
+        }
+      }
     }
   }
 }

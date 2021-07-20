@@ -44,6 +44,7 @@ function Recipe() {
         <AuthorCard
           avatar={data.getPost.author.avatar}
           username={data.getPost.author.username}
+          followers={data.getPost.author.followers}
         />
       </Box>
     </Flex>

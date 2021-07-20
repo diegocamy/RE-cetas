@@ -276,6 +276,16 @@ export type EditUserDataMutation = (
   ) }
 );
 
+export type FollowMutationVariables = Exact<{
+  username: Scalars['String'];
+}>;
+
+
+export type FollowMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'follow'>
+);
+
 export type ForgotPasswordMutationVariables = Exact<{
   email: Scalars['String'];
 }>;
@@ -299,6 +309,13 @@ export type GetPostQuery = (
     & { author: (
       { __typename?: 'User' }
       & Pick<User, 'username' | 'avatar'>
+      & { followers: Array<(
+        { __typename?: 'Follow' }
+        & { follower: (
+          { __typename?: 'User' }
+          & Pick<User, 'username'>
+        ) }
+      )> }
     ) }
   )> }
 );
@@ -519,6 +536,37 @@ export function useEditUserDataMutation(baseOptions?: Apollo.MutationHookOptions
 export type EditUserDataMutationHookResult = ReturnType<typeof useEditUserDataMutation>;
 export type EditUserDataMutationResult = Apollo.MutationResult<EditUserDataMutation>;
 export type EditUserDataMutationOptions = Apollo.BaseMutationOptions<EditUserDataMutation, EditUserDataMutationVariables>;
+export const FollowDocument = gql`
+    mutation Follow($username: String!) {
+  follow(username: $username)
+}
+    `;
+export type FollowMutationFn = Apollo.MutationFunction<FollowMutation, FollowMutationVariables>;
+
+/**
+ * __useFollowMutation__
+ *
+ * To run a mutation, you first call `useFollowMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useFollowMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [followMutation, { data, loading, error }] = useFollowMutation({
+ *   variables: {
+ *      username: // value for 'username'
+ *   },
+ * });
+ */
+export function useFollowMutation(baseOptions?: Apollo.MutationHookOptions<FollowMutation, FollowMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<FollowMutation, FollowMutationVariables>(FollowDocument, options);
+      }
+export type FollowMutationHookResult = ReturnType<typeof useFollowMutation>;
+export type FollowMutationResult = Apollo.MutationResult<FollowMutation>;
+export type FollowMutationOptions = Apollo.BaseMutationOptions<FollowMutation, FollowMutationVariables>;
 export const ForgotPasswordDocument = gql`
     mutation ForgotPassword($email: String!) {
   forgotPassword(email: $email)
@@ -562,6 +610,11 @@ export const GetPostDocument = gql`
     author {
       username
       avatar
+      followers {
+        follower {
+          username
+        }
+      }
     }
   }
 }
