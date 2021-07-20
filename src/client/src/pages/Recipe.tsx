@@ -28,14 +28,16 @@ function Recipe() {
   console.log(data);
   return (
     <Flex justify="center" bgColor="gray.100" py="8" flexWrap="wrap">
-      <PreviewPost
-        image={data.getPost.picture}
-        markup={draftToHTML(JSON.parse(data.getPost.content))}
-        title={data.getPost.title}
-        time={data.getPost.time}
-      />
+      <Box maxWidth="750px" width="100%">
+        <PreviewPost
+          image={data.getPost.picture}
+          markup={draftToHTML(JSON.parse(data.getPost.content))}
+          title={data.getPost.title}
+          time={data.getPost.time}
+        />
+      </Box>
       <Box
-        width={isMobile ? "750px" : "400px"}
+        width={isMobile ? "750px" : "350px"}
         mx={isMobile ? "none" : 3}
         my={isMobile ? 3 : "none"}
       >
