@@ -1,6 +1,6 @@
 import DataLoader from "dataloader";
 import { groupBy } from "lodash";
-import { FieldResolver, Query, Resolver, Root } from "type-graphql";
+import { Arg, FieldResolver, Query, Resolver, Root } from "type-graphql";
 import { Loader } from "type-graphql-dataloader";
 import { getRepository, In } from "typeorm";
 import { Follow } from "../../entities/Follow";
@@ -11,7 +11,7 @@ import { User } from "../../entities/User";
 @Resolver((of) => User)
 export class UsersResolver {
   @Query(() => [User])
-  async users(): Promise<User[]> {
+  async users(@Arg("limitFollowers") limitFollowers: number): Promise<User[]> {
     return User.find();
   }
 
@@ -49,7 +49,8 @@ export class UsersResolver {
     const followersById = groupBy(followers, "followingId");
     return ids.map((id) => followersById[id] ?? []);
   })
-  followers(@Root() root: User) {
+  followers(@Root() root: User, @Arg("limit") limit: number) {
+    //TODO: LIMIT NUMBER OF FOLLOWERS
     return (dataloader: DataLoader<number, Follow[]>) =>
       dataloader.load(root.id);
   }

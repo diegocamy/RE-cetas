@@ -23,7 +23,7 @@ function Profile() {
     };
   }, [executeQuery]);
 
-  if (loading) return <p>Loading</p>;
+  if (loading) return null;
 
   return (
     <Box bgColor="gray.100">
