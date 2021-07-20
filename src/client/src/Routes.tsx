@@ -11,6 +11,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import CreateRecipe from "./pages/CreateRecipe";
 import Recipe from "./pages/Recipe";
+import NotFound from "./pages/NotFound";
 
 function Routes() {
   return (
@@ -26,6 +27,7 @@ function Routes() {
         <Route path="/forgot-password" component={ForgotPassword} />
         <Route path="/user/confirm-account/:token" component={ConfirmAccount} />
         <Route path="/user/reset-password/:token" component={ResetPassword} />
+        <Route component={NotFound} />
       </Switch>
       <Footer />
     </Router>

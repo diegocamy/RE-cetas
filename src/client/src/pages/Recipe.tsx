@@ -1,5 +1,5 @@
 import { useGetPostQuery } from "../generated/graphql";
-import { useParams } from "react-router-dom";
+import { Redirect, useParams } from "react-router-dom";
 import { Box, Flex, useMediaQuery } from "@chakra-ui/react";
 import draftToHTML from "draftjs-to-html";
 import PreviewPost from "../components/PreviewPost";
@@ -22,10 +22,9 @@ function Recipe() {
   }
 
   if (!data || !data.getPost) {
-    return <div>Recipe not found</div>;
+    return <Redirect to="/404" />;
   }
 
-  console.log(data);
   return (
     <Flex justify="center" bgColor="gray.100" py="8" flexWrap="wrap">
       <Box maxWidth="750px" width="100%">

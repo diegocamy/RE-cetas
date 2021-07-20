@@ -35,7 +35,7 @@ function AuthorCard({ avatar, username, followers }: Props) {
 
   const handleClick = async () => {
     try {
-      const resp = await follow({
+      await follow({
         variables: { username },
       });
 
