@@ -61,6 +61,10 @@ export class User extends BaseEntity {
   @TypeormLoader()
   posts!: Post[];
 
+  @Field((type) => [Post])
+  @TypeormLoader()
+  last4posts!: Post[];
+
   @Field((type) => [Like])
   @OneToMany((type) => Like, (like) => like.userId)
   @TypeormLoader()

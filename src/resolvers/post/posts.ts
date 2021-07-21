@@ -5,36 +5,43 @@ import { getRepository, In, Like } from "typeorm";
 import { Post } from "../../entities/Post";
 import { PostSearchInputType } from "../../input-types/PostSearchInput";
 import { Like as PostLike } from "../../entities/Like";
-import { groupBy } from "lodash";
+import { groupBy, take } from "lodash";
 
 @Resolver(() => Post)
 export class PostsResolver {
   @Query(() => [Post])
   async posts(
     @Arg("data", { nullable: true })
-    data: PostSearchInputType
+    data: PostSearchInputType,
+    @Arg("limit", { nullable: true }) limit: number
   ): Promise<Post[]> {
     if (data) {
       const { authorId, id, slug, title } = data;
 
       if (id) {
-        return await Post.find({ where: { id } });
+        return await Post.find({ where: { id }, take: limit });
       }
 
       if (slug) {
-        return await Post.find({ slug: Like(`%${slug}%`) });
+        return await Post.find({
+          where: { slug: Like(`%${slug}%`) },
+          take: limit,
+        });
       }
 
       if (title) {
-        return await Post.find({ title: Like(`%${title}%`) });
+        return await Post.find({
+          where: { title: Like(`%${title}%`) },
+          take: limit,
+        });
       }
 
       if (authorId) {
-        return await Post.find({ where: { authorId } });
+        return await Post.find({ where: { authorId }, take: limit });
       }
     }
 
-    return await Post.find({ order: { created: "DESC" } });
+    return await Post.find({ order: { created: "DESC" }, take: limit });
   }
 
   @FieldResolver()

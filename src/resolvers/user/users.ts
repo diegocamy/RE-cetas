@@ -11,12 +11,12 @@ import { User } from "../../entities/User";
 @Resolver((of) => User)
 export class UsersResolver {
   @Query(() => [User])
-  async users(@Arg("limitFollowers") limitFollowers: number): Promise<User[]> {
+  async users(): Promise<User[]> {
     return User.find();
   }
 
   @FieldResolver()
-  @Loader<number, Post[]>(async (ids, { context }) => {
+  @Loader<number, Post[]>(async (ids, data) => {
     const posts = await getRepository(Post).find({
       where: { author: { id: In([...ids]) } },
     });
@@ -49,8 +49,7 @@ export class UsersResolver {
     const followersById = groupBy(followers, "followingId");
     return ids.map((id) => followersById[id] ?? []);
   })
-  followers(@Root() root: User, @Arg("limit") limit: number) {
-    //TODO: LIMIT NUMBER OF FOLLOWERS
+  followers(@Root() root: User) {
     return (dataloader: DataLoader<number, Follow[]>) =>
       dataloader.load(root.id);
   }
@@ -105,5 +104,19 @@ export class UsersResolver {
   })
   postCount(@Root() root: User) {
     return (dataloader: DataLoader<number, number>) => dataloader.load(root.id);
+  }
+
+  @FieldResolver()
+  @Loader<number, Post[]>(async (ids, { context }) => {
+    const posts = await getRepository(Post).find({
+      where: { author: { id: In([...ids]) } },
+      take: 4,
+      order: { created: "DESC" },
+    });
+    const postsByUserId = groupBy(posts, "authorId");
+    return ids.map((id) => postsByUserId[id] ?? []);
+  })
+  last4posts(@Root() root: User) {
+    return (dataloader: DataLoader<number, Post[]>) => dataloader.load(root.id);
   }
 }
