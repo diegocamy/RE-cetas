@@ -42,9 +42,9 @@ function Recipe() {
 
   const deleteRecipe = async () => {
     try {
+      onClose();
       const { data } = await deletePost({ variables: { slug } });
       if (data?.DeletePost) {
-        onClose();
         history.push("/home");
       }
     } catch (error) {
@@ -84,7 +84,8 @@ function Recipe() {
               body="Está seguro/a de eliminar esta receta? Se perderá todo su contenido"
               header="Eliminar"
               isOpen={isOpen}
-              onClose={deleteRecipe}
+              onClose={onClose}
+              deleteAction={deleteRecipe}
               onOpen={onOpen}
             />
             <Button
@@ -102,7 +103,7 @@ function Recipe() {
               color="white"
               mt="2"
               _hover={{ bgColor: "red.700" }}
-              onClick={deleteRecipe}
+              onClick={onOpen}
               isLoading={loadingDelete}
             >
               Eliminar receta

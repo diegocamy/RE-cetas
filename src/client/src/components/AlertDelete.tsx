@@ -1,5 +1,4 @@
 import {
-  useDisclosure,
   Button,
   AlertDialog,
   AlertDialogOverlay,
@@ -17,14 +16,21 @@ interface Props {
   isOpen: boolean;
   onOpen: () => void;
   onClose: () => void;
+  deleteAction: () => Promise<void>;
 }
 
-function AlertDelete({ header, body, isOpen, onOpen, onClose }: Props) {
+function AlertDelete({
+  header,
+  body,
+  isOpen,
+  onOpen,
+  onClose,
+  deleteAction,
+}: Props) {
   const cancelRef = useRef<HTMLButtonElement>(null);
 
   return (
     <>
-      <Button onClick={onOpen}>Discard</Button>
       <AlertDialog
         motionPreset="slideInBottom"
         leastDestructiveRef={cancelRef}
@@ -39,11 +45,11 @@ function AlertDelete({ header, body, isOpen, onOpen, onClose }: Props) {
           <AlertDialogCloseButton />
           <AlertDialogBody>{body}</AlertDialogBody>
           <AlertDialogFooter>
-            <Button ref={cancelRef} onClick={onClose}>
-              No
-            </Button>
-            <Button colorScheme="red" ml={3}>
+            <Button colorScheme="red" onClick={deleteAction}>
               Si
+            </Button>
+            <Button ref={cancelRef} ml={3} onClick={onClose}>
+              No
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
