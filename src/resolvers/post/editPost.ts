@@ -1,5 +1,4 @@
 import { Arg, Ctx, Mutation, Resolver, UseMiddleware } from "type-graphql";
-import { v4 } from "uuid";
 import { Post } from "../../entities/Post";
 import { CreatePostInput } from "../../input-types/CreatePostInput";
 import { MyContext } from "../../interfaces";
@@ -12,13 +11,15 @@ export class EditPostResolver {
   @UseMiddleware(isAuth)
   async editPost(
     @Arg("slug") slug: string,
-    @Arg("data") { content, picture, title }: CreatePostInput,
+    @Arg("data") { content, picture, title, time }: CreatePostInput,
     @Ctx() { payload }: MyContext
   ) {
     if (!payload) throw new Error("Unauthorized");
 
     //get post from slug
-    const post = await Post.findOne({ where: { slug }, loadRelationIds: true }); //loads author id into author property
+    const post = await Post.findOne({ where: { slug } }); //loads author id into author property
+
+    console.log(JSON.stringify(post));
 
     if (!post) throw new Error("La publicación no existe");
 
@@ -31,11 +32,13 @@ export class EditPostResolver {
     post.content = content;
     post.picture = picture;
     post.title = title;
+    post.time = time;
 
-    //generate new slug
-    const newSlug = createSlug(title);
-
-    post.slug = newSlug;
+    //generate new slug if there's a new title
+    if (title) {
+      const newSlug = createSlug(title);
+      post.slug = newSlug;
+    }
 
     await post.save();
 

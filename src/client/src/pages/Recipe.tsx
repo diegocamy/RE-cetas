@@ -1,5 +1,5 @@
 import { useDeletePostMutation, useGetPostQuery } from "../generated/graphql";
-import { Redirect, useParams, useHistory } from "react-router-dom";
+import { Redirect, useParams, useHistory, Link } from "react-router-dom";
 import {
   Box,
   Button,
@@ -94,6 +94,8 @@ function Recipe() {
               color="white"
               mt="2"
               _hover={{ bgColor: "blue.700" }}
+              as={Link}
+              to={`/edit/${slug}`}
             >
               Editar receta
             </Button>

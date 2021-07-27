@@ -3,7 +3,7 @@ import { RawDraftContentState } from "draft-js";
 interface PostContent {
   title: string;
   time: string;
-  image: File | undefined;
+  image: File | string | undefined;
   content: RawDraftContentState;
   imageUrl?: string;
 }

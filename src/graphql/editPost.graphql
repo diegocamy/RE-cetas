@@ -1,0 +1,14 @@
+mutation EditPost(
+  $slug: String!
+  $title: String!
+  $content: String!
+  $picture: String!
+  $time: String!
+) {
+  editPost(
+    slug: $slug
+    data: { title: $title, content: $content, picture: $picture, time: $time }
+  ) {
+    slug
+  }
+}

@@ -274,6 +274,23 @@ export type DeletePostMutation = (
   & Pick<Mutation, 'DeletePost'>
 );
 
+export type EditPostMutationVariables = Exact<{
+  slug: Scalars['String'];
+  title: Scalars['String'];
+  content: Scalars['String'];
+  picture: Scalars['String'];
+  time: Scalars['String'];
+}>;
+
+
+export type EditPostMutation = (
+  { __typename?: 'Mutation' }
+  & { editPost: (
+    { __typename?: 'Post' }
+    & Pick<Post, 'slug'>
+  ) }
+);
+
 export type EditUserDataMutationVariables = Exact<{
   bio: Scalars['String'];
   avatar: Scalars['String'];
@@ -544,6 +561,46 @@ export function useDeletePostMutation(baseOptions?: Apollo.MutationHookOptions<D
 export type DeletePostMutationHookResult = ReturnType<typeof useDeletePostMutation>;
 export type DeletePostMutationResult = Apollo.MutationResult<DeletePostMutation>;
 export type DeletePostMutationOptions = Apollo.BaseMutationOptions<DeletePostMutation, DeletePostMutationVariables>;
+export const EditPostDocument = gql`
+    mutation EditPost($slug: String!, $title: String!, $content: String!, $picture: String!, $time: String!) {
+  editPost(
+    slug: $slug
+    data: {title: $title, content: $content, picture: $picture, time: $time}
+  ) {
+    slug
+  }
+}
+    `;
+export type EditPostMutationFn = Apollo.MutationFunction<EditPostMutation, EditPostMutationVariables>;
+
+/**
+ * __useEditPostMutation__
+ *
+ * To run a mutation, you first call `useEditPostMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEditPostMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [editPostMutation, { data, loading, error }] = useEditPostMutation({
+ *   variables: {
+ *      slug: // value for 'slug'
+ *      title: // value for 'title'
+ *      content: // value for 'content'
+ *      picture: // value for 'picture'
+ *      time: // value for 'time'
+ *   },
+ * });
+ */
+export function useEditPostMutation(baseOptions?: Apollo.MutationHookOptions<EditPostMutation, EditPostMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<EditPostMutation, EditPostMutationVariables>(EditPostDocument, options);
+      }
+export type EditPostMutationHookResult = ReturnType<typeof useEditPostMutation>;
+export type EditPostMutationResult = Apollo.MutationResult<EditPostMutation>;
+export type EditPostMutationOptions = Apollo.BaseMutationOptions<EditPostMutation, EditPostMutationVariables>;
 export const EditUserDataDocument = gql`
     mutation EditUserData($bio: String!, $avatar: String!) {
   editUserBioAndAvatar(data: {bio: $bio, avatar: $avatar}) {
