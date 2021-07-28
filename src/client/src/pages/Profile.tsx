@@ -34,6 +34,7 @@ function Profile() {
               user={data?.me.username!}
               bio={data?.me.bio || ""}
               avatar={data?.me.avatar || ""}
+              joined={data?.me.created || ""}
             />
           </Box>
           <Box w={isMobile ? "100%" : "30%"} px="2">

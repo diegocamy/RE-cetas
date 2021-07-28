@@ -13,14 +13,17 @@ import { RiCake2Line } from "react-icons/ri";
 import { FiEdit } from "react-icons/fi";
 import bg from "../assets/background.jpg";
 import EditProfileModal from "./EditProfileModal";
+import { formatDistance, subDays } from "date-fns";
+import { es } from "date-fns/locale";
 
 interface Props {
   user: string;
   bio: string;
   avatar: string;
+  joined: string;
 }
 
-function UserInfoCard({ user, bio, avatar }: Props) {
+function UserInfoCard({ user, bio, avatar, joined }: Props) {
   const [isMobile] = useMediaQuery("(max-width: 1070px)");
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
@@ -105,7 +108,12 @@ function UserInfoCard({ user, bio, avatar }: Props) {
           </Text>
           <Flex align="center" mb="0" mt="auto">
             <Icon as={RiCake2Line} w={7} h={7} color="gray.600" mr="2" />
-            <Text>Se unió el 12-12-12</Text>
+            <Text>
+              Se unió hace{" "}
+              {formatDistance(new Date(joined), new Date(), {
+                locale: es,
+              })}
+            </Text>
           </Flex>
         </Flex>
       </Flex>
