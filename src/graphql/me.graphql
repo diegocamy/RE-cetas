@@ -15,5 +15,11 @@ query Me {
         title
       }
     }
+    last4posts {
+      picture
+      title
+      time
+      slug
+    }
   }
 }

@@ -1,6 +1,7 @@
 import { Box, Flex, useMediaQuery } from "@chakra-ui/react";
 import { useEffect } from "react";
 import Container from "../components/Container";
+import LastRecipes from "../components/LastRecipes";
 import StatsBox from "../components/StatsBox";
 import UserInfoCard from "../components/UserInfoCard";
 import { useMeLazyQuery } from "../generated/graphql";
@@ -26,7 +27,7 @@ function Profile() {
   if (loading) return null;
 
   return (
-    <Box bgColor="gray.100">
+    <Box bgColor="gray.100" minHeight="100%">
       <Container>
         <Flex direction={isMobile ? "column" : "row"} mx="auto" py="2">
           <Box w={isMobile ? "100%" : "70%"}>
@@ -34,7 +35,7 @@ function Profile() {
               user={data?.me.username!}
               bio={data?.me.bio || ""}
               avatar={data?.me.avatar || ""}
-              joined={data?.me.created || ""}
+              joined={data?.me.created}
             />
           </Box>
           <Box w={isMobile ? "100%" : "30%"} px="2">
@@ -46,7 +47,17 @@ function Profile() {
             />
           </Box>
         </Flex>
-        {/*TODO: ADD RECENT POSTS AND SOME KIND OF FEED */}
+        <Box
+          pl="2"
+          w={isMobile ? "100%" : "70%"}
+          pr={isMobile ? "2" : "none"}
+          pb="2"
+        >
+          <LastRecipes
+            recetas={data?.me.last4posts || []}
+            isMobile={isMobile}
+          />
+        </Box>
       </Container>
     </Box>
   );

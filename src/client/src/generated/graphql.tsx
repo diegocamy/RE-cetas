@@ -395,6 +395,9 @@ export type MeQuery = (
         { __typename?: 'Post' }
         & Pick<Post, 'title'>
       ) }
+    )>, last4posts: Array<(
+      { __typename?: 'Post' }
+      & Pick<Post, 'picture' | 'title' | 'time' | 'slug'>
     )> }
   ) }
 );
@@ -840,6 +843,12 @@ export const MeDocument = gql`
       post {
         title
       }
+    }
+    last4posts {
+      picture
+      title
+      time
+      slug
     }
   }
 }
