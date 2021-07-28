@@ -14,6 +14,12 @@ query GetPost($slug: String!) {
           username
         }
       }
+      last4posts {
+        title
+        picture
+        time
+        slug
+      }
     }
   }
 }

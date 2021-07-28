@@ -1,31 +1,50 @@
 import { Box, Flex, Icon, Text } from "@chakra-ui/react";
 import { AiOutlineClockCircle } from "react-icons/ai";
+import { Link } from "react-router-dom";
 
 interface Props {
   img: string;
   title: string;
-  duration?: string;
+  duration: string;
+  slug: string;
+  width: string;
+  borderRadius?: boolean;
+  marginY?: boolean;
+  marginRight?: boolean;
 }
 
-function RecipeCard({ img, title, duration }: Props) {
+function RecipeCard({
+  img,
+  title,
+  duration,
+  slug,
+  borderRadius,
+  width,
+  marginY,
+  marginRight,
+}: Props) {
   return (
     <Box
       display="flex"
       flexDirection="column"
       justifyContent="space-between"
-      width="310px"
+      width={width}
       height="180px"
-      borderRadius="2xl"
+      borderRadius={borderRadius ? "2xl" : "none"}
       position="relative"
       px="3"
       py="2"
       bgImage={img}
-      backgroundSize="100%"
+      backgroundSize="cover"
       bgPosition="center"
       bgRepeat="no-repeat"
       transition="all .5s ease-in"
       _hover={{ backgroundSize: "105%", cursor: "pointer" }}
       boxShadow="base"
+      as={Link}
+      to={`/recipe/${slug}`}
+      my={marginY ? "2" : "none"}
+      mr={marginRight ? "2" : "none"}
     >
       <Box
         borderRadius="inherit"

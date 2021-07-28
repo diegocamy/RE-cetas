@@ -14,6 +14,7 @@ import AuthorCard from "../components/AuthorCard";
 import { useContext } from "react";
 import { AuthContext } from "../App";
 import AlertDelete from "../components/AlertDelete";
+import RecipeCard from "../components/RecipeCard";
 
 interface Params {
   slug: string;
@@ -112,7 +113,53 @@ function Recipe() {
             </Button>
           </>
         )}
+        {!isMobile && (
+          <Flex
+            flexDirection="column"
+            align="center"
+            my="2"
+            flexWrap="nowrap"
+            overflowX="auto"
+          >
+            {data.getPost.author.last4posts.map((r) => (
+              <RecipeCard
+                key={r.slug}
+                img={r.picture}
+                title={r.title}
+                duration={r.time}
+                slug={r.slug}
+                width="350px"
+                marginY
+              />
+            ))}
+          </Flex>
+        )}
       </Box>
+      {isMobile && (
+        <Flex
+          my="2"
+          flexWrap="nowrap"
+          overflowX="auto"
+          css={{
+            "&::-webkit-scrollbar": {
+              display: "none",
+            },
+          }}
+        >
+          {data.getPost.author.last4posts.map((r) => (
+            <Box key={r.slug} flex="0 0 auto">
+              <RecipeCard
+                img={r.picture}
+                title={r.title}
+                duration={r.time}
+                slug={r.slug}
+                width="300px"
+                marginRight
+              />
+            </Box>
+          ))}
+        </Flex>
+      )}
     </Flex>
   );
 }

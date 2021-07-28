@@ -344,6 +344,9 @@ export type GetPostQuery = (
           { __typename?: 'User' }
           & Pick<User, 'username'>
         ) }
+      )>, last4posts: Array<(
+        { __typename?: 'Post' }
+        & Pick<Post, 'title' | 'picture' | 'time' | 'slug'>
       )> }
     ) }
   )> }
@@ -714,6 +717,12 @@ export const GetPostDocument = gql`
         follower {
           username
         }
+      }
+      last4posts {
+        title
+        picture
+        time
+        slug
       }
     }
   }

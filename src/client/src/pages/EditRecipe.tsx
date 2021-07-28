@@ -73,7 +73,6 @@ function EditRecipe() {
     if (data) {
       const { getPost: post } = data;
       if (!post) {
-        console.log("no post");
         return history.push("/404");
       }
       setTime(post.time);
