@@ -82,7 +82,7 @@ function EditRecipe() {
       const editorContent = convertFromRaw(JSON.parse(post.content));
       setEditorState(EditorState.createWithContent(editorContent));
     }
-  }, [data]);
+  }, [data, history]);
 
   //change image preview url
   useEffect(() => {

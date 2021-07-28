@@ -44,8 +44,8 @@ function Profile() {
               following={13}
             />
           </Box>
-          <Box></Box>
         </Flex>
+        {/*TODO: ADD RECENT POSTS AND SOME KIND OF FEED */}
       </Container>
     </Box>
   );
