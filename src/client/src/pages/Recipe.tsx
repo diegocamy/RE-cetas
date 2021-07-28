@@ -4,6 +4,7 @@ import {
   Box,
   Button,
   Flex,
+  Heading,
   useDisclosure,
   useMediaQuery,
   useToast,
@@ -121,44 +122,66 @@ function Recipe() {
             flexWrap="nowrap"
             overflowX="auto"
           >
-            {data.getPost.author.last4posts.map((r) => (
-              <RecipeCard
-                key={r.slug}
-                img={r.picture}
-                title={r.title}
-                duration={r.time}
-                slug={r.slug}
-                width="350px"
-                marginY
-              />
-            ))}
+            <Heading size="md" alignSelf="flex-start">
+              Más recetas de {data.getPost.author.username}
+            </Heading>
+            {data.getPost.author.last4posts.map((r) => {
+              if (r.slug === slug) return null;
+
+              return (
+                <RecipeCard
+                  key={r.slug}
+                  img={r.picture}
+                  title={r.title}
+                  duration={r.time}
+                  slug={r.slug}
+                  width="350px"
+                  marginY
+                />
+              );
+            })}
           </Flex>
         )}
       </Box>
       {isMobile && (
-        <Flex
-          my="2"
-          flexWrap="nowrap"
-          overflowX="auto"
-          css={{
-            "&::-webkit-scrollbar": {
-              display: "none",
-            },
-          }}
-        >
-          {data.getPost.author.last4posts.map((r) => (
-            <Box key={r.slug} flex="0 0 auto">
-              <RecipeCard
-                img={r.picture}
-                title={r.title}
-                duration={r.time}
-                slug={r.slug}
-                width="300px"
-                marginRight
-              />
-            </Box>
-          ))}
-        </Flex>
+        <>
+          <Heading
+            size="md"
+            alignSelf="flex-start"
+            display="block"
+            w="100%"
+            mx="2"
+          >
+            Más recetas de {data.getPost.author.username}
+          </Heading>
+          <Flex
+            my="2"
+            flexWrap="nowrap"
+            overflowX="auto"
+            css={{
+              "&::-webkit-scrollbar": {
+                display: "none",
+              },
+            }}
+          >
+            {data.getPost.author.last4posts.map((r) => {
+              if (r.slug === slug) return null;
+
+              return (
+                <Box key={r.slug} flex="0 0 auto">
+                  <RecipeCard
+                    img={r.picture}
+                    title={r.title}
+                    duration={r.time}
+                    slug={r.slug}
+                    width="300px"
+                    marginRight
+                  />
+                </Box>
+              );
+            })}
+          </Flex>
+        </>
       )}
     </Flex>
   );
