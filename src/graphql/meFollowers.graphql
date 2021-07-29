@@ -1,0 +1,15 @@
+query MeFollowers {
+  me {
+    followers {
+      follower {
+        username
+        bio
+        avatar
+        created
+        postCount
+        followingCount
+        followersCount
+      }
+    }
+  }
+}

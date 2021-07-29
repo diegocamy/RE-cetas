@@ -402,6 +402,23 @@ export type MeQuery = (
   ) }
 );
 
+export type MeFollowersQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MeFollowersQuery = (
+  { __typename?: 'Query' }
+  & { me: (
+    { __typename?: 'User' }
+    & { followers: Array<(
+      { __typename?: 'Follow' }
+      & { follower: (
+        { __typename?: 'User' }
+        & Pick<User, 'username' | 'bio' | 'avatar' | 'created' | 'postCount' | 'followingCount' | 'followersCount'>
+      ) }
+    )> }
+  ) }
+);
+
 export type RegisterMutationVariables = Exact<{
   email: Scalars['String'];
   password: Scalars['String'];
@@ -880,6 +897,50 @@ export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
+export const MeFollowersDocument = gql`
+    query MeFollowers {
+  me {
+    followers {
+      follower {
+        username
+        bio
+        avatar
+        created
+        postCount
+        followingCount
+        followersCount
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useMeFollowersQuery__
+ *
+ * To run a query within a React component, call `useMeFollowersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMeFollowersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMeFollowersQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useMeFollowersQuery(baseOptions?: Apollo.QueryHookOptions<MeFollowersQuery, MeFollowersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MeFollowersQuery, MeFollowersQueryVariables>(MeFollowersDocument, options);
+      }
+export function useMeFollowersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeFollowersQuery, MeFollowersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MeFollowersQuery, MeFollowersQueryVariables>(MeFollowersDocument, options);
+        }
+export type MeFollowersQueryHookResult = ReturnType<typeof useMeFollowersQuery>;
+export type MeFollowersLazyQueryHookResult = ReturnType<typeof useMeFollowersLazyQuery>;
+export type MeFollowersQueryResult = Apollo.QueryResult<MeFollowersQuery, MeFollowersQueryVariables>;
 export const RegisterDocument = gql`
     mutation Register($email: String!, $password: String!, $username: String!) {
   register(data: {email: $email, password: $password, username: $username})

@@ -39,10 +39,30 @@ function StatsBox({ favourites, followers, following, recipes }: Props) {
         Crear Receta
       </Button>
       <Grid templateColumns="repeat(2,1fr)" templateRows="repeat(2,1fr)">
-        <StatCard icon={GiKnifeFork} qty={recipes} name="Recetas" />
-        <StatCard icon={AiFillHeart} qty={favourites} name="Favoritas" />
-        <StatCard icon={FaUserFriends} qty={followers} name="Seguidores" />
-        <StatCard icon={FaUserPlus} qty={following} name="Siguiendo" />
+        <StatCard
+          icon={GiKnifeFork}
+          qty={recipes}
+          name="Recetas"
+          link="/recipes"
+        />
+        <StatCard
+          icon={AiFillHeart}
+          qty={favourites}
+          name="Favoritas"
+          link="/favorites"
+        />
+        <StatCard
+          icon={FaUserFriends}
+          qty={followers}
+          name="Seguidores"
+          link="followers"
+        />
+        <StatCard
+          icon={FaUserPlus}
+          qty={following}
+          name="Siguiendo"
+          link="following"
+        />
       </Grid>
     </Flex>
   );
