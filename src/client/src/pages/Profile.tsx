@@ -40,10 +40,10 @@ function Profile() {
           </Box>
           <Box w={isMobile ? "100%" : "30%"} px="2">
             <StatsBox
-              recipes={data?.me.posts.length || 0}
+              recipes={data?.me.postCount!}
               favourites={data?.me.likedPosts.length || 0}
-              followers={3}
-              following={13}
+              followers={data?.me.followersCount!}
+              following={data?.me.followingCount!}
             />
           </Box>
         </Flex>

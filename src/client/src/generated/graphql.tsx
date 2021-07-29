@@ -385,11 +385,8 @@ export type MeQuery = (
   { __typename?: 'Query' }
   & { me: (
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'username' | 'email' | 'bio' | 'created' | 'avatar'>
-    & { posts: Array<(
-      { __typename?: 'Post' }
-      & Pick<Post, 'title' | 'picture' | 'slug'>
-    )>, likedPosts: Array<(
+    & Pick<User, 'id' | 'username' | 'email' | 'bio' | 'created' | 'avatar' | 'followingCount' | 'followersCount' | 'postCount'>
+    & { likedPosts: Array<(
       { __typename?: 'Like' }
       & { post: (
         { __typename?: 'Post' }
@@ -413,6 +410,24 @@ export type MeFollowersQuery = (
     & { followers: Array<(
       { __typename?: 'Follow' }
       & { follower: (
+        { __typename?: 'User' }
+        & Pick<User, 'username' | 'bio' | 'avatar' | 'created' | 'postCount' | 'followingCount' | 'followersCount'>
+      ) }
+    )> }
+  ) }
+);
+
+export type MeFollowingQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MeFollowingQuery = (
+  { __typename?: 'Query' }
+  & { me: (
+    { __typename?: 'User' }
+    & Pick<User, 'id'>
+    & { following: Array<(
+      { __typename?: 'Follow' }
+      & { following: (
         { __typename?: 'User' }
         & Pick<User, 'username' | 'bio' | 'avatar' | 'created' | 'postCount' | 'followingCount' | 'followersCount'>
       ) }
@@ -853,11 +868,9 @@ export const MeDocument = gql`
     bio
     created
     avatar
-    posts {
-      title
-      picture
-      slug
-    }
+    followingCount
+    followersCount
+    postCount
     likedPosts {
       post {
         title
@@ -944,6 +957,51 @@ export function useMeFollowersLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type MeFollowersQueryHookResult = ReturnType<typeof useMeFollowersQuery>;
 export type MeFollowersLazyQueryHookResult = ReturnType<typeof useMeFollowersLazyQuery>;
 export type MeFollowersQueryResult = Apollo.QueryResult<MeFollowersQuery, MeFollowersQueryVariables>;
+export const MeFollowingDocument = gql`
+    query MeFollowing {
+  me {
+    id
+    following {
+      following {
+        username
+        bio
+        avatar
+        created
+        postCount
+        followingCount
+        followersCount
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useMeFollowingQuery__
+ *
+ * To run a query within a React component, call `useMeFollowingQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMeFollowingQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMeFollowingQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useMeFollowingQuery(baseOptions?: Apollo.QueryHookOptions<MeFollowingQuery, MeFollowingQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MeFollowingQuery, MeFollowingQueryVariables>(MeFollowingDocument, options);
+      }
+export function useMeFollowingLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeFollowingQuery, MeFollowingQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MeFollowingQuery, MeFollowingQueryVariables>(MeFollowingDocument, options);
+        }
+export type MeFollowingQueryHookResult = ReturnType<typeof useMeFollowingQuery>;
+export type MeFollowingLazyQueryHookResult = ReturnType<typeof useMeFollowingLazyQuery>;
+export type MeFollowingQueryResult = Apollo.QueryResult<MeFollowingQuery, MeFollowingQueryVariables>;
 export const RegisterDocument = gql`
     mutation Register($email: String!, $password: String!, $username: String!) {
   register(data: {email: $email, password: $password, username: $username})

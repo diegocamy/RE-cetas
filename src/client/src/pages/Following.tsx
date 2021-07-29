@@ -1,10 +1,10 @@
 import { Box, Flex, Heading, Icon } from "@chakra-ui/react";
-import { RiEmotionSadLine } from "react-icons/ri";
 import FollowerCard from "../components/FollowerCard";
-import { useMeFollowersQuery } from "../generated/graphql";
+import { useMeFollowingQuery } from "../generated/graphql";
+import { RiEmotionSadLine } from "react-icons/ri";
 
-function Followers() {
-  const { data, loading, error } = useMeFollowersQuery({
+function Following() {
+  const { data, loading, error } = useMeFollowingQuery({
     fetchPolicy: "network-only",
   });
 
@@ -24,9 +24,9 @@ function Followers() {
       py="4"
       direction="column"
     >
-      <Heading sixe="md">Tus seguidores</Heading>
+      <Heading sixe="md">Siguiendo</Heading>
       <Box maxWidth="700px" w="100%">
-        {data?.me.followers.length === 0 && (
+        {data?.me.following.length === 0 && (
           <Flex
             align="center"
             justify="center"
@@ -35,11 +35,11 @@ function Followers() {
             direction="column"
             my="10"
           >
-            <Heading size="md">Aún no tienes seguidores</Heading>
+            <Heading size="md">Aún no sigues a nadie</Heading>
             <Icon as={RiEmotionSadLine} w="2rem" h="2rem" color="gray.800" />
           </Flex>
         )}
-        {data?.me.followers.map(({ follower: f }) => (
+        {data?.me.following.map(({ following: f }) => (
           <FollowerCard
             followersCount={f.followersCount}
             followingCount={f.followingCount}
@@ -56,4 +56,4 @@ function Followers() {
   );
 }
 
-export default Followers;
+export default Following;

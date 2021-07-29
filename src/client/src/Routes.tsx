@@ -14,6 +14,7 @@ import Recipe from "./pages/Recipe";
 import NotFound from "./pages/NotFound";
 import EditRecipe from "./pages/EditRecipe";
 import Followers from "./pages/Followers";
+import Following from "./pages/Following";
 
 function Routes() {
   return (
@@ -27,6 +28,7 @@ function Routes() {
         <PrivateRoute path="/new" component={CreateRecipe} />
         <PrivateRoute path="/edit/:slug" component={EditRecipe} />
         <PrivateRoute path="/followers" component={Followers} />
+        <PrivateRoute path="/following" component={Following} />
         <Route path="/recipe/:slug" component={Recipe} />
         <Route path="/forgot-password" component={ForgotPassword} />
         <Route path="/user/confirm-account/:token" component={ConfirmAccount} />

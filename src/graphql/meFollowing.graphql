@@ -1,0 +1,16 @@
+query MeFollowing {
+  me {
+    id
+    following {
+      following {
+        username
+        bio
+        avatar
+        created
+        postCount
+        followingCount
+        followersCount
+      }
+    }
+  }
+}

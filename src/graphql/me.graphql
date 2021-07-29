@@ -6,11 +6,9 @@ query Me {
     bio
     created
     avatar
-    posts {
-      title
-      picture
-      slug
-    }
+    followingCount
+    followersCount
+    postCount
     likedPosts {
       post {
         title
