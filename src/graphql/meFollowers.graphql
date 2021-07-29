@@ -1,5 +1,6 @@
 query MeFollowers {
   me {
+    id
     followers {
       follower {
         username

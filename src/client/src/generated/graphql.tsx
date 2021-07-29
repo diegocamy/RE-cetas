@@ -385,7 +385,7 @@ export type MeQuery = (
   { __typename?: 'Query' }
   & { me: (
     { __typename?: 'User' }
-    & Pick<User, 'username' | 'email' | 'bio' | 'created' | 'avatar'>
+    & Pick<User, 'id' | 'username' | 'email' | 'bio' | 'created' | 'avatar'>
     & { posts: Array<(
       { __typename?: 'Post' }
       & Pick<Post, 'title' | 'picture' | 'slug'>
@@ -409,6 +409,7 @@ export type MeFollowersQuery = (
   { __typename?: 'Query' }
   & { me: (
     { __typename?: 'User' }
+    & Pick<User, 'id'>
     & { followers: Array<(
       { __typename?: 'Follow' }
       & { follower: (
@@ -846,6 +847,7 @@ export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, L
 export const MeDocument = gql`
     query Me {
   me {
+    id
     username
     email
     bio
@@ -900,6 +902,7 @@ export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
 export const MeFollowersDocument = gql`
     query MeFollowers {
   me {
+    id
     followers {
       follower {
         username
