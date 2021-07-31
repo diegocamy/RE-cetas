@@ -54,11 +54,28 @@ function LastRecipes({ recetas, isMobile }: Props) {
       <Flex
         flexWrap="nowrap"
         overflowX="auto"
-        css={{
-          "&::-webkit-scrollbar": {
-            display: "none",
-          },
-        }}
+        css={
+          isMobile
+            ? {
+                "&::-webkit-scrollbar": {
+                  display: "none",
+                },
+              }
+            : {
+                "&::-webkit-scrollbar": {
+                  height: "10px",
+                },
+                "&::-webkit-scrollbar-track": {
+                  backgroundColor: "#e4e4e4",
+                  borderRadius: "100px",
+                  height: "10px",
+                },
+                "&::-webkit-scrollbar-thumb": {
+                  backgroundColor: "#979797",
+                  borderRadius: "100px",
+                },
+              }
+        }
       >
         {recetas.map((r) => (
           <Box key={r.slug} flex="0 0 auto">

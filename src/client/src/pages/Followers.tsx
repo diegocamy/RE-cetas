@@ -1,5 +1,6 @@
-import { Box, Flex, Heading, Icon } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, Icon } from "@chakra-ui/react";
 import { RiEmotionSadLine } from "react-icons/ri";
+import { Link } from "react-router-dom";
 import FollowerCard from "../components/FollowerCard";
 import { useMeFollowersQuery } from "../generated/graphql";
 
@@ -37,6 +38,9 @@ function Followers() {
           >
             <Heading size="md">Aún no tienes seguidores</Heading>
             <Icon as={RiEmotionSadLine} w="2rem" h="2rem" color="gray.800" />
+            <Button as={Link} to="/home" colorScheme="blue" px="10" my="3">
+              Volver
+            </Button>
           </Flex>
         )}
         {data?.me.followers.map(({ follower: f }) => (
