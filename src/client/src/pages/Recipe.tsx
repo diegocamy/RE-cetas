@@ -122,9 +122,12 @@ function Recipe() {
             flexWrap="nowrap"
             overflowX="auto"
           >
-            <Heading size="md" alignSelf="flex-start">
-              Más recetas de {data.getPost.author.username}
-            </Heading>
+            {data.getPost.author.last4posts.length > 0 && (
+              <Heading size="md" alignSelf="flex-start">
+                Más recetas de {data.getPost.author.username}
+              </Heading>
+            )}
+
             {data.getPost.author.last4posts.map((r) => {
               if (r.slug === slug) return null;
 

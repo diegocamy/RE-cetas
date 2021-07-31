@@ -1,0 +1,10 @@
+query MeRecipes {
+  me {
+    posts {
+      slug
+      title
+      picture
+      time
+    }
+  }
+}

@@ -1,8 +1,7 @@
-import { Box, Button, Flex, Heading, Icon } from "@chakra-ui/react";
+import { Box, Flex, Heading } from "@chakra-ui/react";
 import FollowerCard from "../components/FollowerCard";
 import { useMeFollowingQuery } from "../generated/graphql";
-import { RiEmotionSadLine } from "react-icons/ri";
-import { Link } from "react-router-dom";
+import NoResults from "../components/NoResults";
 
 function Following() {
   const { data, loading, error } = useMeFollowingQuery({
@@ -28,20 +27,11 @@ function Following() {
       <Heading sixe="md">Siguiendo</Heading>
       <Box maxWidth="700px" w="100%">
         {data?.me.following.length === 0 && (
-          <Flex
-            align="center"
-            justify="center"
-            bg="white"
-            p="4"
-            direction="column"
-            my="10"
-          >
-            <Heading size="md">Aún no sigues a nadie</Heading>
-            <Icon as={RiEmotionSadLine} w="2rem" h="2rem" color="gray.800" />
-            <Button as={Link} to="/home" colorScheme="blue" px="10" my="3">
-              Volver
-            </Button>
-          </Flex>
+          <NoResults
+            heading="Aún no sigues a nadie"
+            buttonLink="/home"
+            buttonText="Volver"
+          />
         )}
         {data?.me.following.map(({ following: f }) => (
           <FollowerCard
