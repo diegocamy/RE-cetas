@@ -1,0 +1,13 @@
+query MeFavorites {
+  me {
+    id
+    likedPosts {
+      post {
+        slug
+        picture
+        time
+        title
+      }
+    }
+  }
+}

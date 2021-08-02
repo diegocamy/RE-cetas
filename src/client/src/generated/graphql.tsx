@@ -399,6 +399,24 @@ export type MeQuery = (
   ) }
 );
 
+export type MeFavoritesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MeFavoritesQuery = (
+  { __typename?: 'Query' }
+  & { me: (
+    { __typename?: 'User' }
+    & Pick<User, 'id'>
+    & { likedPosts: Array<(
+      { __typename?: 'Like' }
+      & { post: (
+        { __typename?: 'Post' }
+        & Pick<Post, 'slug' | 'picture' | 'time' | 'title'>
+      ) }
+    )> }
+  ) }
+);
+
 export type MeFollowersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -927,6 +945,48 @@ export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
+export const MeFavoritesDocument = gql`
+    query MeFavorites {
+  me {
+    id
+    likedPosts {
+      post {
+        slug
+        picture
+        time
+        title
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useMeFavoritesQuery__
+ *
+ * To run a query within a React component, call `useMeFavoritesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMeFavoritesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMeFavoritesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useMeFavoritesQuery(baseOptions?: Apollo.QueryHookOptions<MeFavoritesQuery, MeFavoritesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MeFavoritesQuery, MeFavoritesQueryVariables>(MeFavoritesDocument, options);
+      }
+export function useMeFavoritesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeFavoritesQuery, MeFavoritesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MeFavoritesQuery, MeFavoritesQueryVariables>(MeFavoritesDocument, options);
+        }
+export type MeFavoritesQueryHookResult = ReturnType<typeof useMeFavoritesQuery>;
+export type MeFavoritesLazyQueryHookResult = ReturnType<typeof useMeFavoritesLazyQuery>;
+export type MeFavoritesQueryResult = Apollo.QueryResult<MeFavoritesQuery, MeFavoritesQueryVariables>;
 export const MeFollowersDocument = gql`
     query MeFollowers {
   me {
