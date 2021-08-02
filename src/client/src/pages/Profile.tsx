@@ -40,6 +40,7 @@ function Profile() {
           </Box>
           <Box w={isMobile ? "100%" : "30%"} px="2">
             <StatsBox
+              createButton
               recipes={data?.me.postCount!}
               favourites={data?.me.likedPosts.length || 0}
               followers={data?.me.followersCount!}

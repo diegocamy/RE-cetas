@@ -1,0 +1,23 @@
+query GetUser($username: String!) {
+  getUser(username: $username) {
+    id
+    username
+    bio
+    avatar
+    created
+    likedPosts {
+      post {
+        title
+      }
+    }
+    followersCount
+    followingCount
+    last4posts {
+      title
+      slug
+      time
+      picture
+    }
+    postCount
+  }
+}

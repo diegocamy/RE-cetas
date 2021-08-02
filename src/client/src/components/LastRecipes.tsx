@@ -13,9 +13,10 @@ interface Receta {
 interface Props {
   recetas: Receta[];
   isMobile: boolean;
+  message?: string;
 }
 
-function LastRecipes({ recetas, isMobile }: Props) {
+function LastRecipes({ recetas, isMobile, message }: Props) {
   if (recetas.length === 0) {
     return (
       <Flex
@@ -48,7 +49,7 @@ function LastRecipes({ recetas, isMobile }: Props) {
   return (
     <Box bg="white" borderRadius="xl" p="2" w="100%">
       <Heading size="md" mb="2">
-        Tus últimas recetas
+        {message ? message : "Tus últimas recetas"}
       </Heading>
 
       <Flex

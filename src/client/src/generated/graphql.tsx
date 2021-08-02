@@ -165,6 +165,7 @@ export type Query = {
   getPost?: Maybe<Post>;
   posts: Array<Post>;
   userByUsername?: Maybe<User>;
+  getUser: User;
   me: User;
   protected: Scalars['String'];
   users: Array<User>;
@@ -183,6 +184,11 @@ export type QueryPostsArgs = {
 
 
 export type QueryUserByUsernameArgs = {
+  username: Scalars['String'];
+};
+
+
+export type QueryGetUserArgs = {
   username: Scalars['String'];
 };
 
@@ -363,6 +369,29 @@ export type GetPostByTitleQuery = (
     { __typename?: 'Post' }
     & Pick<Post, 'title' | 'picture' | 'slug' | 'time'>
   )> }
+);
+
+export type GetUserQueryVariables = Exact<{
+  username: Scalars['String'];
+}>;
+
+
+export type GetUserQuery = (
+  { __typename?: 'Query' }
+  & { getUser: (
+    { __typename?: 'User' }
+    & Pick<User, 'id' | 'username' | 'bio' | 'avatar' | 'created' | 'followersCount' | 'followingCount' | 'postCount'>
+    & { likedPosts: Array<(
+      { __typename?: 'Like' }
+      & { post: (
+        { __typename?: 'Post' }
+        & Pick<Post, 'title'>
+      ) }
+    )>, last4posts: Array<(
+      { __typename?: 'Post' }
+      & Pick<Post, 'title' | 'slug' | 'time' | 'picture'>
+    )> }
+  ) }
 );
 
 export type LoginMutationVariables = Exact<{
@@ -876,6 +905,59 @@ export function useGetPostByTitleLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type GetPostByTitleQueryHookResult = ReturnType<typeof useGetPostByTitleQuery>;
 export type GetPostByTitleLazyQueryHookResult = ReturnType<typeof useGetPostByTitleLazyQuery>;
 export type GetPostByTitleQueryResult = Apollo.QueryResult<GetPostByTitleQuery, GetPostByTitleQueryVariables>;
+export const GetUserDocument = gql`
+    query GetUser($username: String!) {
+  getUser(username: $username) {
+    id
+    username
+    bio
+    avatar
+    created
+    likedPosts {
+      post {
+        title
+      }
+    }
+    followersCount
+    followingCount
+    last4posts {
+      title
+      slug
+      time
+      picture
+    }
+    postCount
+  }
+}
+    `;
+
+/**
+ * __useGetUserQuery__
+ *
+ * To run a query within a React component, call `useGetUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserQuery({
+ *   variables: {
+ *      username: // value for 'username'
+ *   },
+ * });
+ */
+export function useGetUserQuery(baseOptions: Apollo.QueryHookOptions<GetUserQuery, GetUserQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetUserQuery, GetUserQueryVariables>(GetUserDocument, options);
+      }
+export function useGetUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserQuery, GetUserQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetUserQuery, GetUserQueryVariables>(GetUserDocument, options);
+        }
+export type GetUserQueryHookResult = ReturnType<typeof useGetUserQuery>;
+export type GetUserLazyQueryHookResult = ReturnType<typeof useGetUserLazyQuery>;
+export type GetUserQueryResult = Apollo.QueryResult<GetUserQuery, GetUserQueryVariables>;
 export const LoginDocument = gql`
     mutation Login($email: String!, $password: String!) {
   login(email: $email, password: $password) {
