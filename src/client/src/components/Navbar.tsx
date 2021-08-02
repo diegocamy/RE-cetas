@@ -65,6 +65,12 @@ function Navbar() {
             cetas
           </Heading>
         </Link>
+        {!isSmallerThan450 && (
+          <Link as={NavLink} to="/search" ml="3">
+            Buscar
+          </Link>
+        )}
+
         <Spacer />
         {user ? (
           <Menu>

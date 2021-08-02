@@ -352,6 +352,19 @@ export type GetPostQuery = (
   )> }
 );
 
+export type GetPostByTitleQueryVariables = Exact<{
+  title: Scalars['String'];
+}>;
+
+
+export type GetPostByTitleQuery = (
+  { __typename?: 'Query' }
+  & { posts: Array<(
+    { __typename?: 'Post' }
+    & Pick<Post, 'title' | 'picture' | 'slug' | 'time'>
+  )> }
+);
+
 export type LoginMutationVariables = Exact<{
   email: Scalars['String'];
   password: Scalars['String'];
@@ -825,6 +838,44 @@ export function useGetPostLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Ge
 export type GetPostQueryHookResult = ReturnType<typeof useGetPostQuery>;
 export type GetPostLazyQueryHookResult = ReturnType<typeof useGetPostLazyQuery>;
 export type GetPostQueryResult = Apollo.QueryResult<GetPostQuery, GetPostQueryVariables>;
+export const GetPostByTitleDocument = gql`
+    query GetPostByTitle($title: String!) {
+  posts(data: {title: $title}) {
+    title
+    picture
+    slug
+    time
+  }
+}
+    `;
+
+/**
+ * __useGetPostByTitleQuery__
+ *
+ * To run a query within a React component, call `useGetPostByTitleQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPostByTitleQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPostByTitleQuery({
+ *   variables: {
+ *      title: // value for 'title'
+ *   },
+ * });
+ */
+export function useGetPostByTitleQuery(baseOptions: Apollo.QueryHookOptions<GetPostByTitleQuery, GetPostByTitleQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPostByTitleQuery, GetPostByTitleQueryVariables>(GetPostByTitleDocument, options);
+      }
+export function useGetPostByTitleLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPostByTitleQuery, GetPostByTitleQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPostByTitleQuery, GetPostByTitleQueryVariables>(GetPostByTitleDocument, options);
+        }
+export type GetPostByTitleQueryHookResult = ReturnType<typeof useGetPostByTitleQuery>;
+export type GetPostByTitleLazyQueryHookResult = ReturnType<typeof useGetPostByTitleLazyQuery>;
+export type GetPostByTitleQueryResult = Apollo.QueryResult<GetPostByTitleQuery, GetPostByTitleQueryVariables>;
 export const LoginDocument = gql`
     mutation Login($email: String!, $password: String!) {
   login(email: $email, password: $password) {

@@ -17,6 +17,7 @@ import Followers from "./pages/Followers";
 import Following from "./pages/Following";
 import Recipes from "./pages/Recipes";
 import Favorites from "./pages/Favorites";
+import Search from "./pages/Search";
 
 function Routes() {
   return (
@@ -33,6 +34,7 @@ function Routes() {
         <PrivateRoute path="/following" component={Following} />
         <PrivateRoute path="/recipes" component={Recipes} />
         <PrivateRoute path="/favorites" component={Favorites} />
+        <Route path="/search" component={Search} />
         <Route path="/recipe/:slug" component={Recipe} />
         <Route path="/forgot-password" component={ForgotPassword} />
         <Route path="/user/confirm-account/:token" component={ConfirmAccount} />

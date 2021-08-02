@@ -31,7 +31,7 @@ export class PostsResolver {
 
       if (title) {
         return await Post.find({
-          where: { title: Like(`%${title}%`) },
+          where: `"title" ILIKE '%${title}%'`,
           take: limit,
         });
       }

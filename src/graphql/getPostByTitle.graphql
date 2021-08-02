@@ -1,0 +1,8 @@
+query GetPostByTitle($title: String!) {
+  posts(data: { title: $title }) {
+    title
+    picture
+    slug
+    time
+  }
+}
