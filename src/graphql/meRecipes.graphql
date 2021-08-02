@@ -1,5 +1,6 @@
 query MeRecipes {
   me {
+    id
     posts {
       slug
       title

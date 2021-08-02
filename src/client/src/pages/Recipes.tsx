@@ -1,4 +1,5 @@
-import { Flex, Grid, Heading } from "@chakra-ui/react";
+import { Flex, Grid, Heading, Input } from "@chakra-ui/react";
+import { useState } from "react";
 import NoResults from "../components/NoResults";
 import RecipeCard from "../components/RecipeCard";
 import { useMeRecipesQuery } from "../generated/graphql";
@@ -7,6 +8,7 @@ function Recipes() {
   const { data, loading, error } = useMeRecipesQuery({
     fetchPolicy: "network-only",
   });
+  const [search, setSearch] = useState("");
 
   if (loading && !data) {
     return <p>loading</p>;
@@ -41,27 +43,40 @@ function Recipes() {
           />
         </Flex>
       ) : (
-        <Grid
-          bgColor="white"
-          maxWidth="910px"
-          width="100%"
-          p="2"
-          gridTemplateColumns="repeat( auto-fit, minmax(270px, 1fr) )"
-          gridGap="2"
-          placeItems="center"
-        >
-          {data?.me.posts.map((r) => (
-            <RecipeCard
-              duration={r.time}
-              img={r.picture}
-              slug={r.slug}
-              title={r.title}
-              width={data.me.posts.length < 2 ? "50%" : "100%"}
-              marginRight
-              key={r.slug}
-            />
-          ))}
-        </Grid>
+        <>
+          <Input
+            placeholder="Buscar receta..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            bgColor="white"
+            maxWidth="600px"
+            w="100%"
+            my="5"
+          />
+          <Grid
+            maxWidth="910px"
+            width="100%"
+            gridTemplateColumns="repeat( auto-fit, minmax(270px, 1fr) )"
+            gridGap="2"
+            placeItems="center"
+          >
+            {data?.me.posts
+              .filter((r) =>
+                r.title.toLowerCase().includes(search.toLocaleLowerCase())
+              )
+              .map((r) => (
+                <RecipeCard
+                  duration={r.time}
+                  img={r.picture}
+                  slug={r.slug}
+                  title={r.title}
+                  width={data.me.posts.length < 2 ? "50%" : "100%"}
+                  marginRight
+                  key={r.slug}
+                />
+              ))}
+          </Grid>
+        </>
       )}
     </Flex>
   );

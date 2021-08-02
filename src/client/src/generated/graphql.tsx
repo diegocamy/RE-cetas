@@ -442,6 +442,7 @@ export type MeRecipesQuery = (
   { __typename?: 'Query' }
   & { me: (
     { __typename?: 'User' }
+    & Pick<User, 'id'>
     & { posts: Array<(
       { __typename?: 'Post' }
       & Pick<Post, 'slug' | 'title' | 'picture' | 'time'>
@@ -1019,6 +1020,7 @@ export type MeFollowingQueryResult = Apollo.QueryResult<MeFollowingQuery, MeFoll
 export const MeRecipesDocument = gql`
     query MeRecipes {
   me {
+    id
     posts {
       slug
       title
