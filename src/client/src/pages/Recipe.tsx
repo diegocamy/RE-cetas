@@ -1,4 +1,8 @@
-import { useDeletePostMutation, useGetPostQuery } from "../generated/graphql";
+import {
+  useDeletePostMutation,
+  useGetPostQuery,
+  useLikePostMutation,
+} from "../generated/graphql";
 import { Redirect, useParams, useHistory, Link } from "react-router-dom";
 import {
   Box,
@@ -12,10 +16,11 @@ import {
 import draftToHTML from "draftjs-to-html";
 import PreviewPost from "../components/PreviewPost";
 import AuthorCard from "../components/AuthorCard";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../App";
 import AlertDelete from "../components/AlertDelete";
 import RecipeCard from "../components/RecipeCard";
+import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 
 interface Params {
   slug: string;
@@ -23,16 +28,30 @@ interface Params {
 
 function Recipe() {
   const { user } = useContext(AuthContext);
+  const [likedPost, setLikedPost] = useState(false);
   const history = useHistory();
   const toast = useToast();
   const { slug } = useParams<Params>();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [deletePost, { loading: loadingDelete }] = useDeletePostMutation();
+  const [likePost, { loading: loadingLike }] = useLikePostMutation();
   const { data, loading } = useGetPostQuery({
     fetchPolicy: "network-only",
     variables: { slug },
   });
   const [isMobile] = useMediaQuery("(max-width: 1200px)");
+
+  useEffect(() => {
+    if (data && data.getPost) {
+      const hasLiked = data.getPost.likes.find(
+        ({ user: { username } }) => username === user
+      );
+
+      if (hasLiked) {
+        setLikedPost(true);
+      }
+    }
+  }, [data, user]);
 
   if (loading) {
     return null;
@@ -48,6 +67,23 @@ function Recipe() {
       const { data } = await deletePost({ variables: { slug } });
       if (data?.DeletePost) {
         history.push("/home");
+      }
+    } catch (error) {
+      toast({
+        status: "error",
+        description: error.message,
+        isClosable: true,
+        position: "top",
+        title: "Error",
+      });
+    }
+  };
+
+  const handleLike = async () => {
+    try {
+      const { data } = await likePost({ variables: { slug } });
+      if (data?.likepost) {
+        setLikedPost(!likedPost);
       }
     } catch (error) {
       toast({
@@ -80,6 +116,24 @@ function Recipe() {
           username={data.getPost.author.username}
           followers={data.getPost.author.followers}
         />
+        <Button
+          aria-label="boton-like"
+          variant="ghost"
+          borderRadius="md"
+          leftIcon={likedPost ? <AiFillHeart /> : <AiOutlineHeart />}
+          bgColor={likedPost ? "amarillo" : "black"}
+          color={likedPost ? "black" : "white"}
+          _hover={{
+            bgColor: likedPost ? "black" : "amarillo",
+            color: likedPost ? "white" : "black",
+          }}
+          w="100%"
+          mt="3"
+          onClick={handleLike}
+          isLoading={loadingLike}
+        >
+          {likedPost ? "Quitar de favoritos" : "Guardar como favorita"}
+        </Button>
         {data.getPost.author.username === user && (
           <>
             <AlertDelete

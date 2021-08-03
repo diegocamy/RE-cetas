@@ -1,0 +1,3 @@
+mutation LikePost($slug: String!) {
+  likepost(slug: $slug)
+}

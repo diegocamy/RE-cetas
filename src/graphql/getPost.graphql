@@ -6,6 +6,11 @@ query GetPost($slug: String!) {
     likeCount
     created
     time
+    likes {
+      user {
+        username
+      }
+    }
     author {
       username
       avatar
