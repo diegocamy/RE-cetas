@@ -48,8 +48,10 @@ function Recipe() {
       );
 
       if (hasLiked) {
-        setLikedPost(true);
+        return setLikedPost(true);
       }
+
+      return setLikedPost(false);
     }
   }, [data, user]);
 
