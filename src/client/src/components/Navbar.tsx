@@ -1,4 +1,4 @@
-import { useContext, useRef } from "react";
+import { useContext } from "react";
 import {
   Flex,
   Heading,
@@ -6,32 +6,15 @@ import {
   Spacer,
   Stack,
   useMediaQuery,
-  Button,
-  useDisclosure,
-  Drawer,
-  DrawerBody,
-  DrawerCloseButton,
-  DrawerContent,
-  DrawerHeader,
-  DrawerOverlay,
-  Icon,
-  Box,
-  Menu,
-  MenuButton,
-  MenuGroup,
-  MenuList,
 } from "@chakra-ui/react";
 import { NavLink } from "react-router-dom";
 import { AuthContext } from "../App";
-import { GiHamburgerMenu } from "react-icons/gi";
-import { FaChevronDown } from "react-icons/fa";
-import Logout from "./Logout";
+import LoggedUserMenu from "./LoggedUserMenu";
+import HamburguerMenu from "./HamburguerMenu";
 
 function Navbar() {
   const { user } = useContext(AuthContext);
   const [isSmallerThan450] = useMediaQuery("(max-width: 450px)");
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const btnRef = useRef(null);
 
   return (
     <Stack bgColor="#f7cf1c">
@@ -73,81 +56,11 @@ function Navbar() {
 
         <Spacer />
         {user ? (
-          <Menu>
-            <MenuButton
-              as={Button}
-              rightIcon={<FaChevronDown />}
-              background="transparent"
-              _hover={{ background: "transparent" }}
-              _active={{ background: "transparent" }}
-            >
-              Hola, {user}
-            </MenuButton>
-            <MenuList>
-              <MenuGroup title="Mi Cuenta">
-                <Logout />
-              </MenuGroup>
-            </MenuList>
-          </Menu>
+          <LoggedUserMenu user={user} />
         ) : (
           <>
             {isSmallerThan450 ? (
-              <>
-                <Button
-                  ref={btnRef}
-                  onClick={onOpen}
-                  mr={8}
-                  bgColor="black"
-                  color="white"
-                  border="1px solid black"
-                  p="0"
-                >
-                  <Icon as={GiHamburgerMenu} />
-                </Button>
-                <Drawer
-                  isOpen={isOpen}
-                  placement="right"
-                  onClose={onClose}
-                  finalFocusRef={btnRef}
-                >
-                  <DrawerOverlay />
-                  <DrawerContent bgColor="#f7cf1c" color="black">
-                    <DrawerCloseButton />
-                    <DrawerHeader>RE cetas</DrawerHeader>
-
-                    <DrawerBody>
-                      <Box
-                        display="flex"
-                        justifyContent="center"
-                        alignItems="center"
-                        border="1px solid black"
-                        p="3"
-                        m="1"
-                        _active={{ bgColor: "black", color: "white" }}
-                        as={NavLink}
-                        to="/login"
-                        onClick={onClose}
-                      >
-                        Ingresar
-                      </Box>
-                      <Box
-                        display="flex"
-                        justifyContent="center"
-                        alignItems="center"
-                        border="1px solid black"
-                        p="3"
-                        _active={{ bgColor: "black", color: "white" }}
-                        m="1"
-                        as={NavLink}
-                        to="/register"
-                        onClick={onClose}
-                      >
-                        Registrarse
-                      </Box>
-                    </DrawerBody>
-                  </DrawerContent>
-                </Drawer>
-              </>
+              <HamburguerMenu />
             ) : (
               <>
                 <Link
