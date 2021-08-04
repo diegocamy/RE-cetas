@@ -33,6 +33,10 @@ const RegisterSchema = Yup.object().shape({
     .min(5, "La contraseña debe tener al menos 5 caracteres")
     .max(30, "La contraseña debe tener como máximo 30 caracteres")
     .required("Debe ingresar una contraseña"),
+  repeat_password: Yup.string().oneOf(
+    [Yup.ref("password"), null],
+    "Las contraseñas deben coincidir"
+  ),
   terms: Yup.bool().oneOf([true], "Debe aceptar los términos y condiciones"),
 });
 
@@ -72,6 +76,7 @@ function Register() {
             username: "",
             email: "",
             password: "",
+            repeat_password: "",
             terms: false,
           }}
           onSubmit={async (values, { setErrors }) => {
@@ -124,6 +129,12 @@ function Register() {
                 type="password"
                 placeholder="Contraseña"
                 label="Contraseña"
+                showPasswordButton
+              />
+              <InputField
+                name="repeat_password"
+                placeholder="Repetir contraseña"
+                label="Repetir contraseña"
                 showPasswordButton
               />
               <Field type="checkbox" name="terms">

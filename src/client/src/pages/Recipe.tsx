@@ -118,24 +118,27 @@ function Recipe() {
           username={data.getPost.author.username}
           followers={data.getPost.author.followers}
         />
-        <Button
-          aria-label="boton-like"
-          variant="ghost"
-          borderRadius="md"
-          leftIcon={likedPost ? <AiFillHeart /> : <AiOutlineHeart />}
-          bgColor={likedPost ? "amarillo" : "black"}
-          color={likedPost ? "black" : "white"}
-          _hover={{
-            bgColor: likedPost ? "black" : "amarillo",
-            color: likedPost ? "white" : "black",
-          }}
-          w="100%"
-          mt="3"
-          onClick={handleLike}
-          isLoading={loadingLike}
-        >
-          {likedPost ? "Quitar de favoritos" : "Guardar como favorita"}
-        </Button>
+        {user && (
+          <Button
+            aria-label="boton-like"
+            variant="ghost"
+            borderRadius="md"
+            leftIcon={likedPost ? <AiFillHeart /> : <AiOutlineHeart />}
+            bgColor={likedPost ? "amarillo" : "black"}
+            color={likedPost ? "black" : "white"}
+            _hover={{
+              bgColor: likedPost ? "black" : "amarillo",
+              color: likedPost ? "white" : "black",
+            }}
+            w="100%"
+            mt="3"
+            onClick={handleLike}
+            isLoading={loadingLike}
+          >
+            {likedPost ? "Quitar de favoritos" : "Guardar como favorita"}
+          </Button>
+        )}
+
         {data.getPost.author.username === user && (
           <>
             <AlertDelete

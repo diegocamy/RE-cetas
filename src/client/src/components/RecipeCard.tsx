@@ -6,7 +6,7 @@ interface Props {
   img: string;
   title: string;
   duration: string;
-  slug: string;
+  slug?: string;
   width: string;
   borderRadius?: boolean;
   marginY?: boolean;
@@ -41,8 +41,8 @@ function RecipeCard({
       transition="all .5s ease-in"
       _hover={{ backgroundSize: "105%", cursor: "pointer" }}
       boxShadow="base"
-      as={Link}
-      to={`/recipe/${slug}`}
+      as={slug ? Link : Box}
+      to={slug && `/recipe/${slug}`}
       my={marginY ? "2" : "none"}
       mr={marginRight ? "2" : "none"}
     >

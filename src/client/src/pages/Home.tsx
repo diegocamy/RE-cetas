@@ -75,7 +75,6 @@ function Home() {
               img={receta.img}
               duration={receta.duration}
               width="320px"
-              slug="asd"
             />
           ))}
         </Grid>

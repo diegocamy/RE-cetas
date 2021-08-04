@@ -73,7 +73,7 @@ function AuthorCard({ avatar, username, followers }: Props) {
           <Text>Se unió hace 15 días</Text>
         </Box>
       </Flex>
-      {user !== username && (
+      {user && user !== username && (
         <Button
           ml="auto"
           mr="0"
