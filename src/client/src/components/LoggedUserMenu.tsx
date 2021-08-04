@@ -4,8 +4,12 @@ import {
   Button,
   MenuList,
   MenuGroup,
+  MenuItem,
 } from "@chakra-ui/react";
-import { FaChevronDown } from "react-icons/fa";
+import { AiOutlinePlusCircle, AiFillHeart } from "react-icons/ai";
+import { FaChevronDown, FaUserFriends, FaUserPlus } from "react-icons/fa";
+import { IoNewspaperOutline } from "react-icons/io5";
+import { NavLink } from "react-router-dom";
 import Logout from "./Logout";
 
 interface Props {
@@ -25,6 +29,23 @@ function LoggedUserMenu({ user }: Props) {
         Hola, {user}
       </MenuButton>
       <MenuList>
+        <MenuGroup title="Recetas">
+          <MenuItem as={NavLink} to="/new" icon={<AiOutlinePlusCircle />}>
+            Crear receta
+          </MenuItem>
+          <MenuItem as={NavLink} to="/recipes" icon={<IoNewspaperOutline />}>
+            Mis recetas
+          </MenuItem>
+          <MenuItem as={NavLink} to="/favorites" icon={<AiFillHeart />}>
+            Mis favoritas
+          </MenuItem>
+          <MenuItem as={NavLink} to="/followers" icon={<FaUserFriends />}>
+            Mis seguidores
+          </MenuItem>
+          <MenuItem as={NavLink} to="/following" icon={<FaUserPlus />}>
+            Siguiendo
+          </MenuItem>
+        </MenuGroup>
         <MenuGroup title="Mi Cuenta">
           <Logout />
         </MenuGroup>

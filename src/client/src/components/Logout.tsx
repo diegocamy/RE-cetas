@@ -4,6 +4,7 @@ import { setAccessToken } from "../auth/jwt";
 import { useLogoutMutation } from "../generated/graphql";
 import { MenuItem } from "@chakra-ui/react";
 import { useHistory } from "react-router-dom";
+import { FiLogOut } from "react-icons/fi";
 
 function Logout() {
   const history = useHistory();
@@ -28,6 +29,7 @@ function Logout() {
       aria-label="Cerrar sesión"
       background="transparent"
       onClick={handleClick}
+      icon={<FiLogOut />}
     >
       Cerrar sesión
     </MenuItem>
