@@ -18,7 +18,7 @@ import "@fontsource/raleway";
 import { createUploadLink } from "apollo-upload-client";
 
 const link = createUploadLink({
-  uri: "http://localhost:4000/graphql",
+  uri: "/graphql",
   credentials: "include",
 });
 
@@ -34,7 +34,7 @@ const authLink = setContext(async (_, { headers }) => {
 
     if (exp - currentTime < 60) {
       //get new access token
-      const data = await fetch("http://localhost:4000/refresh_token", {
+      const data = await fetch("/refresh_token", {
         method: "POST",
         credentials: "include",
       });

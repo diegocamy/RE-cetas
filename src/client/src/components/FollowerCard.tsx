@@ -33,7 +33,9 @@ function FollowerCard({
       align="center"
     >
       <Image
-        src={avatar}
+        src={
+          avatar || `https://avatars.dicebear.com/api/avataaars/${username}.svg`
+        }
         borderRadius="50%"
         width="75px"
         height="75px"

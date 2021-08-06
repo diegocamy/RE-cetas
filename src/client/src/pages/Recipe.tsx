@@ -115,7 +115,10 @@ function Recipe() {
         my={isMobile ? 3 : "none"}
       >
         <AuthorCard
-          avatar={data.getPost.author.avatar}
+          avatar={
+            data.getPost.author.avatar ||
+            `https://avatars.dicebear.com/api/avataaars/${data.getPost.author.username}.svg`
+          }
           username={data.getPost.author.username}
           followers={data.getPost.author.followers}
         />

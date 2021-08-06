@@ -14,7 +14,7 @@ function App() {
   const [user, setUser] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:4000/refresh_token", {
+    fetch("/refresh_token", {
       method: "POST",
       credentials: "include",
     })

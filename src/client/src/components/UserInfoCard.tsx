@@ -53,7 +53,9 @@ function UserInfoCard({ user, bio, avatar, joined }: Props) {
       >
         {isMobile ? (
           <Image
-            src={avatar || bg}
+            src={
+              avatar || `https://avatars.dicebear.com/api/avataaars/${user}.svg`
+            }
             width="100px"
             height="100px"
             borderRadius="50%"
@@ -67,7 +69,9 @@ function UserInfoCard({ user, bio, avatar, joined }: Props) {
           />
         ) : (
           <Image
-            src={avatar || bg}
+            src={
+              avatar || `https://avatars.dicebear.com/api/avataaars/${user}.svg`
+            }
             width="150px"
             height="150px"
             borderRadius="50%"
@@ -100,7 +104,10 @@ function UserInfoCard({ user, bio, avatar, joined }: Props) {
               isOpen={isOpen}
               onClose={onClose}
               bio={bio}
-              avatar={avatar}
+              avatar={
+                avatar ||
+                `https://avatars.dicebear.com/api/avataaars/${user}.svg`
+              }
             />
           </Flex>
           <Text lineHeight="1" mt="4" mb="4">
