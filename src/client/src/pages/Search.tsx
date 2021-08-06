@@ -12,6 +12,7 @@ import svg from "../assets/search.svg";
 import { useEffect, useState } from "react";
 import { useGetPostByTitleLazyQuery } from "../generated/graphql";
 import RecipeCard from "../components/RecipeCard";
+import SpinnerComponent from "../components/Spinner";
 
 function Search() {
   const [isMobile] = useMediaQuery("(max-width: 768px)");
@@ -53,7 +54,7 @@ function Search() {
         onChange={(e) => setSearch(e.target.value)}
       />
       {!search && <Image src={svg} maxW="400px" w="100%" my="5" />}
-      {loading && !data && <p>Loading</p>}
+      {loading && !data && <SpinnerComponent height="200px" />}
       {!loading && data && search ? (
         <Grid
           maxWidth="910px"
@@ -75,7 +76,11 @@ function Search() {
           ))}
         </Grid>
       ) : null}
-      {!loading && data?.posts.length === 0 && search && <p>no results</p>}
+      {!loading && data?.posts.length === 0 && search && (
+        <Flex align="center" justify="center" height="300px">
+          <Text>No hay resultados.</Text>
+        </Flex>
+      )}
     </Flex>
   );
 }
