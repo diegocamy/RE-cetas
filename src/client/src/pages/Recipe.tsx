@@ -213,7 +213,7 @@ function Recipe() {
             alignSelf="flex-start"
             display="block"
             w="100%"
-            mx="2"
+            textAlign="center"
           >
             Más recetas de {data.getPost.author.username}
           </Heading>
