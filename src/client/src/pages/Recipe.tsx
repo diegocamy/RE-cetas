@@ -21,6 +21,7 @@ import { AuthContext } from "../App";
 import AlertDelete from "../components/AlertDelete";
 import RecipeCard from "../components/RecipeCard";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import SpinnerComponent from "../components/Spinner";
 
 interface Params {
   slug: string;
