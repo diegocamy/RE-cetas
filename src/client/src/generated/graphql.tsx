@@ -417,6 +417,14 @@ export type GetUserPostsQuery = (
   ) }
 );
 
+export type InvalidateRefreshTokensMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type InvalidateRefreshTokensMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'invalidateRefreshTokens'>
+);
+
 export type LikePostMutationVariables = Exact<{
   slug: Scalars['String'];
 }>;
@@ -1099,6 +1107,36 @@ export function useGetUserPostsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
 export type GetUserPostsQueryHookResult = ReturnType<typeof useGetUserPostsQuery>;
 export type GetUserPostsLazyQueryHookResult = ReturnType<typeof useGetUserPostsLazyQuery>;
 export type GetUserPostsQueryResult = Apollo.QueryResult<GetUserPostsQuery, GetUserPostsQueryVariables>;
+export const InvalidateRefreshTokensDocument = gql`
+    mutation InvalidateRefreshTokens {
+  invalidateRefreshTokens
+}
+    `;
+export type InvalidateRefreshTokensMutationFn = Apollo.MutationFunction<InvalidateRefreshTokensMutation, InvalidateRefreshTokensMutationVariables>;
+
+/**
+ * __useInvalidateRefreshTokensMutation__
+ *
+ * To run a mutation, you first call `useInvalidateRefreshTokensMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useInvalidateRefreshTokensMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [invalidateRefreshTokensMutation, { data, loading, error }] = useInvalidateRefreshTokensMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useInvalidateRefreshTokensMutation(baseOptions?: Apollo.MutationHookOptions<InvalidateRefreshTokensMutation, InvalidateRefreshTokensMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<InvalidateRefreshTokensMutation, InvalidateRefreshTokensMutationVariables>(InvalidateRefreshTokensDocument, options);
+      }
+export type InvalidateRefreshTokensMutationHookResult = ReturnType<typeof useInvalidateRefreshTokensMutation>;
+export type InvalidateRefreshTokensMutationResult = Apollo.MutationResult<InvalidateRefreshTokensMutation>;
+export type InvalidateRefreshTokensMutationOptions = Apollo.BaseMutationOptions<InvalidateRefreshTokensMutation, InvalidateRefreshTokensMutationVariables>;
 export const LikePostDocument = gql`
     mutation LikePost($slug: String!) {
   likepost(slug: $slug)

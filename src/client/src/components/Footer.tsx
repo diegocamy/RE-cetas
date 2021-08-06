@@ -6,7 +6,7 @@ import { AuthContext } from "../App";
 function Footer() {
   const { user } = useContext(AuthContext);
   return (
-    <Box bgColor="#f7cf1c" color="black" textAlign="center" py="5">
+    <Box bgColor="amarillo" color="black" textAlign="center" py="5">
       <Link
         to={user ? "/me" : "/"}
         _hover={{ textDecoration: "none" }}
