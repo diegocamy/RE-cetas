@@ -1,6 +1,7 @@
 import { Box, Flex, Heading } from "@chakra-ui/react";
 import FollowerCard from "../components/FollowerCard";
 import NoResults from "../components/NoResults";
+import SpinnerComponent from "../components/Spinner";
 import { useMeFollowersQuery } from "../generated/graphql";
 
 function Followers() {
@@ -13,7 +14,7 @@ function Followers() {
   }
 
   if (loading && !data) {
-    return <p>loading</p>;
+    return <SpinnerComponent height="100%" />;
   }
 
   return (

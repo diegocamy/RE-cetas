@@ -2,6 +2,7 @@ import { Flex, Grid, Heading, Input } from "@chakra-ui/react";
 import { useState } from "react";
 import NoResults from "../components/NoResults";
 import RecipeCard from "../components/RecipeCard";
+import SpinnerComponent from "../components/Spinner";
 import { useMeRecipesQuery } from "../generated/graphql";
 
 function Recipes() {
@@ -11,7 +12,7 @@ function Recipes() {
   const [search, setSearch] = useState("");
 
   if (loading && !data) {
-    return <p>loading</p>;
+    return <SpinnerComponent height="100%" />;
   }
 
   if (error) {

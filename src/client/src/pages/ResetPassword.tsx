@@ -39,8 +39,6 @@ function ResetPassword() {
   const [changePassword] = useChangePasswordMutation();
   const [isMobile] = useMediaQuery("(min-width: 786px)");
 
-  // return <p>{JSON.stringify(params, null, 2)}</p>;
-
   return (
     <Flex justify="center" align="center" bgColor="gray.100" height="100%">
       <Box

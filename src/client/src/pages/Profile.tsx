@@ -2,6 +2,7 @@ import { Box, Flex, useMediaQuery } from "@chakra-ui/react";
 import { useEffect } from "react";
 import Container from "../components/Container";
 import LastRecipes from "../components/LastRecipes";
+import SpinnerComponent from "../components/Spinner";
 import StatsBox from "../components/StatsBox";
 import UserInfoCard from "../components/UserInfoCard";
 import { useMeLazyQuery } from "../generated/graphql";
@@ -24,7 +25,7 @@ function Profile() {
     };
   }, [executeQuery]);
 
-  if (loading) return null;
+  if (loading) return <SpinnerComponent height="100%" />;
 
   return (
     <Box bgColor="gray.100" minHeight="100%">

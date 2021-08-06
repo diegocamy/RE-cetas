@@ -2,6 +2,7 @@ import { Box, Flex, Heading } from "@chakra-ui/react";
 import FollowerCard from "../components/FollowerCard";
 import { useMeFollowingQuery } from "../generated/graphql";
 import NoResults from "../components/NoResults";
+import SpinnerComponent from "../components/Spinner";
 
 function Following() {
   const { data, loading, error } = useMeFollowingQuery({
@@ -13,7 +14,7 @@ function Following() {
   }
 
   if (loading && !data) {
-    return <p>loading</p>;
+    return <SpinnerComponent height="100%" />;
   }
 
   return (

@@ -6,6 +6,7 @@ import LastRecipes from "../components/LastRecipes";
 import UserInfoCard from "../components/UserInfoCard";
 import { useGetUserLazyQuery } from "../generated/graphql";
 import StatsBox from "../components/StatsBox";
+import SpinnerComponent from "../components/Spinner";
 
 interface Params {
   username: string;
@@ -32,7 +33,7 @@ function UserProfile() {
     };
   }, [executeQuery, username]);
 
-  if (loading && !data) return <p>loading</p>;
+  if (loading && !data) return <SpinnerComponent height="100%" />;
 
   if (error) {
     return <Redirect to="/404" />;

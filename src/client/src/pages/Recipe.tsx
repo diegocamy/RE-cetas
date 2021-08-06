@@ -56,7 +56,7 @@ function Recipe() {
   }, [data, user]);
 
   if (loading) {
-    return null;
+    return <SpinnerComponent height="100%" />;
   }
 
   if (!data || !data.getPost) {

@@ -3,6 +3,7 @@ import NoResults from "../components/NoResults";
 import RecipeCard from "../components/RecipeCard";
 import { useState } from "react";
 import { useMeFavoritesQuery } from "../generated/graphql";
+import SpinnerComponent from "../components/Spinner";
 
 function Favorites() {
   const { data, loading, error } = useMeFavoritesQuery({
@@ -11,7 +12,7 @@ function Favorites() {
   const [search, setSearch] = useState("");
 
   if (loading && !data) {
-    return <p>loading</p>;
+    return <SpinnerComponent height="100%" />;
   }
 
   if (error) {
