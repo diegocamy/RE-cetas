@@ -400,6 +400,23 @@ export type GetUserQuery = (
   ) }
 );
 
+export type GetUserPostsQueryVariables = Exact<{
+  username: Scalars['String'];
+}>;
+
+
+export type GetUserPostsQuery = (
+  { __typename?: 'Query' }
+  & { getUser: (
+    { __typename?: 'User' }
+    & Pick<User, 'id' | 'username'>
+    & { posts: Array<(
+      { __typename?: 'Post' }
+      & Pick<Post, 'id' | 'title' | 'slug' | 'picture' | 'time'>
+    )> }
+  ) }
+);
+
 export type LikePostMutationVariables = Exact<{
   slug: Scalars['String'];
 }>;
@@ -979,6 +996,49 @@ export function useGetUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Ge
 export type GetUserQueryHookResult = ReturnType<typeof useGetUserQuery>;
 export type GetUserLazyQueryHookResult = ReturnType<typeof useGetUserLazyQuery>;
 export type GetUserQueryResult = Apollo.QueryResult<GetUserQuery, GetUserQueryVariables>;
+export const GetUserPostsDocument = gql`
+    query GetUserPosts($username: String!) {
+  getUser(username: $username) {
+    id
+    username
+    posts {
+      id
+      title
+      slug
+      picture
+      time
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetUserPostsQuery__
+ *
+ * To run a query within a React component, call `useGetUserPostsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserPostsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserPostsQuery({
+ *   variables: {
+ *      username: // value for 'username'
+ *   },
+ * });
+ */
+export function useGetUserPostsQuery(baseOptions: Apollo.QueryHookOptions<GetUserPostsQuery, GetUserPostsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetUserPostsQuery, GetUserPostsQueryVariables>(GetUserPostsDocument, options);
+      }
+export function useGetUserPostsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserPostsQuery, GetUserPostsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetUserPostsQuery, GetUserPostsQueryVariables>(GetUserPostsDocument, options);
+        }
+export type GetUserPostsQueryHookResult = ReturnType<typeof useGetUserPostsQuery>;
+export type GetUserPostsLazyQueryHookResult = ReturnType<typeof useGetUserPostsLazyQuery>;
+export type GetUserPostsQueryResult = Apollo.QueryResult<GetUserPostsQuery, GetUserPostsQueryVariables>;
 export const LikePostDocument = gql`
     mutation LikePost($slug: String!) {
   likepost(slug: $slug)

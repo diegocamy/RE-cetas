@@ -1,0 +1,13 @@
+query GetUserPosts($username: String!) {
+  getUser(username: $username) {
+    id
+    username
+    posts {
+      id
+      title
+      slug
+      picture
+      time
+    }
+  }
+}
