@@ -1,16 +1,30 @@
 import { Flex, Heading, Input, Grid, useMediaQuery } from "@chakra-ui/react";
 import NoResults from "../components/NoResults";
 import RecipeCard from "../components/RecipeCard";
-import { useState } from "react";
-import { useMeFavoritesQuery } from "../generated/graphql";
+import { useContext, useState } from "react";
+import { useUserFavoritesQuery } from "../generated/graphql";
 import SpinnerComponent from "../components/Spinner";
+import { useParams, useHistory, Redirect } from "react-router-dom";
+import { AuthContext } from "../App";
 
-function Favorites() {
+interface Params {
+  username: string;
+}
+
+function UserFavorites() {
+  const { username } = useParams<Params>();
+  const { user } = useContext(AuthContext);
+  const history = useHistory();
   const [isMobile] = useMediaQuery("(max-width: 786px)");
-  const { data, loading, error } = useMeFavoritesQuery({
+  const { data, loading, error } = useUserFavoritesQuery({
     fetchPolicy: "network-only",
+    variables: { username },
   });
   const [search, setSearch] = useState("");
+
+  if (user === username) {
+    return <Redirect to="/favorites" />;
+  }
 
   if (loading && !data) {
     return <SpinnerComponent height="100%" />;
@@ -28,8 +42,8 @@ function Favorites() {
       minHeight="100%"
       direction="column"
     >
-      <Heading>Tus recetas favoritas</Heading>
-      {data?.me.likedPosts.length === 0 ? (
+      <Heading>Recetas favoritas de {username}</Heading>
+      {data?.getUser.likedPosts.length === 0 ? (
         <Flex
           justify="center"
           align="center"
@@ -39,9 +53,9 @@ function Favorites() {
           bgColor="white"
         >
           <NoResults
-            buttonLink="/home"
+            buttonLink={history.location.pathname.replace("/favorites", "")}
             buttonText="Volver"
-            heading="Aún no tienes recetas favoritas guardadas"
+            heading={`${username} aún no tiene recetas favoritas`}
           />
         </Flex>
       ) : (
@@ -62,7 +76,7 @@ function Favorites() {
             gridGap="2"
             placeItems="center"
           >
-            {data?.me.likedPosts
+            {data?.getUser.likedPosts
               .filter(({ post: r }) =>
                 r.title.toLowerCase().includes(search.toLocaleLowerCase())
               )
@@ -75,7 +89,7 @@ function Favorites() {
                   width={
                     isMobile
                       ? "100%"
-                      : data.me.likedPosts.length < 2
+                      : data.getUser.likedPosts.length < 2
                       ? "50%"
                       : "100%"
                   }
@@ -91,4 +105,4 @@ function Favorites() {
   );
 }
 
-export default Favorites;
+export default UserFavorites;

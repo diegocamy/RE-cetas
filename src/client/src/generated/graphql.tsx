@@ -565,6 +565,26 @@ export type UploadImageMutation = (
   & Pick<Mutation, 'imageUpload'>
 );
 
+export type UserFavoritesQueryVariables = Exact<{
+  username: Scalars['String'];
+}>;
+
+
+export type UserFavoritesQuery = (
+  { __typename?: 'Query' }
+  & { getUser: (
+    { __typename?: 'User' }
+    & Pick<User, 'id' | 'username'>
+    & { likedPosts: Array<(
+      { __typename?: 'Like' }
+      & { post: (
+        { __typename?: 'Post' }
+        & Pick<Post, 'id' | 'slug' | 'picture' | 'time' | 'title'>
+      ) }
+    )> }
+  ) }
+);
+
 export type UserFollowersQueryVariables = Exact<{
   username: Scalars['String'];
 }>;
@@ -1467,6 +1487,51 @@ export function useUploadImageMutation(baseOptions?: Apollo.MutationHookOptions<
 export type UploadImageMutationHookResult = ReturnType<typeof useUploadImageMutation>;
 export type UploadImageMutationResult = Apollo.MutationResult<UploadImageMutation>;
 export type UploadImageMutationOptions = Apollo.BaseMutationOptions<UploadImageMutation, UploadImageMutationVariables>;
+export const UserFavoritesDocument = gql`
+    query UserFavorites($username: String!) {
+  getUser(username: $username) {
+    id
+    username
+    likedPosts {
+      post {
+        id
+        slug
+        picture
+        time
+        title
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useUserFavoritesQuery__
+ *
+ * To run a query within a React component, call `useUserFavoritesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserFavoritesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserFavoritesQuery({
+ *   variables: {
+ *      username: // value for 'username'
+ *   },
+ * });
+ */
+export function useUserFavoritesQuery(baseOptions: Apollo.QueryHookOptions<UserFavoritesQuery, UserFavoritesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UserFavoritesQuery, UserFavoritesQueryVariables>(UserFavoritesDocument, options);
+      }
+export function useUserFavoritesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserFavoritesQuery, UserFavoritesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UserFavoritesQuery, UserFavoritesQueryVariables>(UserFavoritesDocument, options);
+        }
+export type UserFavoritesQueryHookResult = ReturnType<typeof useUserFavoritesQuery>;
+export type UserFavoritesLazyQueryHookResult = ReturnType<typeof useUserFavoritesLazyQuery>;
+export type UserFavoritesQueryResult = Apollo.QueryResult<UserFavoritesQuery, UserFavoritesQueryVariables>;
 export const UserFollowersDocument = gql`
     query UserFollowers($username: String!) {
   getUser(username: $username) {

@@ -1,0 +1,15 @@
+query UserFavorites($username: String!) {
+  getUser(username: $username) {
+    id
+    username
+    likedPosts {
+      post {
+        id
+        slug
+        picture
+        time
+        title
+      }
+    }
+  }
+}
