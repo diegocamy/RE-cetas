@@ -11,7 +11,7 @@ interface Params {
   username: string;
 }
 
-function Recipes() {
+function UserRecipes() {
   const { user } = useContext(AuthContext);
   const { username } = useParams<Params>();
   const history = useHistory();
@@ -41,7 +41,7 @@ function Recipes() {
       minHeight="100%"
       direction="column"
     >
-      <Heading>Tus Recetas</Heading>
+      <Heading>Recetas de {username}</Heading>
       {data?.getUser.posts.length === 0 ? (
         <Flex
           justify="center"
@@ -97,4 +97,4 @@ function Recipes() {
   );
 }
 
-export default Recipes;
+export default UserRecipes;

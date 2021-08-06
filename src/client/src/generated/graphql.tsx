@@ -565,6 +565,26 @@ export type UploadImageMutation = (
   & Pick<Mutation, 'imageUpload'>
 );
 
+export type UserFollowersQueryVariables = Exact<{
+  username: Scalars['String'];
+}>;
+
+
+export type UserFollowersQuery = (
+  { __typename?: 'Query' }
+  & { getUser: (
+    { __typename?: 'User' }
+    & Pick<User, 'id' | 'username'>
+    & { followers: Array<(
+      { __typename?: 'Follow' }
+      & { follower: (
+        { __typename?: 'User' }
+        & Pick<User, 'username' | 'bio' | 'avatar' | 'created' | 'postCount' | 'followingCount' | 'followersCount'>
+      ) }
+    )> }
+  ) }
+);
+
 
 export const ChangePasswordDocument = gql`
     mutation changePassword($password: String!, $token: String!) {
@@ -1427,3 +1447,50 @@ export function useUploadImageMutation(baseOptions?: Apollo.MutationHookOptions<
 export type UploadImageMutationHookResult = ReturnType<typeof useUploadImageMutation>;
 export type UploadImageMutationResult = Apollo.MutationResult<UploadImageMutation>;
 export type UploadImageMutationOptions = Apollo.BaseMutationOptions<UploadImageMutation, UploadImageMutationVariables>;
+export const UserFollowersDocument = gql`
+    query UserFollowers($username: String!) {
+  getUser(username: $username) {
+    id
+    username
+    followers {
+      follower {
+        username
+        bio
+        avatar
+        created
+        postCount
+        followingCount
+        followersCount
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useUserFollowersQuery__
+ *
+ * To run a query within a React component, call `useUserFollowersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserFollowersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserFollowersQuery({
+ *   variables: {
+ *      username: // value for 'username'
+ *   },
+ * });
+ */
+export function useUserFollowersQuery(baseOptions: Apollo.QueryHookOptions<UserFollowersQuery, UserFollowersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UserFollowersQuery, UserFollowersQueryVariables>(UserFollowersDocument, options);
+      }
+export function useUserFollowersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserFollowersQuery, UserFollowersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UserFollowersQuery, UserFollowersQueryVariables>(UserFollowersDocument, options);
+        }
+export type UserFollowersQueryHookResult = ReturnType<typeof useUserFollowersQuery>;
+export type UserFollowersLazyQueryHookResult = ReturnType<typeof useUserFollowersLazyQuery>;
+export type UserFollowersQueryResult = Apollo.QueryResult<UserFollowersQuery, UserFollowersQueryVariables>;
