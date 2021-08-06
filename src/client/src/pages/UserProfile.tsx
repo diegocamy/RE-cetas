@@ -1,4 +1,4 @@
-import { Box, Flex, useMediaQuery } from "@chakra-ui/react";
+import { Box, Flex, Heading, useMediaQuery } from "@chakra-ui/react";
 import { Redirect, useParams } from "react-router-dom";
 import { useContext, useEffect } from "react";
 import Container from "../components/Container";
@@ -74,6 +74,17 @@ function UserProfile() {
           pr={isMobile ? "2" : "none"}
           pb="2"
         >
+          {data?.getUser.last4posts.length === 0 && (
+            <Flex
+              height="300px"
+              justify="center"
+              align="center"
+              bg="white"
+              borderRadius="xl"
+            >
+              <Heading size="md">Todavía no hay recetas para ver</Heading>
+            </Flex>
+          )}
           {data?.getUser?.last4posts!.length! > 0 && (
             <LastRecipes
               message={`Últimas recetas de ${username}`}
