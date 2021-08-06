@@ -1,18 +1,20 @@
 import { Box, Flex, useMediaQuery } from "@chakra-ui/react";
 import { Redirect, useParams } from "react-router-dom";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import Container from "../components/Container";
 import LastRecipes from "../components/LastRecipes";
 import UserInfoCard from "../components/UserInfoCard";
 import { useGetUserLazyQuery } from "../generated/graphql";
 import StatsBox from "../components/StatsBox";
 import SpinnerComponent from "../components/Spinner";
+import { AuthContext } from "../App";
 
 interface Params {
   username: string;
 }
 
 function UserProfile() {
+  const { user } = useContext(AuthContext);
   const { username } = useParams<Params>();
   const [executeQuery, { data, loading, error }] = useGetUserLazyQuery({
     fetchPolicy: "network-only",
@@ -32,6 +34,8 @@ function UserProfile() {
       _isMounted = false;
     };
   }, [executeQuery, username]);
+
+  if (user === username) return <Redirect to="/home" />;
 
   if (loading && !data) return <SpinnerComponent height="100%" />;
 

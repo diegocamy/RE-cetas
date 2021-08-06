@@ -1,4 +1,4 @@
-import { Flex, Heading, Input, Grid } from "@chakra-ui/react";
+import { Flex, Heading, Input, Grid, useMediaQuery } from "@chakra-ui/react";
 import NoResults from "../components/NoResults";
 import RecipeCard from "../components/RecipeCard";
 import { useState } from "react";
@@ -6,6 +6,7 @@ import { useMeFavoritesQuery } from "../generated/graphql";
 import SpinnerComponent from "../components/Spinner";
 
 function Favorites() {
+  const [isMobile] = useMediaQuery("(max-width: 786px)");
   const { data, loading, error } = useMeFavoritesQuery({
     fetchPolicy: "network-only",
   });
@@ -18,6 +19,7 @@ function Favorites() {
   if (error) {
     return <p>{error.message}</p>;
   }
+
   return (
     <Flex
       bg="gray.100"
@@ -70,7 +72,14 @@ function Favorites() {
                   img={r.picture}
                   slug={r.slug}
                   title={r.title}
-                  width={data.me.likedPosts.length < 2 ? "50%" : "100%"}
+                  width={
+                    isMobile
+                      ? "100%"
+                      : data.me.likedPosts.length < 2
+                      ? "50%"
+                      : "100%"
+                  }
+                  // width={}
                   marginRight
                   key={r.slug}
                 />

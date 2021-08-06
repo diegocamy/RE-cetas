@@ -3,6 +3,7 @@ query MeFavorites {
     id
     likedPosts {
       post {
+        id
         slug
         picture
         time

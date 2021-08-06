@@ -469,7 +469,7 @@ export type MeFavoritesQuery = (
       { __typename?: 'Like' }
       & { post: (
         { __typename?: 'Post' }
-        & Pick<Post, 'slug' | 'picture' | 'time' | 'title'>
+        & Pick<Post, 'id' | 'slug' | 'picture' | 'time' | 'title'>
       ) }
     )> }
   ) }
@@ -1136,6 +1136,7 @@ export const MeFavoritesDocument = gql`
     id
     likedPosts {
       post {
+        id
         slug
         picture
         time
