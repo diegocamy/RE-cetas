@@ -21,6 +21,7 @@ import Search from "./pages/Search";
 import UserProfile from "./pages/UserProfile";
 import UserRecipes from "./pages/UserRecipes";
 import UserFollowers from "./pages/UserFollowers";
+import UserFollowing from "./pages/UserFollowing";
 
 function Routes() {
   return (
@@ -41,6 +42,7 @@ function Routes() {
         <Route path="/user/:username" exact component={UserProfile} />
         <Route path="/user/:username/recipes" component={UserRecipes} />
         <Route path="/user/:username/followers" component={UserFollowers} />
+        <Route path="/user/:username/following" component={UserFollowing} />
         <Route path="/recipe/:slug" component={Recipe} />
         <Route path="/forgot-password" component={ForgotPassword} />
         <Route path="/user/confirm-account/:token" component={ConfirmAccount} />

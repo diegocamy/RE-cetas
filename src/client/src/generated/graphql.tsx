@@ -585,6 +585,26 @@ export type UserFollowersQuery = (
   ) }
 );
 
+export type UserFollowingQueryVariables = Exact<{
+  username: Scalars['String'];
+}>;
+
+
+export type UserFollowingQuery = (
+  { __typename?: 'Query' }
+  & { getUser: (
+    { __typename?: 'User' }
+    & Pick<User, 'id' | 'username'>
+    & { following: Array<(
+      { __typename?: 'Follow' }
+      & { following: (
+        { __typename?: 'User' }
+        & Pick<User, 'username' | 'bio' | 'avatar' | 'created' | 'postCount' | 'followingCount' | 'followersCount'>
+      ) }
+    )> }
+  ) }
+);
+
 
 export const ChangePasswordDocument = gql`
     mutation changePassword($password: String!, $token: String!) {
@@ -1494,3 +1514,50 @@ export function useUserFollowersLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type UserFollowersQueryHookResult = ReturnType<typeof useUserFollowersQuery>;
 export type UserFollowersLazyQueryHookResult = ReturnType<typeof useUserFollowersLazyQuery>;
 export type UserFollowersQueryResult = Apollo.QueryResult<UserFollowersQuery, UserFollowersQueryVariables>;
+export const UserFollowingDocument = gql`
+    query UserFollowing($username: String!) {
+  getUser(username: $username) {
+    id
+    username
+    following {
+      following {
+        username
+        bio
+        avatar
+        created
+        postCount
+        followingCount
+        followersCount
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useUserFollowingQuery__
+ *
+ * To run a query within a React component, call `useUserFollowingQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserFollowingQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserFollowingQuery({
+ *   variables: {
+ *      username: // value for 'username'
+ *   },
+ * });
+ */
+export function useUserFollowingQuery(baseOptions: Apollo.QueryHookOptions<UserFollowingQuery, UserFollowingQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UserFollowingQuery, UserFollowingQueryVariables>(UserFollowingDocument, options);
+      }
+export function useUserFollowingLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserFollowingQuery, UserFollowingQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UserFollowingQuery, UserFollowingQueryVariables>(UserFollowingDocument, options);
+        }
+export type UserFollowingQueryHookResult = ReturnType<typeof useUserFollowingQuery>;
+export type UserFollowingLazyQueryHookResult = ReturnType<typeof useUserFollowingLazyQuery>;
+export type UserFollowingQueryResult = Apollo.QueryResult<UserFollowingQuery, UserFollowingQueryVariables>;

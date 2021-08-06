@@ -1,0 +1,17 @@
+query UserFollowing($username: String!) {
+  getUser(username: $username) {
+    id
+    username
+    following {
+      following {
+        username
+        bio
+        avatar
+        created
+        postCount
+        followingCount
+        followersCount
+      }
+    }
+  }
+}
