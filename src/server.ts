@@ -13,6 +13,7 @@ import { ApolloServerLoaderPlugin } from "type-graphql-dataloader";
 import { getConnection } from "typeorm";
 import { graphqlUploadExpress } from "graphql-upload";
 import cors, { CorsOptions } from "cors";
+import path from "path/posix";
 
 const PORT = process.env.PORT || 4000;
 
@@ -119,6 +120,10 @@ async function startServer() {
   });
 
   app.use(express.static("public"));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "public", "index.html"));
+  });
 
   app.listen({ port: PORT }, () =>
     console.log(

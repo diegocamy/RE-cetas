@@ -10,8 +10,14 @@ const options: ConnectionOptions = {
   username: process.env.TYPEORM_USERNAME,
   password: process.env.TYPEORM_PASSWORD,
   database: process.env.TYPEORM_DATABASE,
-  synchronize: process.env.NODE_ENV === "development" ? true : false,
+  synchronize: true,
   logging: "all",
+  ssl: process.env.NODE_ENV === "production" ? true : false,
+  extra: process.env.NODE_ENV === "production" && {
+    ssl: {
+      rejectUnauthorized: false,
+    },
+  },
   entities: [path.join(__dirname + "./../entities/*{.ts,.js}")],
   migrations: [path.join(__dirname + "./../migrations/*{.ts,.js}")],
   subscribers: [path.join(__dirname + "./../subscribers/*{.ts,.js}")],
