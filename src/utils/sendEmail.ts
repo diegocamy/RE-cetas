@@ -12,7 +12,9 @@ const sendConfirmationEmail = (
     to: email,
     subject: "Activa tu cuenta!",
     text: "Activa tu cuenta para empezar",
-    html: `<a href="http://localhost:3000/user/confirm-account/${token}">Activa tu cuenta para empezar</a>`,
+    html: `<a href="http://${
+      process.env.SITENAME || `localhost:${process.env.PORT}`
+    }/user/confirm-account/${token}">Activa tu cuenta para empezar</a>`,
   });
 };
 
@@ -26,7 +28,9 @@ const sendForgotPasswordEmail = (
     to: email,
     subject: "Reestablecer contraseña",
     text: "Haz clic en el este enlace para reestablecer tu contraseña",
-    html: `<a href="http://localhost:3000/user/reset-password/${token}">Haz clic en el este enlace para reestablecer tu contraseña</a>`,
+    html: `<a href="http://${
+      process.env.SITENAME || `localhost:${process.env.PORT}`
+    }/user/reset-password/${token}">Haz clic en el este enlace para reestablecer tu contraseña</a>`,
   });
 };
 

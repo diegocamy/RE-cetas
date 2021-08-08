@@ -14,12 +14,12 @@ import { getConnection } from "typeorm";
 import { graphqlUploadExpress } from "graphql-upload";
 import cors, { CorsOptions } from "cors";
 
-const PORT = 4000;
+const PORT = process.env.PORT || 4000;
 
 const app = express();
 
 const corsOptions: CorsOptions = {
-  origin: "http://localhost:3000",
+  origin: "http://localhost",
   methods: ["POST"],
   credentials: true,
 };
@@ -118,14 +118,12 @@ async function startServer() {
     cors: false,
   });
 
-  app.get("/", (req, res) => {
-    res.json({
-      hello: "world",
-    });
-  });
+  app.use(express.static("public"));
 
   app.listen({ port: PORT }, () =>
-    console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
+    console.log(
+      `🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`
+    )
   );
 }
 
