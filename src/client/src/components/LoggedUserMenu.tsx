@@ -6,7 +6,11 @@ import {
   MenuGroup,
   MenuItem,
 } from "@chakra-ui/react";
-import { AiOutlinePlusCircle, AiFillHeart } from "react-icons/ai";
+import {
+  AiOutlinePlusCircle,
+  AiFillHeart,
+  AiOutlineSearch,
+} from "react-icons/ai";
 import { FaChevronDown, FaUserFriends, FaUserPlus } from "react-icons/fa";
 import { IoNewspaperOutline } from "react-icons/io5";
 import { NavLink } from "react-router-dom";
@@ -32,6 +36,9 @@ function LoggedUserMenu({ user }: Props) {
         <MenuGroup title="Recetas">
           <MenuItem as={NavLink} to="/new" icon={<AiOutlinePlusCircle />}>
             Crear receta
+          </MenuItem>
+          <MenuItem as={NavLink} to="/search" icon={<AiOutlineSearch />}>
+            Buscar
           </MenuItem>
           <MenuItem as={NavLink} to="/recipes" icon={<IoNewspaperOutline />}>
             Mis recetas
