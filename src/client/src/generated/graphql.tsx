@@ -393,6 +393,12 @@ export type GetUserQuery = (
         { __typename?: 'Post' }
         & Pick<Post, 'title'>
       ) }
+    )>, followers: Array<(
+      { __typename?: 'Follow' }
+      & { follower: (
+        { __typename?: 'User' }
+        & Pick<User, 'username'>
+      ) }
     )>, last4posts: Array<(
       { __typename?: 'Post' }
       & Pick<Post, 'title' | 'slug' | 'time' | 'picture'>
@@ -1022,6 +1028,11 @@ export const GetUserDocument = gql`
     likedPosts {
       post {
         title
+      }
+    }
+    followers {
+      follower {
+        username
       }
     }
     followersCount

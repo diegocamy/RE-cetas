@@ -57,11 +57,13 @@ function UserProfile() {
           </Box>
           <Box w={isMobile ? "100%" : "30%"} px="2">
             <StatsBox
+              userFollowers={data?.getUser.followers}
               recipes={data?.getUser!.postCount!}
               favourites={data?.getUser!.likedPosts.length! || 0}
               followers={data?.getUser!.followersCount!}
               following={data?.getUser!.followingCount!}
               linkRecetas={`/user/${username}/recipes`}
+              followButton
               linkFavoritos={`/user/${username}/favorites`}
               linkFollowers={`/user/${username}/followers`}
               linkFollowing={`/user/${username}/following`}

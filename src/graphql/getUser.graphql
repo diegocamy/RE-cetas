@@ -10,6 +10,11 @@ query GetUser($username: String!) {
         title
       }
     }
+    followers {
+      follower {
+        username
+      }
+    }
     followersCount
     followingCount
     last4posts {

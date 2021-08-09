@@ -1,10 +1,18 @@
-import { Button, Flex, Grid } from "@chakra-ui/react";
+import { Button, Flex, Grid, useToast } from "@chakra-ui/react";
 import { AiFillHeart } from "react-icons/ai";
 import { GiKnifeFork } from "react-icons/gi";
 import { RiAddFill } from "react-icons/ri";
 import { FaUserFriends, FaUserPlus } from "react-icons/fa";
 import StatCard from "./StatCard";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { useContext, useState } from "react";
+import {
+  GetUserDocument,
+  GetUserQuery,
+  useFollowMutation,
+  User,
+} from "../generated/graphql";
+import { AuthContext } from "../App";
 
 interface Props {
   favourites: number;
@@ -12,10 +20,22 @@ interface Props {
   followers: number;
   following: number;
   createButton?: boolean;
+  followButton?: boolean;
   linkRecetas?: string;
   linkFavoritos?: string;
   linkFollowers?: string;
   linkFollowing?: string;
+  userFollowers?: ({
+    __typename?: "Follow" | undefined;
+  } & {
+    follower: {
+      __typename?: "User" | undefined;
+    } & Pick<User, "username">;
+  })[];
+}
+
+interface Params {
+  username: string;
 }
 
 function StatsBox({
@@ -28,7 +48,69 @@ function StatsBox({
   linkFollowers,
   linkFollowing,
   linkRecetas,
+  followButton,
+  userFollowers,
 }: Props) {
+  const { username } = useParams<Params>();
+  const { user } = useContext(AuthContext);
+  const toast = useToast();
+  const [follow, { loading }] = useFollowMutation();
+  const [isFollowing, setIsFollowing] = useState(() => {
+    if (userFollowers) {
+      const isFollower = userFollowers.find(
+        (e) => e.follower.username === user
+      );
+      return isFollower ? true : false;
+    }
+
+    return false;
+  });
+
+  const handleClick = async () => {
+    try {
+      await follow({
+        variables: { username },
+        update: async (cache, { data }) => {
+          const userData = cache.readQuery<GetUserQuery>({
+            query: GetUserDocument,
+            variables: { username },
+          });
+
+          const newFollowers = isFollowing
+            ? userData!.getUser.followers.filter(
+                (u) => u.follower.username !== user
+              )
+            : [...userData!.getUser.followers].concat({
+                follower: { username: user },
+              });
+
+          cache.writeQuery<GetUserQuery>({
+            query: GetUserDocument,
+            data: {
+              getUser: {
+                ...userData!.getUser,
+                followers: newFollowers,
+                followingCount: isFollowing
+                  ? userData!.getUser.followingCount + 1
+                  : userData!.getUser.followingCount - 1,
+              },
+            },
+          });
+        },
+      });
+
+      setIsFollowing(!isFollowing);
+    } catch (error) {
+      toast({
+        status: "error",
+        description: error.message,
+        isClosable: true,
+        position: "top",
+        title: "Error",
+      });
+    }
+  };
+
   return (
     <Flex
       borderRadius="xl"
@@ -53,6 +135,21 @@ function StatsBox({
           _active={{ background: "blue.500" }}
         >
           Crear Receta
+        </Button>
+      )}
+      {user && user !== username && followButton && (
+        <Button
+          rightIcon={<FaUserPlus />}
+          onClick={handleClick}
+          bg="black"
+          color="white"
+          borderRadius="xl"
+          mb="1"
+          _hover={{ background: "blue.500" }}
+          _active={{ background: "blue.500" }}
+          isLoading={loading}
+        >
+          {isFollowing ? "Dejar de seguir" : "Seguir"}
         </Button>
       )}
 
