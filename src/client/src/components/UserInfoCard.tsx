@@ -10,7 +10,6 @@ import {
   useMediaQuery,
 } from "@chakra-ui/react";
 import { RiCake2Line } from "react-icons/ri";
-import { FiEdit } from "react-icons/fi";
 import bg from "../assets/background.jpg";
 import EditProfileModal from "./EditProfileModal";
 import { formatDistance } from "date-fns";
@@ -92,14 +91,6 @@ function UserInfoCard({ user, bio, avatar, joined }: Props) {
             justify="space-between"
           >
             <Heading size="lg">{user}</Heading>
-            <Button
-              leftIcon={<FiEdit color="black" />}
-              bg="amarillo"
-              size="sm"
-              onClick={onOpen}
-            >
-              Editar Perfil
-            </Button>
             <EditProfileModal
               isOpen={isOpen}
               onClose={onClose}
